@@ -6,8 +6,11 @@
   name="chassisv003">
   <link
     name="base_link">
-
+    <origin
+      xyz="0.0 0.0 0.0"
+      rpy="0.0 0 0.0" />
   </link>
+
   <joint
     name="base_to_chassis"
     type="fixed">
@@ -41,7 +44,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://chassisv003/meshes/base_link.STL" />
+          filename="package://rover_description/meshes/Chassis_Frame.STL" />
       </geometry>
       <material
         name="">
@@ -55,7 +58,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://chassisv003/meshes/base_link.STL" />
+          filename="package://rover_description/meshes/Chassis_Frame.STL" />
       </geometry>
     </collision>
   </link>
@@ -81,7 +84,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://chassisv003/meshes/right_bogie_link.STL" />
+          filename="package://rover_description/meshes/right_bogie_link.STL" />
       </geometry>
       <material
         name="">
@@ -95,7 +98,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://chassisv003/meshes/right_bogie_link.STL" />
+          filename="package://rover_description/meshes/right_bogie_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -242,7 +245,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://chassisv003/meshes/left_bogie_link.STL" />
+          filename="package://rover_description/meshes/left_bogie_link.STL" />
       </geometry>
       <material
         name="">
@@ -256,7 +259,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://chassisv003/meshes/left_bogie_link.STL" />
+          filename="package://rover_description/meshes/left_bogie_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -397,11 +400,11 @@
     </inertial>
     <visual>
       <origin
-        xyz="0 0.23914772 0.444868085"
-        rpy="0 0 0" />
+        xyz="0.0 0.25594772 -0.01"
+        rpy="0 3.1459 3.1459" />
       <geometry>
         <mesh
-          filename="package://chassisv003/meshes/rear_bogie_link.STL" />
+          filename="package://rover_description/meshes/back_bogie_link.STL" />
       </geometry>
       <material
         name="">
@@ -415,7 +418,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://chassisv003/meshes/rear_bogie_link.STL" />
+          filename="package://rover_description/meshes/back_bogie_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -642,7 +645,7 @@
     <child
       link="Axis_1" />
     <axis
-      xyz="0 0 0" />
+      xyz="0 0 1" />
   </joint>
   <link
     name="Axis_2">
@@ -662,7 +665,7 @@
     </inertial>
     <visual>
       <origin
-        xyz="0 0 0"
+        xyz="0 0 0.0"
         rpy="0 0 0" />
       <geometry>
         <mesh
@@ -688,14 +691,14 @@
     name="J2"
     type="continuous">
     <origin
-      xyz="0.1255 -0.050208 0.25442"
+      xyz="0.065 0.055 0.11"
       rpy="2.1053 0 0.63509" />
     <parent
       link="Axis_1" />
     <child
       link="Axis_2" />
     <axis
-      xyz="0 0 0" />
+      xyz="1 0 0" />
   </joint>
   <link
     name="Axis_3">
@@ -748,7 +751,7 @@
     <child
       link="Axis_3" />
     <axis
-      xyz="0 0 0" />
+      xyz="1 0 0" />
   </joint>
   <link
     name="Axis_4">
@@ -801,7 +804,7 @@
     <child
       link="Axis_4" />
     <axis
-      xyz="0 0 0" />
+      xyz="1 0 0" />
   </joint>
   <link
     name="Axis_5">
@@ -854,7 +857,7 @@
     <child
       link="Axis_5" />
     <axis
-      xyz="0 0 0" />
+      xyz="0 1 0" />
   </joint>
   <link
     name="Axis_6">
@@ -907,6 +910,113 @@
     <child
       link="Axis_6" />
     <axis
-      xyz="0 0 0" />
+      xyz="0 0 1" />
   </joint>
+
+  <!-- transmissions (what gets us moving) -->
+    <!-- left bogie motors -->
+<transmission name="left_rear_wheel_joint_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="left_rear_wheel_joint">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="left_rear_wheel_motor">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+ <transmission name="left_front_wheel_joint_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="left_front_wheel_joint">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="left_front_wheel_motor">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+    <!-- right bogie motors -->
+
+<transmission name="right_front_wheel_joint_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="right_front_wheel_joint">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="right_front_wheel_motor">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<transmission name="right_rear_wheel_joint_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="right_rear_wheel_joint">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="right_rear_wheel_motor">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+    <!-- rear bogie motors -->
+
+<transmission name="rear_left_wheel_joint_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="rear_left_wheel_joint">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="rear_left_wheel_motor">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<transmission name="rear_right_wheel_joint_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="rear_right_wheel_joint">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="rear_right_wheel_motor">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<!-- gazebo stuff -->
+  <gazebo reference="chassis_arm" >
+  <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+  </plugin>
+</gazebo> 
+
+<!-- <gazebo reference="lidar1">
+    <material>Gazebo/Red</material>
+
+  <sensor name="laser" type="ray">
+    <pose> 0 0 0 0 0 0 </pose>
+    <visualize>true</visualize>
+    <update_rate>10</update_rate>
+    <ray> 
+   <scan>
+        <horizontal>
+            <samples>360</samples>
+            <min_angle>-3.14</min_angle>
+            <max_angle>3.14</max_angle>
+        </horizontal>
+    </scan>
+    <range>
+        <min>0.3</min>
+        <max>12</max>
+    </range>    </ray>
+    <plugin name="laser_controller" filename="libgazebo_ros_ray_sensor.so">
+       <ros>
+        <argument>~/out:=scan</argument>
+    </ros>
+    <output_type>sensor_msgs/LaserScan</output_type>
+    <frame_name>lidar1</frame_name>
+    </plugin>
+</sensor>
+</gazebo> -->
+
 </robot>

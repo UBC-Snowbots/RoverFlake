@@ -63,26 +63,32 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         Axis_2:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         Axis_3:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         Axis_4:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         Axis_5:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         Axis_6:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
@@ -91,6 +97,7 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         base_link:
           Alpha: 1
           Show Axes: false
@@ -167,7 +174,21 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
+        Axis_1:
+          Value: true
+        Axis_2:
+          Value: true
+        Axis_3:
+          Value: true
+        Axis_4:
+          Value: true
+        Axis_5:
+          Value: true
+        Axis_6:
+          Value: true
         arm_link:
+          Value: true
+        base_footprint:
           Value: true
         base_link:
           Value: true
@@ -199,9 +220,17 @@ Visualization Manager:
       Show Names: true
       Tree:
         base_link:
+          base_footprint:
+            {}
           chassis_link:
             arm_link:
-              {}
+              Axis_1:
+                Axis_2:
+                  Axis_3:
+                    Axis_4:
+                      Axis_5:
+                        Axis_6:
+                          {}
             left_bogie_link:
               left_front_wheel_link:
                 {}
@@ -247,7 +276,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 0.8707441687583923
+      Distance: 1.7667903900146484
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -263,9 +292,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.024797089397907257
+      Pitch: 0.509797215461731
       Target Frame: <Fixed Frame>
-      Yaw: 1.6985880136489868
+      Yaw: 4.643615245819092
     Saved: ~
 Window Geometry:
   Displays:
@@ -284,4 +313,4 @@ Window Geometry:
     collapsed: false
   Width: 1200
   X: 203
-  Y: 112
+  Y: 75
