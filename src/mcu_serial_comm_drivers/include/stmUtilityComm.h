@@ -44,7 +44,7 @@ class STMComm {
     
     //new serial
     unsigned long baud = 9600;
-    string port = "/dev/ttyACM1"; //will be best if we sift through
+    string port = "/dev/usb/hiddev0"; //will be best if we sift through
 
 
 
