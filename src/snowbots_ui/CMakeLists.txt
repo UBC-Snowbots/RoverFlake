@@ -6,6 +6,8 @@ cmake_minimum_required(VERSION 2.8.0)
 project(snowbots_ui)
 
 set(CMAKE_AUTOUIC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 ##############################################################################
 # Catkin
 ##############################################################################
@@ -27,15 +29,24 @@ catkin_package()
 # included via the dependency call in package.xml
 
 ##############################################################################
-# Sections
+# QWT
 ##############################################################################
+list(APPEND CMAKE_PREFIX_PATH "/usr/include/qwt" "${CMAKE_CURRENT_LIST_DIR}/include")
+find_package(Qwt REQUIRED)
+set(Qwt_INCLUDE_DIRS "/usr/include/qwt")
+include_directories(${Qwt_INCLUDE_DIRS})
 
+##############################################################################
+# Qt Sections
+##############################################################################
 
 set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5 COMPONENTS Core Gui Widgets)
 QT5_ADD_RESOURCES(QT_RESOURCES_CPP ${QT_RESOURCES})
-QT5_WRAP_UI(QT_FORMS_HPP ${QT_FORMS})##############################################################################
+QT5_WRAP_UI(QT_FORMS_HPP ${QT_FORMS})
+
+##############################################################################
 # Sources
 ##############################################################################
 include_directories(
@@ -43,6 +54,7 @@ include_directories(
     ${Qt5Gui_INCLUDE_DIRS}
     ${Qt5Widgets_INCLUDE_DIRS}
     ${catkin_INCLUDE_DIRS}
+    ${Qwt_INCLUDE_DIRS}
     )
 
 set(QT_SOURCES
@@ -58,18 +70,13 @@ set(QT_SOURCES
  #ROS SRC
  #  include/RosIntegration.h
  #  src/RosIntegration.cpp
-
     )
 
 ##############################################################################
 # Binaries
 ##############################################################################
-add_executable(snowbots_ui ${QT_SOURCES} ${QT_RESOURCES_CPP} ${QT_FORMS_HPP} ${QT_MOC_HPP})
+add_executable(snowbots_ui ${QT_SOURCES} ${QT_RESOURCES_CPP} ${QT_FORMS_HPP} ${QT_MOC_HPP} )
 add_executable(ui_tester src/ui_tester.cpp)
-target_link_libraries(snowbots_ui ${QT_LIBRARIES} ${catkin_LIBRARIES}
-        Qt5::Core     Qt5::Widgets)
-target_link_libraries(ui_tester
-   ${catkin_LIBRARIES}
- )
+target_link_libraries(snowbots_ui ${QT_LIBRARIES} ${QWT_LIBRARIES} ${QT_RESOURCES} ${catkin_LIBRARIES} Qt5::Core Qt5::Widgets)
+target_link_libraries(ui_tester ${catkin_LIBRARIES})
 install(TARGETS snowbots_ui RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-
