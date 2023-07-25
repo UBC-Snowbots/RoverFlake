@@ -1,0 +1,3 @@
+[submodule "src/external_pkgs/qt_ros"]
+	path = src/external_pkgs/qt_ros
+	url = https://github.com/stonier/qt_ros.git
