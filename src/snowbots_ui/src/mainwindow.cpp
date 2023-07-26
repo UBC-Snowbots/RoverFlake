@@ -68,7 +68,7 @@ MainWindow::MainWindow(QWidget* parent)
         "/integration_node/lwheels_pub_topic", 1000, MainWindow::twist_left_callback);
     twist_right_sub = n.subscribe(
         "/integration_node/rwheels_pub_topic", 1000, MainWindow::twist_right_callback);
-    elec_box_tempurature_sub = n.subscribe<std_msgs::Float64>("/rover_utility/elec_box_tempurature", 
+    elec_box_tempurature_sub = n.subscribe<std_msgs::Float64>("/rover_utility/elec_box_temperature", 
          5, boost::bind(&MainWindow::elec_box_temp_callback, this, _1));
   
     arm_status_sub = n.subscribe<std_msgs::Int16>("/status/arm_mcu", 

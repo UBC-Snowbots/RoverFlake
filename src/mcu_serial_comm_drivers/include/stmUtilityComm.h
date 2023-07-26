@@ -8,6 +8,9 @@
 #ifndef ARM_HARDWARE_DRIVER_MYNODE_H
 #define ARM_HARDWARE_DRIVER_MYNODE_H
 
+// Component ID's
+#define ELEC_BOX_ID 100
+
 // STD Includes
 #include <iostream>
 #include <string>
@@ -18,6 +21,7 @@
 #include <math.h>
 #include <ros/ros.h>
 #include <std_msgs/String.h>
+#include <std_msgs/Float64.h>
 #include <vector>
 
 // Snowbots Includes
@@ -43,8 +47,8 @@ class STMComm {
     void pubUtility();
     
     //new serial
-    unsigned long baud = 9600;
-    string port = "/dev/usb/hiddev0"; //will be best if we sift through
+    unsigned long baud = 115200;
+    string port = "/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0";//"/dev/usb/hiddev0"; //will be best if we sift through
 
 
 
@@ -63,5 +67,15 @@ class STMComm {
     ros::Publisher pubUtilityData;
 
     serial::Serial stm_board;
+
+  struct utility_component{
+    int id;
+    _Float64 temperature;
+    _Float64 battery_voltage;
+  };
+  
+  utility_component elec_box;
+
+
 };
 #endif // ARM_HARDWARE_DRIVER_MYNODE_H

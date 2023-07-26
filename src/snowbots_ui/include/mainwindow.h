@@ -18,6 +18,7 @@
 #include "std_msgs/String.h"
 #include <sstream>
 #include "std_msgs/Float64.h"
+#include "std_msgs/Float32.h"
 #include <cstdlib>
 #include <iostream>
 #include "std_msgs/Int16.h"
