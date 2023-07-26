@@ -164,13 +164,13 @@ void AllController::processInputs() {
                         switch (i)
                         {
                         case 0:
-                          //  leftJoystickX(axes[i]);
+                            leftJoystickX(axes[i]);
                             break;
                         case 1:
                             leftJoystickY(axes[i]); 
                             break;
                         case 2:
-                         //   rightJoystickX(axes[i]); 
+                            rightJoystickX(axes[i]); 
                             break;
                         case 3:
                             rightJoystickY(axes[i]);
@@ -292,7 +292,8 @@ void AllController::publishCmds(){
     double z_old = 0;
   if (state == Mode::wheels) {
                         // Publish motion, update x and z old using tuple
-                        tie(x_old, z_old) = publishMoveXZ(x, z, x_old, z_old);
+                       // tie(x_old, z_old) = publishMoveXZ(x, z, x_old, z_old);
+                       publishVelocity();
                     }
                     else if (state == Mode::arm_joint_space) { // Joint space control of the arm
                         armOutMsg += jointMode;
@@ -342,19 +343,27 @@ void AllController::printState() {
 
 // If x and z are new commands, this function uses the global pubmove to publish
 // a movement message and return the new or old xz to update readInputs()
-tuple<double, double> AllController::publishMoveXZ(double x_new,
-                                                   double z_new,
-                                                   double x_old,
-                                                   double z_old) {
-    if (abs(x_old - x_new) > 0.0001 || abs(z_old - z_new) > 0.0001) {
-        geometry_msgs::Twist msg;
-        msg.linear.x  = x_new * speed / 100;
-        msg.angular.z = z_new * speed / 100;
-        pubmove.publish(msg);
-        // return tuple
-        return make_tuple(x_new, z_new);
-    }
-    return make_tuple(x_old, z_old);
+// tuple<double, double> AllController::publishMoveXZ(double x_new,
+//                                                    double z_new,
+//                                                    double x_old,
+//                                                    double z_old) {
+//     if (abs(x_old - x_new) > 0.0001 || abs(z_old - z_new) > 0.0001) {
+//         geometry_msgs::Twist msg;
+//         msg.linear.x  = x_new * speed / 100;
+//         msg.angular.z = z_new * speed / 100;
+//         pubmove.publish(msg);
+//         // return tuple
+//         return make_tuple(x_new, z_new);
+//     }
+//     return make_tuple(x_old, z_old);
+// }
+
+void AllController::publishVelocity(){
+geometry_msgs::Twist msg;
+msg.linear.x = x;
+msg.angular.z = z;
+pubmove.publish(msg);
+
 }
 
 // If controller recieves new commands and is in an arm mode, send message to arm
@@ -379,7 +388,7 @@ void AllController::leftJoystickX(int value) {
 
     if (inDeadzone(value)) {
         if(state == Mode::wheels) {
-        x = 0;
+        z = 0;
         }
     } 
     
@@ -388,6 +397,7 @@ void AllController::leftJoystickX(int value) {
         // [-1,1]*Z_SENSITIVITY
         ROS_INFO("Left Joystick X event with value: %d\n", value);
        // x = (value - 128) / 128.0 * X_SENSITIVITY;
+       z = value;
     }
 }
 
@@ -397,6 +407,7 @@ void AllController::leftJoystickY(int value) {
         if(state != Mode::wheels){
             armOutVal = leftJSRel;
         }
+        x = 0;
     }
     
     else {
@@ -405,7 +416,7 @@ void AllController::leftJoystickY(int value) {
         // [-1,1]*Z_SENSITIVITY
         ROS_INFO("Left Joystick Y event with value: %d\n", value);
         //z = -(value - 128) / 128.0 * Z_SENSITIVITY;
-
+        x = value;
         // Right joystick is only used in Y direction in all arm modes
         if(state != Mode::wheels) {
 

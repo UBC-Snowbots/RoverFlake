@@ -23,6 +23,10 @@ MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
     ros::NodeHandle nh;
     ros::NodeHandle private_nh("~");
 
+    
+
+
+    //old
     std::string left_subscribe_topic  = "/integration_node/lwheels_pub_topic";
     std::string right_subscribe_topic = "/integration_node/rwheels_pub_topic";
     int queue_size                    = 1;
@@ -53,23 +57,27 @@ MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
             ROS_INFO("Attached successfully for port %d", i);
         }
     }
-    left_subscriber = nh.subscribe<geometry_msgs::Twist>(
-    left_subscribe_topic,
+    velocity_subscriber = nh.subscribe<geometry_msgs::Twist>(
+    "/cmd_vel",
     queue_size,
-    boost::bind(&MoveMotor::callback, this, _1, true));
-    right_subscriber = nh.subscribe<geometry_msgs::Twist>(
-    right_subscribe_topic,
-    queue_size,
-    boost::bind(&MoveMotor::callback, this, _1, false));
+    boost::bind(&MoveMotor::callback, this, _1));
+
 }
 
-void MoveMotor::callback(const geometry_msgs::Twist::ConstPtr& msg, bool left) {
-    float velocity = msg->linear.x;
-    if (left) {
-        run_motors(left_motors, velocity);
-    } else {
-        run_motors(right_motors, velocity);
-    }
+void MoveMotor::callback(const geometry_msgs::Twist::ConstPtr& msg) {
+    std::vector<int> desired_motors;
+    desired_motors.push_back(0);
+    desired_motors.push_back(1);
+
+    float linear = msg->linear.x / 128;
+    float angular = msg->angular.z / 128;
+    float velocity_left = linear - angular;
+    float velocity_right = linear + angular;
+
+    
+        run_motors(desired_motors, velocity_left);
+    
+    
 }
 
 void MoveMotor::run_motors(std::vector<int> selected_motors, float velocity) {
@@ -79,7 +87,7 @@ void MoveMotor::run_motors(std::vector<int> selected_motors, float velocity) {
     } else if (velocity < -1) {
         velocity = -1.0;
     }
-    for (int i = 0; i < NUM_MOTORS / 2; i++) {
+    for (int i = 0; i < NUM_MOTORS; i++) {
         int motor_index = selected_motors[i];
         ret = PhidgetBLDCMotor_setTargetVelocity(motors[motor_index], velocity);
         if (ret != EPHIDGET_OK) {

@@ -54,7 +54,8 @@ class AllController {
     void arrowsUorD(int value);         // ABS_HAT0Y
     void leftJoystickPress(int value);  // BTN_THUMBL
     void rightJoystickPress(int value); // BTN_THUMBR
-    tuple<double, double> publishMoveXZ(double x_new, double z_new, double x_old, double z_old);
+    //tuple<double, double> publishMoveXZ(double x_new, double z_new, double x_old, double z_old);
+    void publishVelocity();
     void publishArmMessage(std::string outMsg);
     void printState();
     void printControllerDebug(int type, int code, int value);

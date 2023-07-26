@@ -36,7 +36,7 @@ class MoveMotor {
      *
      * @param msg the Twist message received in the callback
      */
-    void callback(const geometry_msgs::Twist::ConstPtr& msg, bool left);
+    void callback(const geometry_msgs::Twist::ConstPtr& msg);
 
     /**
      * Helper functions to run multiple motors on the same side at once with
@@ -46,10 +46,11 @@ class MoveMotor {
      */
     void run_motors(std::vector<int> selected_motors, float velocity);
 
-    ros::Subscriber left_subscriber;
-    ros::Subscriber right_subscriber;
+    ros::Subscriber velocity_subscriber;
+
+
     ros::Publisher my_publisher;
-    const int static NUM_MOTORS = 6;
+    const int static NUM_MOTORS = 2;
     PhidgetBLDCMotorHandle bldcMotor0, bldcMotor1, bldcMotor2, bldcMotor3,
     bldcMotor4, bldcMotor5;
     std::vector<PhidgetBLDCMotorHandle> motors{
