@@ -16,6 +16,7 @@
 #include <std_msgs/String.h>
 #include <std_msgs/Bool.h>
 #include <iostream>
+#include <std_msgs/Int16.h>
 //#include <libevdev-1.0/libevdev/libevdev.h>
 #include <ros/ros.h>
 #include <sys/fcntl.h>
@@ -117,7 +118,7 @@ class AllController {
     ros::Publisher pubmove;
     ros::Publisher pubarm;
     ros::Publisher pubmode;
-    ros::Publisher pubstatus;
+    ros::Publisher statuspub;
     ros::Publisher pubmovegrp;
     ros::Subscriber joyinput;
 

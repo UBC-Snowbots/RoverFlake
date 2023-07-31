@@ -25,6 +25,7 @@ AllController::AllController(int argc, char **argv, string node_name)
     string armPublisher = "/cmd_arm";
     string modePublisher = "/moveit_toggle";
     string joyTopic = "/joy";
+    //string state_topic = "/"
     // string moveGrpPublisher = "/move_group_trigger";
     ros::init(argc, argv, node_name);
     ros::NodeHandle private_nh("~");
@@ -44,6 +45,7 @@ AllController::AllController(int argc, char **argv, string node_name)
     pubmove = private_nh.advertise<geometry_msgs::Twist>(publisher, 55);
     pubarm = private_nh.advertise<std_msgs::String>(armPublisher, 55);
     pubmode = private_nh.advertise<std_msgs::Bool>(modePublisher, 55);
+    //statuspub = private_nh.advertise<std_msgs::Int16>();
     joyinput = private_nh.subscribe(joyTopic, 55, &AllController::readJoyInputs, this);
     // pubmovegrp = private_nh.advertise<std_msgs::Bool>(moveGrpPublisher,1);
 
