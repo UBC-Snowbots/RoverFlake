@@ -60,6 +60,7 @@ class AllController {
     void printState();
     void printControllerDebug(int type, int code, int value);
     void publishCmds();
+    void publishStatus();
 
     // see documentation to changes sensitivities at runtime
     double X_SENSITIVITY = 1.0;
@@ -116,6 +117,7 @@ class AllController {
     ros::Publisher pubmove;
     ros::Publisher pubarm;
     ros::Publisher pubmode;
+    ros::Publisher pubstatus;
     ros::Publisher pubmovegrp;
     ros::Subscriber joyinput;
 
@@ -125,6 +127,9 @@ class AllController {
     int max_speed = 100;
     int increment = 10;
 
+  // struct vital{
+  //   int controller_status;
+  // };
 };
 
 #endif // ALLCONTROLLER_SNOWBOTS_CONTROLLER_H

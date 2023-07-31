@@ -15,6 +15,9 @@ _Float32 axes[8];
 _Float32 Taxes[8];
 bool proccessing;
 bool switchMode;
+
+//vital vitals;
+
 // Read the master documentation if there's any issues with this package
 AllController::AllController(int argc, char** argv, string node_name) {
     string publisher = "/cmd_vel";
@@ -313,7 +316,7 @@ void AllController::publishCmds(){
                         // publishArmMessage(armOutMsg);     
                         ROS_INFO("error");               
                     }
-ROS_INFO("Attempted Publish");
+//ROS_INFO("Attempted Publish");
 
 }
 

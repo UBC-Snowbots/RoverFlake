@@ -15,7 +15,7 @@ add_definitions(-std=c++14)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
-  # sb_utils
+  sb_utils
   sb_msgs
   serial
   )

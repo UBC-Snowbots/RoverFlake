@@ -26,8 +26,8 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     pubObservedPos = private_nh.advertise<sb_msgs::ArmPosition>("/observed_pos_arm", 1);
 
 
-    teensy.setBaudrate(115200);
-    teensy.setPort("/dev/ttyACM0");
+    teensy.setBaudrate(baud);
+    teensy.setPort(port);
     teensy.open();
     teensy.setDTR(false);
     teensy.setRTS(false);

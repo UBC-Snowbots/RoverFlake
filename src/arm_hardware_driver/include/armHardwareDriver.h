@@ -22,7 +22,7 @@
 
 // Snowbots Includes
 #include <sb_msgs/ArmPosition.h>
-// #include <sb_utils.h> //from snowflake
+#include <sb_utils.h>
 
 // Other
 #include <serial/serial.h>
@@ -61,8 +61,8 @@ class ArmHardwareDriver {
     void axisMove(const char axis, const char dir);
 
     //new serial
-    unsigned long baud = 9600;
-    string port = "/dev/ttyACM0";
+    unsigned long baud = 115200;
+    string port = "/dev/serial/by-id/usb-Teensyduino_USB_Serial_12836110-if00";
 
 
 
