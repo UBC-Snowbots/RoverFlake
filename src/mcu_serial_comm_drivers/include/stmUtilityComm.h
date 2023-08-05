@@ -43,8 +43,8 @@ class STMComm {
     void pubUtility();
     
     //new serial
-    unsigned long baud = 9600;
-    string port = "/dev/usb/hiddev0"; //will be best if we sift through
+    unsigned long baud = 115200;
+    string port = "/dev/ttyUSB0"; //will be best if we sift through
 
 
 

@@ -24,13 +24,16 @@ STMComm::STMComm(ros::NodeHandle& nh) : nh(nh) {
     stm_board.setBaudrate(baud);
     stm_board.setPort(port);
     stm_board.open();
-    stm_board.setDTR(false);
-    stm_board.setRTS(false);
+
 
     while(ros::ok()){
         if(stm_board.available() > 0){
             recieveMsg();
+            ROS_INFO("START READ");
+
         }
+                    ROS_INFO("WAIT");
+
     }
 
 
@@ -57,6 +60,7 @@ void STMComm::recieveMsg() {
     //     ROS_INFO("timed out");
     //     next_char = "Z";
     //    }
+    ROS_INFO("READING");
     } while (next_char != "\n");
 
      ROS_INFO("Tempurature Buffer: %s", buffer.c_str());
