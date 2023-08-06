@@ -14,6 +14,7 @@
 #include <phidget22.h>
 #include <string>
 #include <vector>
+#include "std_msgs/Int16.h"
 
 class MoveMotor {
   public:
@@ -29,6 +30,7 @@ class MoveMotor {
      */
     void close();
 
+
   private:
     /**
      * Callback function for when a message intended for the motors is
@@ -38,6 +40,13 @@ class MoveMotor {
      */
     void callback(const geometry_msgs::Twist::ConstPtr& msg);
 
+    void pub_vitals(int val);
+    struct vitals{
+      //int status;
+      std_msgs::Int16 status;
+    };
+    vitals vital;
+    
     /**
      * Helper functions to run multiple motors on the same side at once with
      * the same velocity
@@ -49,8 +58,8 @@ class MoveMotor {
     ros::Subscriber velocity_subscriber;
 
 
-    ros::Publisher my_publisher;
-    const int static NUM_MOTORS = 2;
+    ros::Publisher vitals_pub;
+    const int static NUM_MOTORS = 6;
     PhidgetBLDCMotorHandle bldcMotor0, bldcMotor1, bldcMotor2, bldcMotor3,
     bldcMotor4, bldcMotor5;
     std::vector<PhidgetBLDCMotorHandle> motors{
@@ -63,5 +72,7 @@ class MoveMotor {
     const char* errorString;
     char errorDetail[100];
     size_t errorDetailLen = 100;
+
+
 };
 #endif // _MOVE_MOTOR

@@ -18,12 +18,22 @@
 #include <string>
 #include <unistd.h>
 
+#define INIT_STATUS -10
+#define OFFLINE 0
+#define STANDBY 5
+#define ONLINE 1
+#define ERROR -1
+
 MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
     ros::init(argc, argv, node_name);
     ros::NodeHandle nh;
     ros::NodeHandle private_nh("~");
-
-    
+    vitals_pub = nh.advertise<std_msgs::Int16>("/status/drive", 5);
+    sleep(1);
+    pub_vitals(OFFLINE);
+    sleep(1);
+    pub_vitals(INIT_STATUS);
+    sleep(1);
 
 
     //old
@@ -32,7 +42,9 @@ MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
     int queue_size                    = 1;
 
     // Create your Phidget channels
+    
     for (int i = 0; i < NUM_MOTORS; i++) {
+
         PhidgetBLDCMotor_create(&motors[i]);
         ret = Phidget_setHubPort((PhidgetHandle) motors[i], i);
         if (ret != EPHIDGET_OK) {
@@ -43,6 +55,7 @@ MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
             return;
         }else{
             ROS_INFO("hub attached succsesfully at %d", i);
+            pub_vitals(STANDBY);
         }
         ret = Phidget_openWaitForAttachment((PhidgetHandle) motors[i], 5000);
         if (ret != EPHIDGET_OK) {
@@ -52,15 +65,19 @@ MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
                       errorCode,
                       i,
                       errorString);
+            pub_vitals(ERROR);
             return;
         } else {
             ROS_INFO("Attached successfully for port %d", i);
+
         }
     }
     velocity_subscriber = nh.subscribe<geometry_msgs::Twist>(
     "/cmd_vel",
     queue_size,
     boost::bind(&MoveMotor::callback, this, _1));
+
+    pub_vitals(ONLINE);
 
 }
 
@@ -102,6 +119,14 @@ void MoveMotor::run_motors(std::vector<int> selected_motors, float velocity) {
     }
 }
 
+void MoveMotor::pub_vitals(int val){
+
+    vital.status.data = val;
+    vitals_pub.publish(vital.status);
+    //ros::spinOnce();
+    
+}
+
 void MoveMotor::close() {
     for (int i = 0; i < NUM_MOTORS; i++) {
         ret = Phidget_close((PhidgetHandle) motors[i]);
@@ -114,4 +139,5 @@ void MoveMotor::close() {
         }
         PhidgetBLDCMotor_delete(&motors[i]);
     }
+    pub_vitals(ERROR);
 }

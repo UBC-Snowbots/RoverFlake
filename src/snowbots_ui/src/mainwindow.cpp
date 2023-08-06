@@ -28,11 +28,13 @@
 std_msgs::Float64 elec_box_tempurature_msg;
 _Float64 elec_box_tempurature = 2.0;
 std::string ROVER_GUI_MODE = "Generic, WARN: UNSET";
-int16_t arm_status = INIT_STATUS;//INIT_STATUS; 
-int16_t network_ags_status = INIT_STATUS;
-int16_t gnss_status = INIT_STATUS;
-int16_t rover_status = INIT_STATUS;
-int16_t utility_mcu_status = INIT_STATUS;
+int16_t arm_status = OFFLINE;//INIT_STATUS; 
+int16_t network_ags_status = OFFLINE;
+int16_t gnss_status = OFFLINE;
+int16_t rover_status = OFFLINE;
+int16_t utility_mcu_status = OFFLINE;
+int16_t drive_status = OFFLINE;
+
 
 MainWindow::MainWindow(QWidget* parent)
   : QMainWindow(parent),
@@ -83,6 +85,9 @@ MainWindow::MainWindow(QWidget* parent)
     network_ags_status_sub  = n.subscribe<std_msgs::Int16>("/status/network_ags", 
          5, boost::bind(&MainWindow::network_ags_status_callback, this, _1));
     
+    drive_status_sub  = n.subscribe<std_msgs::Int16>("/status/drive", 
+         5, boost::bind(&MainWindow::drive_status_callback, this, _1));
+
     ROS_INFO("UBC ROVER GUI START APEARS SUCCESSFULL");
     if(system("which toilet >/dev/null 2>&1") != 0) {
         std::cout << "toilet is not installed, falling back to regular text. run - sudo apt-get install toilet - if you want a more fun starting message\n";
@@ -282,7 +287,34 @@ void MainWindow::update_UI() {
       break;
     }
     
-   
+       switch (drive_status)
+    {
+    case INIT_STATUS:
+      statusPallette.setColor(QPalette::WindowText, Qt::darkGray);
+      ui->drive_status_label->setPalette(statusPallette);
+      ui->drive_status_label->setText("starting");
+      break;
+    case OFFLINE:
+      statusPallette.setColor(QPalette::WindowText, Qt::darkRed);
+      ui->drive_status_label->setPalette(statusPallette);
+      ui->drive_status_label->setText("offline");
+      break;
+    case STANDBY:
+      statusPallette.setColor(QPalette::WindowText, Qt::darkYellow);
+      ui->drive_status_label->setPalette(statusPallette);
+      ui->drive_status_label->setText("STANDBY");
+      break;
+    case ONLINE:
+      statusPallette.setColor(QPalette::WindowText, Qt::darkGreen);
+      ui->drive_status_label->setPalette(statusPallette);
+      ui->drive_status_label->setText("online");
+      break;
+    default:
+      statusPallette.setColor(QPalette::WindowText, Qt::red);
+      ui->drive_status_label->setPalette(statusPallette);
+      ui->drive_status_label->setText("ERROR");
+      break;
+    }
 
    ros::spinOnce();
    

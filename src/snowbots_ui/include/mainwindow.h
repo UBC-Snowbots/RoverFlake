@@ -34,6 +34,7 @@ extern int16_t network_ags_status;
 extern int16_t gnss_status;
 extern int16_t rover_status;
 extern int16_t utility_mcu_status;
+extern int16_t drive_status;
 
 
 
@@ -91,6 +92,9 @@ class MainWindow : public QMainWindow {
 
     void network_ags_status_callback(const std_msgs::Int16::ConstPtr& msg){
             network_ags_status = msg->data;
+    }
+    void drive_status_callback(const std_msgs::Int16::ConstPtr& msg){
+            drive_status = msg->data;
     }
 
     static void
@@ -154,6 +158,7 @@ class MainWindow : public QMainWindow {
     ros::Subscriber network_ags_status_sub;
     ros::Subscriber gnss_status_sub;
     ros::Subscriber network_status_sub;
+    ros::Subscriber drive_status_sub;
 
     
     
