@@ -29,8 +29,8 @@ static const char EEval = 'E';
 static const char homeValEE = 'H';
 
 // Motor pins      //6, 5
-int stepPins[6] =   {4, 8, 2, 10, 12, 25}; 
-int dirPins[6] =    {3, 7, 1, 9, 11, 24}; 
+int stepPins[6] =   {6, 8, 2, 10, 12, 25}; 
+int dirPins[6] =    {5, 7, 1, 9, 11, 24}; 
 
 // Encoder pins
 int encPinA[6] = {17, 38, 40, 36, 13, 15};
@@ -48,8 +48,8 @@ float red[6] = {50.0, 160.0, 92.3077, 43.936, 57.0, 5.18};
 // End effector variables
 const int closePos = 0;
 const int openPos = 500; 
-const int EEstepPin = 6;
-const int EEdirPin = 5;
+const int EEstepPin = 4;
+const int EEdirPin = 3;
 const int speedEE = 500;
 const int accEE = 500;
 const int MOTOR_DIR_EE = 1;
