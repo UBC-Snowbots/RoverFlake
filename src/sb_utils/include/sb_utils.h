@@ -16,6 +16,12 @@
 #include <tf2_ros/transform_listener.h>
 #include <tf2_ros/buffer.h>
 
+#define INIT_STATUS -10
+#define OFFLINE 0
+#define STANDBY 5
+#define ONLINE 1
+#define ERROR -1
+
 /**
  * Get a param with a default value
  *
@@ -43,6 +49,8 @@ bool SB_getParam(ros::NodeHandle& nh, const std::string& param_name,
     }
     return true;
 }
+
+
 /**
  * Get a param with no default value
  *

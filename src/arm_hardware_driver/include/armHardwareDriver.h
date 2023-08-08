@@ -19,10 +19,12 @@
 #include <ros/ros.h>
 #include <std_msgs/String.h>
 #include <vector>
+#include <std_msgs/Int16.h>
 
 // Snowbots Includes
 #include <sb_msgs/ArmPosition.h>
 #include <sb_utils.h>
+
 
 // Other
 #include <serial/serial.h>
@@ -143,5 +145,14 @@ class ArmHardwareDriver {
     ros::Publisher pubObservedPos;
 
     serial::Serial teensy;
+
+    struct vital{
+      ros::Publisher pubber;
+      std_msgs::Int16 statusmsg;
+      void pub(int status){
+        statusmsg.data = status;
+        pubber.publish(statusmsg);
+      }
+    };
 };
 #endif // ARM_HARDWARE_DRIVER_MYNODE_H

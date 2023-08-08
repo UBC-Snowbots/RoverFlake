@@ -28,9 +28,9 @@ static const char close = 'C';
 static const char EEval = 'E';
 static const char homeValEE = 'H';
 
-// Motor pins
-int stepPins[6] =   {6, 8, 2, 10, 12, 25}; 
-int dirPins[6] =    {5, 7, 1, 9, 11, 24}; 
+// Motor pins      //6, 5
+int stepPins[6] =   {4, 8, 2, 10, 12, 25}; 
+int dirPins[6] =    {3, 7, 1, 9, 11, 24}; 
 
 // Encoder pins
 int encPinA[6] = {17, 38, 40, 36, 13, 15};
@@ -48,8 +48,8 @@ float red[6] = {50.0, 160.0, 92.3077, 43.936, 57.0, 5.18};
 // End effector variables
 const int closePos = 0;
 const int openPos = 500; 
-const int EEstepPin = 4;
-const int EEdirPin = 3;
+const int EEstepPin = 6;
+const int EEdirPin = 5;
 const int speedEE = 500;
 const int accEE = 500;
 const int MOTOR_DIR_EE = 1;
@@ -98,7 +98,7 @@ long homeComp[] = {axisDir[0]*homeCompConst[0], axisDir[1]*homeCompConst[1], axi
 long homeCompSteps[] = {axisDir[0]*homeCompAngles[0]*red[0]*ppr[0]/360.0, axisDir[1]*homeCompAngles[1]*red[1]*ppr[1]/360.0, axisDir[2]*homeCompAngles[2]*red[2]*ppr[2]/360.0, axisDir[3]*homeCompAngles[3]*red[3]*ppr[3]/360.0, axisDir[4]*homeCompAngles[4]*red[4]*ppr[4]/360.0, axisDir[5]*homeCompAngles[5]*red[5]*ppr[5]/360.0};
 
 // Range of motion (degrees) for each axis
-int maxAngles[6] = {200, 100, 180, 180, 180, 180};
+int maxAngles[6] = {200, 100, 150, 180, 180, 180};
 long max_steps[] = {axisDir[0]*red[0]*maxAngles[0]/360.0*ppr[0], axisDir[1]*red[1]*maxAngles[1]/360.0*ppr[1], axisDir[2]*red[2]*maxAngles[2]/360.0*ppr[2], axisDir[3]*red[3]*maxAngles[3]/360.0*ppr[3], axisDir[4]*red[4]*maxAngles[4]/360.0*ppr[4], axisDir[5]*red[5]*maxAngles[5]/360.0*ppr[5]};
 long min_steps[NUM_AXES]; 
 char value;

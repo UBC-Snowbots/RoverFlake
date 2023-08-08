@@ -15,6 +15,13 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     // Setup Subscribers
     int queue_size = 55;
 
+    vital vitals;
+
+    vitals.pubber = private_nh.advertise<std_msgs::Int16>("/status/arm_mcu", 5);
+    vitals.pub(OFFLINE);
+
+    sleep(1);
+    vitals.pub(INIT_STATUS);
     subPro = nh.subscribe( 
         "/cmd_arm", queue_size, &ArmHardwareDriver::allControllerCallback, this);
 
@@ -24,14 +31,15 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
     subPose = private_nh.subscribe("/cmd_pose", 1, &ArmHardwareDriver::poseSelectCallback, this);
 
     pubObservedPos = private_nh.advertise<sb_msgs::ArmPosition>("/observed_pos_arm", 1);
-
-
+    sleep(1);
+    vitals.pub(STANDBY);
     teensy.setBaudrate(baud);
     teensy.setPort(port);
     teensy.open();
     teensy.setDTR(false);
     teensy.setRTS(false);
 
+    sleep(1);
 
     encCmd.resize(num_joints_);
     armCmd.resize(num_joints_);
@@ -45,6 +53,11 @@ ArmHardwareDriver::ArmHardwareDriver(ros::NodeHandle& nh) : nh(nh) {
         encStepsPerDeg[i] = reductions[i] * ppr * 5.12 / 360.0;
     }
     
+    vitals.pub(ONLINE);
+
+    //ros::spinOnce;
+    sleep(0.5);
+
 }
 
 // Callback function to relay pro controller messages to teensy MCU on arm via
