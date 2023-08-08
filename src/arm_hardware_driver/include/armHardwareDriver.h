@@ -61,7 +61,7 @@ class ArmHardwareDriver {
     void axisMove(const char axis, const char dir);
 
     //new serial
-    unsigned long baud = 115200;
+    unsigned long baud = 19200;
     string port = "/dev/serial/by-id/usb-Teensyduino_USB_Serial_12836110-if00";
 
 
