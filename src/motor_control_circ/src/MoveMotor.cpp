@@ -82,18 +82,19 @@ MoveMotor::MoveMotor(int argc, char** argv, std::string node_name) {
 }
 
 void MoveMotor::callback(const geometry_msgs::Twist::ConstPtr& msg) {
-    std::vector<int> desired_motors;
-    desired_motors.push_back(0);
-    desired_motors.push_back(1);
+  //  std::vector<int> desired_motors;
+   // desired_motors.push_back(0);
+    //desired_motors.push_back(1);
 
     float linear = msg->linear.x / 128;
     float angular = msg->angular.z / 128;
     float velocity_left = linear - angular;
     float velocity_right = linear + angular;
 
-    
-        run_motors(desired_motors, velocity_left);
-    
+        
+        run_motors(left_motors, velocity_left);
+        run_motors(right_motors, -velocity_right);
+
     
 }
 
@@ -106,8 +107,8 @@ void MoveMotor::run_motors(std::vector<int> selected_motors, float velocity) {
     }
     for (int i = 0; i < NUM_MOTORS; i++) {
         int motor_index = selected_motors[i];
-        ret = PhidgetBLDCMotor_setTargetVelocity(motors[motor_index], velocity);
-        if (ret != EPHIDGET_OK) {
+        PhidgetBLDCMotor_setTargetVelocity(motors[motor_index], velocity);
+        if (PhidgetBLDCMotor_setTargetVelocity(motors[motor_index], velocity) != EPHIDGET_OK) {
             Phidget_getLastError(
             &errorCode, &errorString, errorDetail, &errorDetailLen);
             ROS_ERROR("Error at set target velocity (%d) for port %d: %s",
