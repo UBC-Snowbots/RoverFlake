@@ -125,7 +125,9 @@ class AllController {
     std_msgs::Bool true_message;
     std_msgs::Bool false_message;
     int speed = 50;
-    int max_speed = 100;
+    float max_speed = 1.0; //1 = max
+    float max_speed_ang = max_speed / 2;
+
     int increment = 10;
 
   // struct vital{

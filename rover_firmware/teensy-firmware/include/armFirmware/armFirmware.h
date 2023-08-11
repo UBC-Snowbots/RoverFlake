@@ -4,6 +4,7 @@ Created On: November 11, 2022
 Updated On: January 10, 2023
 Description: Header file for firmware for driving a 6 axis arm via ROS on a teensy 4.1 MCU
 */
+//aug 10 13:45 reupload, test ee
 
 #include <AccelStepper.h>
 #include <Encoder.h>
@@ -46,8 +47,8 @@ long ppr[6] = {400, 400, 400, 400, 400, 400};
 float red[6] = {50.0, 160.0, 92.3077, 43.936, 57.0, 5.18};
 
 // End effector variables
-const int closePos = 0;
-const int openPos = 500; 
+const int closePos = 0; 
+const int openPos = 500; //TODO: needs to be set with proper step value for gear redcution and ppr
 const int EEstepPin = 4;
 const int EEdirPin = 3;
 const int speedEE = 500;
@@ -63,7 +64,7 @@ const float ENC_MULT[] = {5.12, 5.12, 5.12, 5.12, 5.12, 5.12};
 float ENC_STEPS_PER_DEG[NUM_AXES];
 
 // Motor speeds and accelerations
-const int maxSpeed[6] = {2000, 1800, 2000, 2000, 3000, 1000};
+const int maxSpeed[6] = {2000, 1800, 2000, 2000, 3000, 1000}; //TODO set to like max
 const int maxAccel[6] = {4000, 3000, 3000, 3300, 4000, 1500};
 const int homeSpeed[6] = {1500, 2000, 2000, 2500, 1500, 1000}; 
 const int homeAccel[6] = {1500, 2000, 2000, 2500, 1500, 1000}; 

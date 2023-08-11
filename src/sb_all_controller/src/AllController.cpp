@@ -187,6 +187,8 @@ void AllController::processInputs()
             case 3:
                 rightJoystickY(axes[i]);
                 break;
+            case 4:
+                arrowsRorL(axes[i]);
                 // triggers here too
             default:
                 break;
@@ -369,8 +371,8 @@ void AllController::printState()
 void AllController::publishVelocity()
 {
     geometry_msgs::Twist msg;
-    msg.linear.x = x;
-    msg.angular.z = z;
+    msg.linear.x = x * max_speed;
+    msg.angular.z = z * max_speed_ang;
     pubmove.publish(msg);
 }
 
@@ -386,7 +388,7 @@ void AllController::publishArmMessage(std::string outMsg)
 bool AllController::inDeadzone(int value)
 {
 
-    if (value > 50 || value < -50)
+    if (value > 5 || value < -5)
     {
         return false;
     }
