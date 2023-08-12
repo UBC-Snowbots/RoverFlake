@@ -14,14 +14,15 @@ GimbalComm::GimbalComm(ros::NodeHandle& nh) : nh(nh) {
     
 
     // Setup Subscribers
-    int queue_size = 55;
+    int queue_size = 5;
 
    // subPro = nh.subscribe( 
    //     "/cmd_arm", queue_size, &ArmHardwareDriver::allControllerCallback, this);
 
     //Setup Publishers
     vitals_pub = private_nh.advertise<std_msgs::Int16>("/status/net_ags", 5);
-    pos_pub = private_nh.advertise<std_msgs::Float64>("/net_ags/pos", 10);
+    pos_pub = private_nh.advertise<std_msgs::Float64>("/net_ags/pos", 5);
+    pos_sub = private_nh.subscribe("/net_ags/cmd", 5, &GimbalComm::netags_callback, this);
 
     //Setup Vitals
     vital vitals;
@@ -56,7 +57,13 @@ void GimbalComm::sendMsg(std::string outMsg) {
     // Send everything in outMsg through serial port
     //ROS_INFO("attempting send");
     mcu_board.write(outMsg);
-    ROS_INFO("Sent via serial: %s", outMsg.c_str());
+    ROS_INFO("Requested: %s", outMsg.c_str());
+}
+
+void GimbalComm::netags_callback(const std_msgs::Float64::ConstPtr &cmdmsg){
+    
+    sendMsg(std::to_string(cmdmsg->data));
+
 }
 
 void GimbalComm::recieveMsg() {

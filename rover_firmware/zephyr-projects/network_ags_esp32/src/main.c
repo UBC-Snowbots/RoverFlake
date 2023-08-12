@@ -16,7 +16,11 @@
 //stepper
 #define DIR_PIN  27
 #define PUL_PIN  14
-#define FULL_STEP_SEQUENCE 2000  // Adjust based on driver microstep config, and gear ratio
+
+#define GEAR_RATIO 47.0
+//#define MICROSTEP  400
+#define STEPS_PER_REVOLUTION 200 //INCLUDES MICROSTEP Generally, stepper motors have 200 steps per revolution
+#define FULL_STEP_SEQUENCE ((int)(STEPS_PER_REVOLUTION * GEAR_RATIO))
 
 
 /* queue to store up to 10 messages (aligned to 4-byte boundary) */
@@ -200,7 +204,14 @@ int main(void)
        
         
         
-        des_pos = atoi(tx_buf);
+        float angle = strtof(tx_buf, NULL);
+    if (angle < 0.0f || angle > 360.0f) {
+        print_uart("Angle out of range.\r\n");
+    } else {
+        des_pos = (int)(angle / 360.0 * FULL_STEP_SEQUENCE);
+        step();
+    }
+
 		print_uart("Echo: ");
 		print_uart(tx_buf);
 		print_uart("\r\n");

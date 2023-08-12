@@ -69,9 +69,14 @@ std::vector<int> DetectMarker::fetchMarkerIds(const cv::Mat& image) {
     cv::aruco::detectMarkers(
     image, dictionary, markerCorners, markerIds, parameters);
     if (draw_markers) {
+        // for(int i = 0; i < markerIds.size(), i++){
+            
+        // }
         cv::Mat outputImage;
         image.copyTo(outputImage);
         cv::aruco::drawDetectedMarkers(outputImage, markerCorners, markerIds);
+       // std::string wee = 
+        //cv::putText(outputImage[0], markerCorners[0][0], markerIds[0]);
         bounder.publish(
         cv_bridge::CvImage(std_msgs::Header(), "bgr8", outputImage)
         .toImageMsg());

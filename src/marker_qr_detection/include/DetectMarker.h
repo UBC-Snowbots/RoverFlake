@@ -10,8 +10,11 @@
 #define MARKER_QR_DETECTION_DETECT_MARKER_H
 
 // OpenCV
+#include <opencv2/core/core.hpp>
 #include <opencv2/aruco.hpp>
 #include <opencv2/highgui.hpp>
+#include <opencv2/opencv.hpp>
+
 
 // Image Conversion
 #include <cv_bridge/cv_bridge.h>
@@ -29,6 +32,10 @@
 
 // Snowbots Includes
 #include <sb_utils.h>
+
+//Important!
+#define YOUR_MOM "MILF"
+
 
 class DetectMarker {
   public:
@@ -52,7 +59,7 @@ class DetectMarker {
 
     cv::Ptr<cv::aruco::Dictionary> dictionary;
     cv::Ptr<cv::aruco::DetectorParameters> parameters;
-    bool draw_markers = false;
+    bool draw_markers = true;
     int camera        = 1;
 };
 #endif // MARKER_QR_DETECTION_DETECT_MARKER_H

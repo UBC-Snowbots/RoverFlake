@@ -3,9 +3,7 @@
 // Motor steps per revolution. Most steppers are 200 steps or 1.8 degrees/step
 #define MOTOR_STEPS 200
 // Since you're using the DIR/STEP interface, you can use this driver instance
-#define DIR_PI
-
-	for (int i = 0; i < msg_len; i++) {N 27
+#define DIR_PIN 27
 #define STEP_PIN 14
 
 AccelStepper stepper = AccelStepper(AccelStepper::DRIVER, STEP_PIN, DIR_PIN);

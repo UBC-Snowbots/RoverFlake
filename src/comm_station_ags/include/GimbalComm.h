@@ -1,12 +1,4 @@
-/*
- * Created By: Tate Kolton and Ihsan Olawale
- * Created On: July 4, 2022
- * Description: Header file for recieving messages from pro controller and
- * relaying them to arm hardware driver module
- */
-
-#ifndef ARM_HARDWARE_DRIVER_MYNODE_H
-#define ARM_HARDWARE_DRIVER_MYNODE_H
+//ahhh rowan
 
 // Component ID's
 #define ELEC_BOX_ID 100
@@ -55,26 +47,19 @@ class GimbalComm {
     void sendMsg(std::string outMsg);
     void recieveMsg();
     void pubUtility();
+    void netags_callback(const std_msgs::Float64::ConstPtr &cmdmsg);
     
     //new serial
     unsigned long baud = 115200;
     string port = "/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0";//"/dev/usb/hiddev0"; //will be best if we sift through
 
 
-
-    // character representations of buttons for arm communication
-    const char T1 = '1';
-    const char T2 = '2';
-    // const char J3 = '3';
-    // const char J4 = '4';
-    // const char J5 = '5';
-    // const char J6 = '6';
-
   private:
     ros::NodeHandle nh;
 
   
     ros::Publisher pos_pub;
+    ros::Subscriber pos_sub;
     ros::Publisher vitals_pub;
 
     serial::Serial mcu_board;
@@ -93,4 +78,4 @@ class GimbalComm {
 
 
 };
-#endif // ARM_HARDWARE_DRIVER_MYNODE_H
+// #endif // ARM_HARDWARE_DRIVER_MYNODE_H
