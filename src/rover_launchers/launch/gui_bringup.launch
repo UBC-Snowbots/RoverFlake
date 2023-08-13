@@ -1,0 +1,10 @@
+<launch>
+  <node name="snowbots_ui" pkg="snowbots_ui" type="snowbots_ui" output="screen">
+  </node>
+
+  <node name="rviz" pkg="rviz" type="rviz" output="screen">
+  <param name="config" value="../config/camview.rviz"/>
+  </node>
+
+   
+</launch>
