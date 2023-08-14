@@ -28,7 +28,7 @@ void setup() {
   endEff.setMinPulseWidth(200);
   endEff.setMaxSpeed(speedEE);
   endEff.setAcceleration(accEE);
-  endEff.setCurrentPosition(1000);
+  endEff.setCurrentPosition(4500);
 
   // initializes step pins, direction pins, limit switch pins, and stepper motor objects for accelStepper library
   for (i = 0; i < NUM_AXES; i++) {
@@ -276,29 +276,29 @@ void endEffectorCommands(String inMsg) {
 
   //opening code
   if (data == open) {                       //check if open button pressed and if force is less than max
-    endEff.moveTo(openPos * MOTOR_DIR_EE);  //continue to move to open position
+    endEff.moveTo(openPos);  //continue to move to open position
   }
 
   //closing code
   else if (data == close) {                  //check if open button pressed and if force is less than max
-    endEff.moveTo(closePos * MOTOR_DIR_EE);  //continue to move to closed position
+    endEff.moveTo(closePos);  //continue to move to closed position
   }
 
   else if (data == release) {  //else check if release button pressed
     endEff.stop();             // stop when above condition reached
   }
 
-  else if (data == homeValEE) {
-    if (resetEE) {
-      endEff.setCurrentPosition(1000);
-      resetEE = false;
-    }
+  // else if (data == homeValEE) {
+  //   if (resetEE) {
+  //     endEff.setCurrentPosition(1000);
+  //     resetEE = false;
+  //   }
 
-    else {
-      endEff.setCurrentPosition(0);
-      resetEE = true;
-    }
-  }
+  //   else {
+  //     endEff.setCurrentPosition(0);
+  //     resetEE = true;
+  //   }
+  // }
 }
 
 int readGripperForce() {

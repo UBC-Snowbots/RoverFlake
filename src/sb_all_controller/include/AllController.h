@@ -51,7 +51,7 @@ class AllController {
     void rightTrigger(int value);       // ABS_RZ
     void leftPaddle(int value);        // Same as trigger, but discreet not analog
     void rightPaddle(int value);       // ABS_RZ
-    void arrowsRorL(int value);         // ABS_HAT0X
+    void arrowsRorL(float value);         // ABS_HAT0X
     void arrowsUorD(int value);         // ABS_HAT0Y
     void leftJoystickPress(int value);  // BTN_THUMBL
     void rightJoystickPress(int value); // BTN_THUMBR
@@ -125,7 +125,7 @@ class AllController {
     std_msgs::Bool true_message;
     std_msgs::Bool false_message;
     int speed = 50;
-    float max_speed = 1.0; //1 = max
+    float max_speed = 0.5; //1 = max
     float max_speed_ang = max_speed / 2;
 
     int increment = 10;

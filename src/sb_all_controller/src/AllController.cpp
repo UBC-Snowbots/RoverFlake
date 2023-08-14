@@ -371,7 +371,7 @@ void AllController::printState()
 void AllController::publishVelocity()
 {
     geometry_msgs::Twist msg;
-    msg.linear.x = x * max_speed;
+    msg.linear.x = -(x * max_speed);
     msg.angular.z = z * max_speed_ang;
     pubmove.publish(msg);
 }
@@ -588,12 +588,12 @@ void AllController::leftBumper(int value)
     if (value == 1)
     {
         ROS_INFO("Left bumper pressed");
-        armOutVal = bumperL;
+        armOutVal = bumperR;
     }
     else if (value == 0)
     {
         ROS_INFO("Left bumper released");
-        armOutVal = bumperLRel;
+        armOutVal = bumperRRel;
     }
 }
 
@@ -602,12 +602,12 @@ void AllController::rightBumper(int value)
     if (value == 1)
     {
         ROS_INFO("Right bumper pressed");
-        armOutVal = bumperR;
+        armOutVal = bumperL;
     }
     else if (value == 0)
     {
         ROS_INFO("Right bumper released");
-        armOutVal = bumperRRel;
+        armOutVal = bumperLRel;
     }
 }
 
@@ -616,11 +616,12 @@ void AllController::select(int value)
     if (value == 1)
     {
         ROS_INFO("Select button pressed");
+        armOutVal = homeValEE;
+
     }
     else if (value == 0)
     {
         ROS_INFO("Select button released");
-        armOutVal = homeValEE;
     }
 }
 
@@ -693,22 +694,23 @@ void AllController::rightTrigger(int value)
     }
 }
 
-void AllController::arrowsRorL(int value)
+void AllController::arrowsRorL(float value)
 {
-    if (value == 1)
+    if (value > 0.5)
     {
         ROS_INFO("Right button pressed");
         armOutVal = arrowR;
     }
-    else if (value == 0)
-    {
-        ROS_INFO("Arrow button released");
-        armOutVal = arrowRLRel;
-    }
-    else
+    else if (value < -0.5)
     {
         ROS_INFO("Left button pressed");
         armOutVal = arrowL;
+    }
+    else
+    {
+        ROS_INFO("Arrow button released");
+        armOutVal = arrowRLRel;
+
     }
 }
 
