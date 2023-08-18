@@ -30,8 +30,10 @@ include_directories(
 
 add_executable(all_controller src/all_controller.cpp
         src/AllController.cpp include/AllController.h)
-
+add_executable(drive_controller src/drive_cyborg.cpp
+        src/DriveCyborg.cpp include/DriveCyborg.h)
 
 #target_link_libraries(all_controller evdev)
 target_link_libraries(all_controller ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
+target_link_libraries(drive_controller ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 
