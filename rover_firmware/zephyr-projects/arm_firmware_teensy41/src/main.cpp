@@ -117,18 +117,23 @@ int main(void)
         return 0;
     }
 
-//    Axis axes[NUM_AXES] = {
-//    INIT_AXIS(0),
-//    INIT_AXIS(1),
-//    INIT_AXIS(2),
-//    INIT_AXIS(3),
-//    INIT_AXIS(4),
-//    INIT_AXIS(5)
-//    };
+Axis axes[NUM_AXES];
 
-// for (int i = 0; i < NUM_AXES; i++){
-//     axes[i].attach();
-// }
+//initiate axes
+for (int i = 0; i < NUM_AXES; i++){
+
+    axes[i].STEP_PIN = stepPins[i];
+    axes[i].DIR_PIN = dirPins[i];
+    axes[i].ENC_PIN_A = dirPins[i];
+    axes[i].ENC_PIN_B = dirPins[i];
+    axes[i].PPR = dirPins[i];
+    axes[i].REDUCTION = dirPins[i];
+    axes[i].steps_remaining = 0;
+    axes[i].angle = 0.0;
+    axes[i].attach(); //must be called after pins declared
+
+
+}
    
 
 	char tx_buf[MSG_SIZE];

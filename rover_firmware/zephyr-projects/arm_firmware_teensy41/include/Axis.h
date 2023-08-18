@@ -13,6 +13,7 @@ struct Axis {
     long PPR;
     float REDUCTION;
     long steps_remaining;
+    float angle;
     static struct k_timer stepper_timer;
 
 
