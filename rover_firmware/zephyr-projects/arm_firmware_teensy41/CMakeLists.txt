@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13.1)
+cmake_minimum_required(VERSION 3.20.0)
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 #arm_firmware v2
 project(arm_firmware)
@@ -10,5 +10,5 @@ target_include_directories(app PRIVATE
 )
 
 #telling it what targets to aim for
-target_sources(app PRIVATE src/main.cpp src/Axis.cpp )
-
+FILE(GLOB app_sources src/*.cpp)
+target_sources(app PRIVATE ${app_sources})

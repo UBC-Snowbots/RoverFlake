@@ -5,14 +5,20 @@
 
 struct Axis {
    // Axis(int dirPin, int stepPin, int encPinA, int encPinB, long ppr, float reduction);
-    
+    //setup pins
+    int LIMIT_PIN;
     int DIR_PIN;
     int STEP_PIN;
     int ENC_PIN_A;
     int ENC_PIN_B;
+    //motor gear reduction and driver PPR (make sure to factor in microstep settings)
     long PPR;
     float REDUCTION;
+   
     long steps_remaining;
+    long step_pos; // not from encoders
+    long step_des_pos;
+    
     float angle;
     static struct k_timer stepper_timer;
 
@@ -21,7 +27,6 @@ struct Axis {
     void readEncoder();
     void step(int steps);
     void home();
-    void stepper_timer_callback(struct k_timer *timer_id);
  
     
 };
