@@ -119,6 +119,7 @@ static void interrupt_handler(const struct device *dev, void *user_data)
 			// 	uart_irq_tx_enable(dev);
 			// }
 			parseCmd(rx_buffer);
+			
 		}
 
 		if (uart_irq_tx_ready(dev)) {
@@ -149,22 +150,61 @@ void sendMsg(const char tx_msg[TX_BUF_SIZE]){
 
 
 void parseCmd(uint8_t cmd[RX_BUF_SIZE]){
-	
+	int arpo = 2;
+		 if(cmd[0] == 'q'){
+
+	char temp_msg[TX_BUF_SIZE] = "up\n\r\0";
+	axes[arpo].speed = 1500;
+	axes[arpo].macrostep = 8;
+	axes[arpo].step_des_pos = axes[arpo].step_pos + axes[arpo].macrostep;
+	stepAxis(arpo);
+	sendMsg(temp_msg);
+	//	k_sleep(K_MSEC(50));
+	//stepAxis(1);
+
+	}
 
 	 if(cmd[0] == 'w'){
 
-	char temp_msg[TX_BUF_SIZE] = "up\n\r";
+	char temp_msg[TX_BUF_SIZE] = "up\n\r\0";
+	axes[arpo].speed = 800;
+	axes[arpo].macrostep = 15;
+	axes[arpo].step_des_pos = axes[arpo].step_pos + axes[arpo].macrostep;
+//		set_gpio(4, 8, 0);
 
-	
+	stepAxis(arpo);
+
 	sendMsg(temp_msg);
-	stepAxis(1, 100);
+	//	k_sleep(K_MSEC(50));
+	//stepAxis(1);
+
+	}
+		 if(cmd[0] == 'f'){
+
+	char temp_msg[TX_BUF_SIZE] = "up\n\r\0";
+	axes[arpo].speed = 500;
+	axes[arpo].macrostep = 25;
+	axes[arpo].step_des_pos = axes[arpo].step_pos + axes[arpo].macrostep;
+	stepAxis(arpo);
+	sendMsg(temp_msg);
+	//	k_sleep(K_MSEC(50));
+	//stepAxis(1);
 
 	}
 
 	if(cmd[0] == 'r'){
-	char tx_buffer[TX_BUF_SIZE] = "down\n\r";
-	//sendMsg(tx_buffer);
-	stepAxis(1, -100);
+	char temp_msg[TX_BUF_SIZE] = "down\n\r\0";
+		axes[arpo].speed = 1000;
+	axes[arpo].macrostep = 12;
+	axes[arpo].step_des_pos = axes[arpo].step_pos - axes[arpo].macrostep;
+//    set_gpio(4, 8, 1);
+
+	stepAxis(arpo);
+
+	sendMsg(temp_msg);
+	//	k_sleep(K_MSEC(50));
+
+	//stepAxis(1);
 
 
 	}
@@ -177,70 +217,122 @@ void parseCmd(uint8_t cmd[RX_BUF_SIZE]){
 
 }
 
-void stepAxis(int axis, int steps) {
-//takes in the axis, not the axis index. 
+void stepAxis(int axis) {
 
-axis -= 1;
-  axes[axis].step_des_pos += steps;
-  axes[axis].steps_remaining = abs(axes[axis].step_pos - axes[axis].step_des_pos);
+	if(axes[axis].step_des_pos > axes[axis].step_pos){
+		axes[axis].dir = 0;
+	} else{
+		axes[axis].dir = 1;
+
+	}
+    set_gpio(axes[axis].DIR_PIN[0], axes[axis].DIR_PIN[1], axes[axis].dir);
+
+
+	axes[axis].steps_remaining = axes[axis].macrostep;//abs(axes[axis].step_des_pos - axes[axis].step_pos);
+
+
+
+  if(!axes[axis].moving){
+	k_timer_start(&axes[axis].stepper_timer, K_NO_WAIT, K_NO_WAIT);
+  }
+  //axes[axis].step_des_pos += steps;
+  //axes[axis].steps_remaining = 100;//abs(axes[axis].step_pos - axes[axis].step_des_pos);
 
   // Code to move the motor steps
-  if(axes[axis].step_des_pos > axes[axis].step_pos){
-  gpio_pin_set(gpio_dev, axes[axis].DIR_PIN, 0);
+  
 
-  }else{
-  gpio_pin_set(gpio_dev, axes[axis].DIR_PIN, 1);
 
-  }
-
-  k_timer_start(&axes[axis].stepper_timer, K_MSEC(50), K_NO_WAIT);
 
   
 }
 
-void stepper_timer_callback(struct k_timer *timer_id) {
-    static bool pulse_state = false;
-	for (int i = 0; i < NUM_AXES; ++i){
-	if(timer_id == &axes[i].stepper_timer)
-    if (axes[i].steps_remaining > 0) {
-        if (pulse_state) {
-            // End of pulse, prepare for the next one
-            gpio_pin_set(gpio_dev, axes[i].STEP_PIN, 0);
-            axes[i].steps_remaining--;   
-			char movemsg[TX_BUF_SIZE] = "Moving\n\r";
-
-			//sprintf(movemsg, "moving from %d, approaching %d\n", axes[i].step_pos, axes[i].step_des_pos);
-			
-			// uint8_t status_buffer[sizeof(movemsg)];
-
-			// 	for(size_t c = 0; c < sizeof(movemsg); ++c){
+void set_gpio(int dev, int pin, int value){
+	const struct device *tempdev;
+	switch (dev)
+	{
+	case 1:
+		tempdev = gpio1_dev;
+		break;
 	
-			// 	status_buffer[c] = movemsg[c];
+	case 2:
+		tempdev = gpio2_dev;
+
+		break;
+	case 4:
+		tempdev = gpio2_dev;
+		break;
+	default:
+		break;
+	}
+
+	gpio_pin_set(tempdev, pin, value);
+	
+}
+
+void stepper_timer_callback(struct k_timer *timer_id) {
+	// 	char debug[TX_BUF_SIZE];
+	// 	sprintf(debug, "Axis timer triggered \n\r\0");
+
 		
-			// }
-		ring_buf_put(&ringbuf, (uint8_t *)movemsg, strlen(movemsg));
+	//  	ring_buf_put(&ringbuf, (uint8_t *)debug, TX_BUF_SIZE);
+
+	// // //memcpy((uint8_t)axmsg, tx_bufferr, 64);
+	
+	//  uart_irq_tx_enable(dev); // Enable the TX interrupt to start sending
+     
+	for (int i = 0; i < NUM_AXES; i++){
+	if(timer_id == &axes[i].stepper_timer){
+		// axes[i].pulse_state = false;
+		axes[i].moving = true;
+    if (axes[i].steps_remaining > 0) {
+        if (axes[i].pulse_state) {
+            // End of pulse, prepare for the next one
+
+            set_gpio(axes[i].STEP_PIN[0], axes[i].STEP_PIN[1], 0);
+            axes[i].steps_remaining--;   
+			if(axes[i].step_des_pos > axes[i].step_pos){
+				axes[i].step_pos++;
+			} else{
+				axes[i].step_pos--;
+			}
+	 		char movemsg[TX_BUF_SIZE];
+		sprintf(movemsg, "Axis %d moving from: %d, to: %d \n\r\0", i + 1, axes[i].step_pos, axes[i].step_des_pos);
+
+		
+	 	ring_buf_put(&ringbuf, (uint8_t *)movemsg, TX_BUF_SIZE);
+
+	
+	 uart_irq_tx_enable(dev); // Enable the TX interrupt to start sending
+     
+  
+        } else {
+            // Start of pulse
+            set_gpio(axes[i].STEP_PIN[0], axes[i].STEP_PIN[1], 1);
+        }
+
+        // Toggle pulse state
+        axes[i].pulse_state = !axes[i].pulse_state;
+
+        // Reset the timer
+    k_timer_start(&axes[i].stepper_timer, K_USEC(axes[i].speed), K_NO_WAIT);
+    } else {
+        // No steps remaining, stop the timer
+				char movemsg[TX_BUF_SIZE];
+			sprintf(movemsg, "Axis %d Done moving to: %d \n\r\0", i + 1, axes[i].step_pos);
+
+		
+		ring_buf_put(&ringbuf, (uint8_t *)movemsg, TX_BUF_SIZE);
 
 	//memcpy((uint8_t)axmsg, tx_bufferr, 64);
 	
 	uart_irq_tx_enable(dev); // Enable the TX interrupt to start sending
      
-  
-        } else {
-            // Start of pulse
-            gpio_pin_set(gpio_dev, axes[i].STEP_PIN, 1);
-        }
-
-        // Toggle pulse state
-        pulse_state = !pulse_state;
-
-        // Reset the timer
-        k_timer_start(timer_id, K_MSEC(50), K_NO_WAIT);
-    } else {
-        // No steps remaining, stop the timer
-        k_timer_stop(timer_id);
+		axes[i].moving = false;
+        k_timer_stop(&axes[i].stepper_timer);
        // printk("destination approached");
 
     }
+	}
 
 	}
 }
@@ -252,7 +344,9 @@ int main(void)
 {
 	uint32_t baudrate, dtr = 0U;
 	int ret;
- 	gpio_dev = DEVICE_DT_GET(DT_NODELABEL(gpio1));
+	gpio1_dev = DEVICE_DT_GET(DT_NODELABEL(gpio1));
+ 	gpio2_dev = DEVICE_DT_GET(DT_NODELABEL(gpio2));
+ 	gpio4_dev = DEVICE_DT_GET(DT_NODELABEL(gpio4));
 	dev = DEVICE_DT_GET_ONE(zephyr_cdc_acm_uart);
 	if (!device_is_ready(dev)) {
 		// LOG_ERR("CDC ACM device not ready");
@@ -312,32 +406,45 @@ int main(void)
 	/* Enable rx interrupts */
 	uart_irq_rx_enable(dev);
 
+	k_sleep(K_MSEC(50));
 
 
-// //initiate axes
+// //initiate axes, im sure there is a better way to orginize all this data
 for (int i = 0; i < NUM_AXES; i++){
-    axes[i].STEP_PIN = stepPins[i];
-    axes[i].DIR_PIN = dirPins[i];
+    axes[i].STEP_PIN[0] = stepGPIO_PIN[i][0];
+	axes[i].STEP_PIN[1] = stepGPIO_PIN[i][1];
+	axes[i].DIR_PIN[0] = dirGPIO_PIN[i][0];
+	axes[i].DIR_PIN[1] = dirGPIO_PIN[i][1];
+
     axes[i].ENC_PIN_A = encPinA[i];
     axes[i].ENC_PIN_B = encPinB[i];
+
+	axes[i].LIMIT_PIN[0] = limGPIO_PIN[i][0];
+	axes[i].LIMIT_PIN[1] = limGPIO_PIN[i][1];
+
+
     axes[i].PPR = ppr[i];
     axes[i].REDUCTION = red[i];
     axes[i].steps_remaining = 0;
     axes[i].angle = 0.0;
-	axes[i].LIMIT_PIN = limPins[i];
 	axes[i].steps_remaining = 0;
 	axes[i].step_pos = 0;
-	gpio_pin_configure(gpio_dev, axes[i].STEP_PIN, GPIO_OUTPUT);
-	gpio_pin_configure(gpio_dev, axes[i].DIR_PIN, GPIO_OUTPUT);
+	axes[i].pulse_state = false;
+	axes[i].moving = false;
+	axes[i].speed = 800;
+	axes[i].macrostep = 10;
+	axes[i].dir = 0;
+	axes[i].attach(); //must be called after pins declared
+    // gpio_pin_configure(gpio_dev, axes[i].STEP_PIN, GPIO_OUTPUT);
+	// gpio_pin_configure(gpio_dev, axes[i].DIR_PIN, GPIO_OUTPUT);
 
-//    axes[i].attach(); //must be called after pins declared
 	k_timer_init(&axes[i].stepper_timer, stepper_timer_callback, NULL);
 
 	k_sleep(K_MSEC(50));
 
 	char axmsg[TX_BUF_SIZE];
 
-	sprintf(axmsg, "Axis %d attached at STEP: %d, DIR: %d \n\r\0", i + 1, axes[i].STEP_PIN, axes[i].DIR_PIN);
+	sprintf(axmsg, "Axis %d attached at STEP: %d.%d, DIR: %d.%d, \n\r\0", i + 1, axes[i].STEP_PIN[0], axes[i].STEP_PIN[1], axes[i].DIR_PIN[0], axes[i].DIR_PIN[1]);
 
 
 	//memcpy((uint8_t)axmsg, tx_bufferr, 64);
@@ -351,7 +458,7 @@ for (int i = 0; i < NUM_AXES; i++){
     // sprintf(buffer, "Axis %d attached at STEP: %d, DIR: %d\n", i, axes[i].STEP_PIN, axes[i].DIR_PIN);
  //   print_uart(buffer);
 }
-
+ 
 
 
 // while (true) {
@@ -368,6 +475,8 @@ for (int i = 0; i < NUM_AXES; i++){
 //     // }
 //     // Sleep or yield if needed
 // 		//k_sleep(K_MSEC(500));
+
+// 		//stepAxis(0);
 
 // }
 
