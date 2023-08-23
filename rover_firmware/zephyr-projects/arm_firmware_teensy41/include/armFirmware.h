@@ -22,6 +22,8 @@ this is not easy
 #include <zephyr/drivers/uart.h>
 #include <zephyr/sys/ring_buffer.h>
 #include <zephyr/logging/log.h>
+
+
 //usb (needed for uart)
 #include <zephyr/usb/usb_device.h>
 #include <zephyr/usb/usbd.h>
@@ -38,7 +40,7 @@ this is not easy
 #define MSG_SIZE 32
 
 // general parameters
-#define NUM_AXES 1
+#define NUM_AXES 6
 #define ON 0
 #define OFF 1
 #define SW_ON 0
@@ -58,9 +60,10 @@ this is not easy
 inline int stepPins[6] =   {6, 8, 2, 10, 12, 25}; 
 inline int dirPins[6] =    {5, 7, 1, 9, 11, 24}; 
 
-//To GPIO devs
-inline int stepGPIO_PIN[6][2] =   {{2,10}, {2,16}, {4,4}, {2,0}, {2,1}, {1,13}}; 
-inline int dirGPIO_PIN[6][2] =    {{4,8}, {2,17}, {1,2}, {2,11}, {2,2}, {1,12}}; 
+//To GPIO devs                  //not working: 3 //working one dir: 1   // working: 2, 4, 5, 6 
+inline int stepGPIO_PIN[6][2] =   {{2,10}, {2,16}, {1,3}, {2,0}, {2,1}, {1,13}}; 
+inline int dirGPIO_PIN[6][2] =    {{1,30}, {2,17}, {1,2}, {2,11}, {2,2}, {1,12}}; 
+inline int arpo = 0;
 
 // Encoder pins
 inline int encPinA[6] = {17, 38, 40, 36, 13, 15};
@@ -116,9 +119,11 @@ inline float ENC_STEPS_PER_DEG[NUM_AXES];
 //this creates the device for gpio pins
 inline const struct device *gpio1_dev;
 inline const struct device *gpio2_dev;
+inline const struct device *gpio3_dev;
 inline const struct device *gpio4_dev;
 
 
+inline struct ring_buf ringbuf;
 
 
 inline const struct device *dev;
@@ -132,6 +137,7 @@ void stepper_timer_callback(struct k_timer *timer_id);
 void parseCmd(uint8_t cmd[RX_BUF_SIZE]);
 void initilizeAxis(struct InstAxis *instance);
 void stepAxis(int axis);
+void stepAll();
 
 void set_gpio(int dev, int pin, int value);
 

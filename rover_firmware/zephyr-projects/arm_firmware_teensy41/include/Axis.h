@@ -6,6 +6,7 @@
 struct Axis {
    // Axis(int dirPin, int stepPin, int encPinA, int encPinB, long ppr, float reduction);
     //setup pins
+    int index;
     int LIMIT_PIN[2];
     int DIR_PIN[2];
     int STEP_PIN[2];
@@ -26,7 +27,7 @@ struct Axis {
     long step_des_pos;
     
     float angle;
-    static struct k_timer stepper_timer;
+    struct k_timer stepper_timer;
 
 
     void attach();
