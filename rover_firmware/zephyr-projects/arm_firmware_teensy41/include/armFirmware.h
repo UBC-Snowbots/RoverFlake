@@ -137,7 +137,7 @@ void stepper_timer_callback(struct k_timer *timer_id);
 void parseCmd(uint8_t cmd[RX_BUF_SIZE]);
 void initilizeAxis(struct InstAxis *instance);
 void stepAxis(int axis);
-void stepAll();
+void stepAll(bool dir);
 
 void set_gpio(int dev, int pin, int value);
 

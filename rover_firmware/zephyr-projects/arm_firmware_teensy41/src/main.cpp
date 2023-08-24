@@ -9,7 +9,7 @@ uint8_t ring_buffer[RING_BUF_SIZE];
 
 
 Axis axes[NUM_AXES];
-//struct k_timer Axis::stepper_timer;
+//struct k_timer Axis::stepper_timer; -- still want to figure out exactly why this broke / fixed my code
 
 
 
@@ -22,7 +22,7 @@ USBD_CONFIGURATION_DEFINE(config_1,
 
 USBD_DESC_LANG_DEFINE(sample_lang);
 USBD_DESC_MANUFACTURER_DEFINE(sample_mfr, "UBC ROVER");
-USBD_DESC_PRODUCT_DEFINE(sample_product, "Z USBD CDC ACM");
+USBD_DESC_PRODUCT_DEFINE(sample_product, "ARM MCU");
 USBD_DESC_SERIAL_NUMBER_DEFINE(sample_sn, "0123456789ABCDEF");
 
 USBD_DEVICE_DEFINE(sample_usbd,
@@ -151,78 +151,39 @@ void sendMsg(const char tx_msg[TX_BUF_SIZE]){
 
 
 void parseCmd(uint8_t cmd[RX_BUF_SIZE]){
-if(cmd[0] == '1'){
-	arpo = 0;
+   switch (cmd[0]) {
+        case '1': arpo = 0; break;
+        case '2': arpo = 1; break;
+        case '3': arpo = 2; break;
+        case '4': arpo = 3; break;
+        case '5': arpo = 4; break;
+        case '6': arpo = 5; break;
+        case 'w':
+           //stepAxis(arpo);
+			stepAll(1);
+            break;
+        case 'r':
+            axes[arpo].macrostep = 12;
+            axes[arpo].step_des_pos = axes[arpo].step_pos - axes[arpo].macrostep;
+            //stepAxis(arpo);
+			stepAll(0);
 
-	}
-if(cmd[0] == '2'){
-	arpo = 1;
-
-	}
-
-if(cmd[0] == '3'){
-	arpo = 2;
-
-	}
-
-if(cmd[0] == '4'){
-	arpo = 3;
-
-	}
-
-
-if(cmd[0] == '5'){
-	arpo = 4;
-
-	}
-	if(cmd[0] == '6'){
-	arpo = 5;
-
-	}
-	
-
-
-
-	 if(cmd[0] == 'w'){
-
-	char temp_msg[TX_BUF_SIZE] = "up\n\r\0";
-	axes[arpo].macrostep = 12;
-	axes[arpo].step_des_pos = axes[arpo].step_pos + axes[arpo].macrostep;
-//		set_gpio(4, 8, 0);
-
-
-
-	sendMsg(temp_msg);
-	//	k_sleep(K_MSEC(50));
-	//stepAxis(arpo);
-stepAll();
-	}
-
-
-	if(cmd[0] == 'r'){
-	char temp_msg[TX_BUF_SIZE] = "down\n\r\0";
-	axes[arpo].macrostep = 12;
-	axes[arpo].step_des_pos = axes[arpo].step_pos - axes[arpo].macrostep;
-//    set_gpio(4, 8, 1);
-
-	//stepAxis(arpo);
-stepAll();
-	sendMsg(temp_msg);
-	//	k_sleep(K_MSEC(50));
-
-
-
-	}
-	// uint8_t tx_buffer[] = "msgrecievs\n";
-	// ring_buf_put(&ringbuf, tx_buffer, sizeof(tx_buffer));
-	// uart_irq_tx_enable(dev);
-
-	
+            break;
+        default:
+            break; // Handle unknown command
+    }
 
 }
 
-void stepAll(){
+void stepAll(bool dir){
 	for(int i = 0; i < NUM_AXES; i++){
+		axes[i].macrostep = 12;
+		if(dir == 1){
+        axes[i].step_des_pos = axes[i].step_pos + axes[i].macrostep;
+		} 		
+		if(dir == 0){
+        axes[i].step_des_pos = axes[i].step_pos - axes[i].macrostep;
+		} 
 		stepAxis(i);
 	}
 }
