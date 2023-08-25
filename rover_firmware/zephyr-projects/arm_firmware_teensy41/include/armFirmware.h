@@ -52,6 +52,18 @@ this is not easy
 #define RX_BUF_SIZE 64
 #define TX_BUF_SIZE 64
 
+#define HOME 1
+#define ABSOLUTE_TARGET_POSITION 2
+#define INCREMENTAL_TARGET_POSITION 3
+#define TARGET_VELOCITY 4
+#define TEST_LIMITS 5
+
+#define NUM_PRESET_POSITIONS 1
+#define DEFAULT_POSITION 0
+
+
+
+
 //weird pin mappings
 //all the usefull documentation I could find: https://docs.zephyrproject.org/latest/boards/arm/teensy4/doc/index.html 
 
@@ -108,6 +120,9 @@ const int MOTOR_DIR_EE = -1;
 const int forcePin = 12;
 
 
+inline bool arm_homing = false;
+
+
 // Encoder Variables
 inline int curEncSteps[NUM_AXES], cmdEncSteps[NUM_AXES];
 const int pprEnc = 512;
@@ -134,12 +149,32 @@ void sendMsg(const char tx_msg[TX_BUF_SIZE]);
 //timer callback to handle step signals
 void stepper_timer_callback(struct k_timer *timer_id);
 
+void home_timer_callback(struct k_timer *timer_id);
+
+
+void limit_switch_callback(const struct device *dev, struct gpio_callback *cb, uint32_t pins);
+
+
 void parseCmd(uint8_t cmd[RX_BUF_SIZE]);
+void parseAbsoluteTargetPositionCmd(uint8_t cmd[RX_BUF_SIZE]);
+void parseHomeCmd(uint8_t cmd[RX_BUF_SIZE]);
+void testLimits();
+
+
 void initilizeAxis(struct InstAxis *instance);
 void stepAxis(int axis);
-void stepAll(bool dir);
+void stepAll_timer_callback(struct k_timer *timer_id);
+void pingPosition_timer_callback(struct k_timer *timer_id);
+
+//void stepTo(int pos);
+void homeAllAxes();
+//inline bool homed[NUM_AXES] = {0};
+
+void goto_preset(int position);
+
 
 void set_gpio(int dev, int pin, int value);
+int get_gpio(int dev, int pin);
 
 
 

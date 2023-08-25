@@ -17,10 +17,19 @@ struct Axis {
     float REDUCTION;
     bool pulse_state;
     bool moving;
-    int speed;
+    
+    int max_speed;
+    int home_speed;
+    int current_speed;
+
     int macrostep;
 
     bool dir;
+    //bool dir_signal;
+    int home_dir;
+    bool homing;
+    bool homed = false;
+    int preset_step_pos[1];
 
     long steps_remaining;
     long step_pos; // not from encoders
@@ -28,12 +37,21 @@ struct Axis {
     
     float angle;
     struct k_timer stepper_timer;
+    struct gpio_callback limit_switch_cb_data;
+
+//   // Code to configure pins
+//   const struct device *stepdev;
+//   const struct device *dirdev;
+//   const struct device *limdev;
+//   static struct gpio_callback limit_switch_cb_data;
 
 
     void attach();
     void readEncoder();
+
     //void step(int steps);
     void home();
+
  
     
 };
