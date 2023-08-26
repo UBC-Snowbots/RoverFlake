@@ -2,6 +2,8 @@
 #include <armFirmware.h>
 // #define INIT_AXIS(i) Axis(stepPins[i], dirPins[i], encPinA[i], encPinB[i], ppr[i], red[i])
 
+//if an axis is within this many steps to its max/min
+#define POSITION_STEP_LIMIT_THRESHOLD 10
 
 struct Axis {
    // Axis(int dirPin, int stepPin, int encPinA, int encPinB, long ppr, float reduction);
@@ -31,9 +33,15 @@ struct Axis {
     bool homed = false;
     int preset_step_pos[1];
 
+    int max_step_pos;
+    int min_step_pos = 20 + POSITION_STEP_LIMIT_THRESHOLD;
+
     long steps_remaining;
     long step_pos; // not from encoders
     long step_des_pos;
+
+    float des_angle_pos;
+    //float max_angle_
     
     float angle;
     struct k_timer stepper_timer;

@@ -1,0 +1,15 @@
+<launch>
+  <node name="arm_joy_node" pkg="joy" type="joy_node" output="screen">
+    <param name="dev" value="/dev/input/by-id/usb-©Microsoft_Corporation_Controller_1678C02-joystick"/>
+    <param name="deadzone" value="0.1" />
+    <param name="autorepeat_rate" value="20" />
+    <param name="coalesce_interval" value="0.05" />
+    <remap from="/joy" to="/arm/joy"/>
+  </node>
+  
+   <node name="arm_serial_driver" pkg="arm_serial_driver" type="arm_serial_driver" output="screen">
+  </node>
+
+  <node name="arm_controller_node" pkg="sb_all_controller" type="arm_controller" output="screen">
+  </node>
+</launch>

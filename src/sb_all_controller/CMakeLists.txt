@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
         roscpp
         geometry_msgs
         sensor_msgs
+        sb_msgs
         )
 # find_package(sb_utils REQUIRED)
 
@@ -32,8 +33,11 @@ add_executable(all_controller src/all_controller.cpp
         src/AllController.cpp include/AllController.h)
 add_executable(drive_controller src/drive_cyborg.cpp
         src/DriveCyborg.cpp include/DriveCyborg.h)
+add_executable(arm_controller src/arm_controller.cpp
+        src/ArmController.cpp include/ArmController.h)
 
 #target_link_libraries(all_controller evdev)
 target_link_libraries(all_controller ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 target_link_libraries(drive_controller ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
+target_link_libraries(arm_controller ${catkin_LIBRARIES} ${sb_utils_LIBRARIES})
 

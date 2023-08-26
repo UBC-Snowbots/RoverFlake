@@ -214,7 +214,7 @@ void parseCmd(uint8_t cmd[RX_BUF_SIZE])
 		cmd_type = HOME;
 		parseHomeCmd(cmd);
 		break;
-	case 'p':
+	case 'P':
 		cmd_type = ABSOLUTE_TARGET_POSITION;
 		parseAbsoluteTargetPositionCmd(cmd);
 		break;
@@ -226,13 +226,13 @@ void parseCmd(uint8_t cmd[RX_BUF_SIZE])
 		// debug cmd
 		// stepAxis(arpo);
 		sendMsg("Up\n");
-		axes[0].step_des_pos = axes[0].step_pos + 20;
+		axes[0].step_des_pos = axes[0].step_pos + 5;
 		break;
 	case 'r':
 		sendMsg("Down\n");
 
 		// stepAxis(arpo);
-		axes[0].step_des_pos = axes[0].step_pos - 20;
+		axes[0].step_des_pos = axes[0].step_pos - 5;
 
 		break;
 	default:
@@ -272,6 +272,7 @@ void home_timer_callback(struct k_timer *timer_id)
 		{
 			homing_complete = false;
 			break;
+
 		}
 	}
 
@@ -286,17 +287,18 @@ void home_timer_callback(struct k_timer *timer_id)
 				axes[i].current_speed = axes[i].home_speed;
 				if (axes[i].home_dir)
 				{
-					axes[i].step_des_pos = axes[i].step_pos + 5;
+					axes[i].step_des_pos = axes[i].step_pos + 10;
 				}
 				else
 				{
-					axes[i].step_des_pos = axes[i].step_pos - 5;
+					axes[i].step_des_pos = axes[i].step_pos - 10;
 				}
-				k_timer_start(&home_timer, K_NO_WAIT, K_MSEC(50));
+				//k_timer_start(&home_timer, K_NO_WAIT, K_MSEC(20));
 			}
 			else
 			{
 				if(axes[i].homed == false){
+
 				axes[i].homed = true;
 				axes[i].homing = false;
 				axes[i].current_speed = axes[i].max_speed;
@@ -326,7 +328,7 @@ void home_timer_callback(struct k_timer *timer_id)
 
 void goto_preset(int position)
 {
-	k_timer_start(&pingPosition_timer, K_NO_WAIT, K_MSEC(50));
+	k_timer_start(&pingPosition_timer, K_NO_WAIT, K_MSEC(50)); //20 Hz 
 
 	switch (position)
 	{
@@ -344,8 +346,76 @@ void goto_preset(int position)
 
 void parseAbsoluteTargetPositionCmd(uint8_t cmd[RX_BUF_SIZE])
 {
+	k_timer_stop(&pingPosition_timer);
+	//P(11.0, 11.0, 11.0, 11.0, 11.0, 11.0)
 
-	uint8_t axis_buffer[RX_BUF_SIZE];
+    char *start_ptr = (char*)cmd + 2;  // Skip 'P('
+    char *end_ptr;
+    int i = 0;
+
+    while(i < NUM_AXES && (end_ptr = strchr(start_ptr, ',')) != NULL) {
+        char angle_str[10];  // Assume that the float will not exceed 9 characters
+        strncpy(angle_str, start_ptr, end_ptr - start_ptr);
+        angle_str[end_ptr - start_ptr] = '\0';  // Null-terminate
+        axes[i].des_angle_pos = atof(angle_str);
+
+        start_ptr = end_ptr + 1;  // Move to the character after the comma
+        i++;
+    }
+
+    // Last float (after the last comma and before the closing parenthesis)
+    if (i < NUM_AXES) {
+        end_ptr = strchr(start_ptr, ')');
+        if(end_ptr) {
+            char angle_str[10];
+            strncpy(angle_str, start_ptr, end_ptr - start_ptr);
+            angle_str[end_ptr - start_ptr] = '\0';
+            axes[i].des_angle_pos = atof(angle_str);
+            i++;
+        }
+    }
+        if (i == NUM_AXES) {
+        // All axes angles are in axes[i].des_angle_pos
+        char msg[TX_BUF_SIZE];
+		sprintf(msg, "Absolute Target Position Command Accepted: "); 
+
+		ring_buf_put(&ringbuf, (uint8_t *)msg, strlen(msg));
+		uart_irq_tx_enable(dev);
+		ring_buf_put(&ringbuf, cmd, RX_BUF_SIZE);
+		uart_irq_tx_enable(dev);
+    } else {
+        // Handle the error if not all six angles are parsed
+        // ...
+    
+        // Error handling: could not parse all 6 angles, or message is messed up.
+		char msg[TX_BUF_SIZE];
+		sprintf(msg, "Absolute Target Position Command Rejected, incorrect syntax: "); 
+
+		ring_buf_put(&ringbuf, (uint8_t *)msg, strlen(msg));
+		uart_irq_tx_enable(dev);
+		ring_buf_put(&ringbuf, cmd, RX_BUF_SIZE);
+		uart_irq_tx_enable(dev);
+		k_timer_start(&pingPosition_timer, K_MSEC(POSITION_PING_MS_INTERVAL), K_MSEC(POSITION_PING_MS_INTERVAL));
+
+        return;
+    }
+
+	
+
+	for(int i = 0; i < NUM_AXES; i++){
+		axes[i].step_des_pos = axes[i].des_angle_pos*red[i]*ppr[i]/360.0;
+		k_timer_start(&pingPosition_timer, K_MSEC(POSITION_PING_MS_INTERVAL), K_MSEC(POSITION_PING_MS_INTERVAL));
+
+	}
+
+
+
+}
+
+long angle_to_steps(float angle, int axis_index){
+
+	return 100;
+
 }
 void parseHomeCmd(uint8_t homeCmd[RX_BUF_SIZE])
 {
@@ -370,6 +440,8 @@ void parseHomeCmd(uint8_t homeCmd[RX_BUF_SIZE])
 				switch_health = 0;
 			}else{
 				axes[i].homed = 0;
+				
+				axes[i].step_pos = axes[i].max_step_pos;
 			}
 		}
 
@@ -381,7 +453,7 @@ void parseHomeCmd(uint8_t homeCmd[RX_BUF_SIZE])
 
 			uart_irq_tx_enable(dev);
 
-			k_timer_start(&home_timer, K_NO_WAIT, K_MSEC(25));
+			k_timer_start(&home_timer, K_NO_WAIT, K_MSEC(20));
 		}
 		else
 		{
@@ -445,8 +517,19 @@ void stepAxis(int axis)
 		{
 			dir_signal = !axes[axis].dir;
 		}
+		if(axes[axis].step_des_pos > axes[axis].max_step_pos){
+		axes[axis].step_des_pos = axes[axis].max_step_pos;
+	
+	}
+	if(axes[axis].step_des_pos < axes[axis].min_step_pos){
+		axes[axis].step_des_pos = axes[axis].min_step_pos;
+	
+	}
 	}
 
+
+
+	
 	set_gpio(axes[axis].DIR_PIN[0], axes[axis].DIR_PIN[1], dir_signal);
 
 	axes[axis].steps_remaining = abs(axes[axis].step_des_pos - axes[axis].step_pos);
@@ -455,6 +538,8 @@ void stepAxis(int axis)
 	{
 		k_timer_start(&axes[axis].stepper_timer, K_NO_WAIT, K_NO_WAIT);
 	}
+
+	
 	// axes[axis].step_des_pos += steps;
 	// axes[axis].steps_remaining = 100;//abs(axes[axis].step_pos - axes[axis].step_des_pos);
 
@@ -642,8 +727,8 @@ int main(void)
 
 	axes[0].max_speed = 500;
 	axes[1].max_speed = 800;
-	axes[2].max_speed = 1000;
-	axes[3].max_speed = 800;
+	axes[2].max_speed = 700;
+	axes[3].max_speed = 700;
 	axes[4].max_speed = 600;
 	axes[5].max_speed = 5800;
 
@@ -701,12 +786,13 @@ int main(void)
 	k_timer_init(&stepAll_timer, stepAll_timer_callback, NULL); // pass user data to callback
 	k_timer_init(&pingPosition_timer, pingPosition_timer_callback, NULL); // pass user data to callback
 
-	axes[0].home_speed = 600;
-	axes[1].home_speed = 1000;
-	axes[2].home_speed = 2000;
-	axes[3].home_speed = 1000;
+//can be cleaned up, but for now I'm leaving it like this
+	axes[0].home_speed = 500;
+	axes[1].home_speed = 800;
+	axes[2].home_speed = 700;
+	axes[3].home_speed = 700;
 	axes[4].home_speed = 1000;
-	axes[5].home_speed = 10000;
+	axes[5].home_speed = 7000;
 	// 1 or 0 for dir setting
 	axes[0].home_dir = 1;
 	axes[1].home_dir = 1;
@@ -714,6 +800,15 @@ int main(void)
 	axes[3].home_dir = 0;
 	axes[4].home_dir = 0;
 	axes[5].home_dir = 1;
+
+	axes[0].max_step_pos = 9000 - POSITION_STEP_LIMIT_THRESHOLD;
+	axes[1].max_step_pos = 5000 - POSITION_STEP_LIMIT_THRESHOLD;
+	axes[2].max_step_pos = 3000 - POSITION_STEP_LIMIT_THRESHOLD;
+	axes[3].max_step_pos = 5000 - POSITION_STEP_LIMIT_THRESHOLD;
+	axes[4].max_step_pos = 5000 - POSITION_STEP_LIMIT_THRESHOLD;
+	axes[5].max_step_pos = 900 - POSITION_STEP_LIMIT_THRESHOLD;
+
+
 
 	for (int i = 0; i < NUM_AXES; i++)
 	{
@@ -727,7 +822,7 @@ int main(void)
 	axes[4].preset_step_pos[DEFAULT_POSITION] = 5000;
 	axes[5].preset_step_pos[DEFAULT_POSITION] = 500;
 
-	k_timer_start(&stepAll_timer, K_MSEC(500), K_MSEC(25));
+	k_timer_start(&stepAll_timer, K_MSEC(50), K_MSEC(10)); //should be 5-10 times slower than the slowest stepper
 
 	// while (true) {
 	// 	//check serial for msgs

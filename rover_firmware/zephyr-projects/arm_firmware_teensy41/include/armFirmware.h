@@ -49,8 +49,8 @@ this is not easy
 #define REV 0
 
 #define RING_BUF_SIZE 1024
-#define RX_BUF_SIZE 64
-#define TX_BUF_SIZE 64
+#define RX_BUF_SIZE 128
+#define TX_BUF_SIZE 128
 
 #define HOME 1
 #define ABSOLUTE_TARGET_POSITION 2
@@ -60,6 +60,10 @@ this is not easy
 
 #define NUM_PRESET_POSITIONS 1
 #define DEFAULT_POSITION 0
+
+#define POSITION_PING_MS_INTERVAL 50 // 50ms is 20 hz
+
+
 
 
 
@@ -165,6 +169,9 @@ void initilizeAxis(struct InstAxis *instance);
 void stepAxis(int axis);
 void stepAll_timer_callback(struct k_timer *timer_id);
 void pingPosition_timer_callback(struct k_timer *timer_id);
+
+long angle_to_steps(float angle, int axis_index);
+
 
 //void stepTo(int pos);
 void homeAllAxes();
