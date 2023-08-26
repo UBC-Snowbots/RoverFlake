@@ -29,8 +29,10 @@
 #define JOY_AXIS_5_INDEX 4 
 #define JOY_AXIS_6_INDEX 3 
 
-#define SPEED_SCALE_JOINT_FACTOR 0.1
+#define SPEED_SCALE_JOINT_FACTOR 5
 
+
+#define HOME_XBOX_INDEX 7
 
 
 
@@ -81,7 +83,6 @@ class ArmController {
     const char IKMode = '2';
     const char drillMode = '3';
 
-    
 
     struct libevdev* dev = NULL;
     enum Mode { wheels = 0, arm_joint_space = 1, arm_cartesian = 2, drilling = 3, num_modes = 2 };

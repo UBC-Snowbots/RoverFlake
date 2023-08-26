@@ -90,8 +90,8 @@ void ArmController::setup()
 
 void ArmController::processInputs()
 {
-        ROS_INFO(
-        "PROCESS INPUT");
+        // ROS_INFO(
+        // "PROCESS INPUT");
     // Assuming joy.axes and current_arm_position are populated
 
     // Handle the special case for axis 1 with CW and CCW triggers
@@ -104,6 +104,12 @@ void ArmController::processInputs()
     for (int i = 1; i < NUM_ARM_AXES; i++) {
         float joy_val = xbox.axes[joy_indices[i]];
         des_arm_position.positions[i] = current_arm_position.positions[i] + joy_val * SPEED_SCALE_JOINT_FACTOR;
+    }
+    if(xbox.buttons[HOME_XBOX_INDEX]){
+    des_arm_position.home_cmd = 1;
+    }else{
+    des_arm_position.home_cmd = 0;
+
     }
 
     publishCmds();

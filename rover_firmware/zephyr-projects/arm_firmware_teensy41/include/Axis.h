@@ -37,13 +37,13 @@ struct Axis {
     int min_step_pos = 20 + POSITION_STEP_LIMIT_THRESHOLD;
 
     long steps_remaining;
-    long step_pos; // not from encoders
+    long step_pos = 0; // not from encoders
     long step_des_pos;
 
-    float des_angle_pos;
+    float des_angle_pos = 0.0;
+    float angle_pos = 0.0;
     //float max_angle_
     
-    float angle;
     struct k_timer stepper_timer;
     struct gpio_callback limit_switch_cb_data;
 
@@ -56,6 +56,7 @@ struct Axis {
 
     void attach();
     void readEncoder();
+    void updateAngles();
 
     //void step(int steps);
     void home();

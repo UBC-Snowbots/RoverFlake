@@ -13,7 +13,7 @@ ArmSerialDriver::ArmSerialDriver(ros::NodeHandle& nh) : nh(nh) {
     ros::NodeHandle private_nh("~");
 
     // Setup Subscribers
-    int queue_size = 55;
+    int queue_size = 10;
 
     vital vitals;
 
@@ -24,142 +24,137 @@ ArmSerialDriver::ArmSerialDriver(ros::NodeHandle& nh) : nh(nh) {
     vitals.pub(INIT_STATUS);
 
     subCmdPos = nh.subscribe(
-        "/cmd_pos_arm", queue_size, &ArmSerialDriver::armPositionCmdCallBack, this);
+        "/arm/cmd_pos_angle", queue_size, &ArmSerialDriver::armPositionCmdCallBack, this);
 
    // subPose = private_nh.subscribe("/cmd_pose", 1, &ArmSerialDriver::poseSelectCallback, this);
 
-    pubObservedPos = private_nh.advertise<sb_msgs::ArmPosition>("/observed_pos_arm", 1);
+    pubCurrPos = private_nh.advertise<sb_msgs::ArmPosition>("/arm/curr_pos_angle", 10);
     sleep(1);
     vitals.pub(STANDBY);
     teensy.setBaudrate(baud);
     teensy.setPort(port);
     teensy.open();
-    teensy.setDTR(false);
-    teensy.setRTS(false);
+    teensy.setDTR(true);
+    teensy.setRTS(true);
 
     sleep(1);
 
-    encCmd.resize(num_joints_);
-    armCmd.resize(num_joints_);
-    encStepsPerDeg.resize(num_joints_);
-    armPos.resize(num_joints_);
-    encPos.resize(num_joints_);
-    armCmd.resize(num_joints_);
-    poseCmd.resize(num_joints_);
+    encCmd.resize(NUM_JOINTS);
+    armCmd.resize(NUM_JOINTS);
+    encStepsPerDeg.resize(NUM_JOINTS);
+    armPos.resize(NUM_JOINTS);
+    encPos.resize(NUM_JOINTS);
+    armCmd.resize(NUM_JOINTS);
+    poseCmd.resize(NUM_JOINTS);
 
-    for (int i = 0; i < num_joints_; i++) {
+    for (int i = 0; i < NUM_JOINTS; i++) {
         encStepsPerDeg[i] = reductions[i] * ppr * 5.12 / 360.0;
     }
     
     vitals.pub(ONLINE);
 
     //ros::spinOnce;
-    sleep(0.5);
+    // sleep(0.5);
+    // ros::Rate loop_rate(50); // 100 Hz
+    // //ROS_INFO("Arm Online");
+    // while(ros::ok()){
+    
+  
+    // loop_rate.sleep();
+  
+    // }
 
 }
 
     void ArmSerialDriver::armPositionCmdCallBack(const sb_msgs::ArmPosition::ConstPtr& cmd_msg){
 
+            uint8_t tx_msg[TX_UART_BUFF];
+            char tx_temp_msg[TX_UART_BUFF];
+
+
+            if(cmd_msg->home_cmd){
+            sendMsg((uint8_t *)"hhh\n\r\0");
+            homed = true;
+            }else if (homed){
+            sprintf(tx_temp_msg, "P(%0.2f, %0.2f, %0.2f, %0.2f, %0.2f, %0.2f)\n\r\0", cmd_msg->positions[0], cmd_msg->positions[1], cmd_msg->positions[2], cmd_msg->positions[3], cmd_msg->positions[4], cmd_msg->positions[5]);
+            std::memcpy(tx_msg, tx_temp_msg, TX_UART_BUFF);  // +1 to copy the null-terminator
+            sendMsg(tx_msg);
+            if(teensy.available() > 0){
+            recieveMsg();
+            }
+            }
+            
+            
+
+            //sendMsg(tx_msg);
+
+            
 }
 
-
-// void ArmSerialDriver::poseSelectCallback(
-// const sb_msgs::ArmPosition::ConstPtr& poseAngles) {
-//     poseCmd.assign(poseAngles->positions.begin(), poseAngles->positions.end());
-//     jointPosToEncSteps(poseCmd, encCmd);
-    
-//     std::string outMsg = "PM";
-//     for(int i=0; i < num_joints_; i++) {
-//         outMsg += 'A' + i;
-//         outMsg += std::to_string(encCmd[i]);
-//     }
-
-//     outMsg += "/n";
-//     sendMsg(outMsg);
-//     recieveMsg();
-// }
-
-// void ArmSerialDriver::armPositionCallBack(
-// const sb_msgs::ArmPosition::ConstPtr& commanded_msg) {
-    
-//     armCmd.assign(commanded_msg->positions.begin(),
-//                   commanded_msg->positions.end());
-//     jointPosToEncSteps(armCmd, encCmd);
-
-//     std::string outMsg = "MT";
-//     for (int i = 0; i < num_joints_; ++i) {
-//         outMsg += 'A' + i;
-//         outMsg += std::to_string(encCmd[i]);
-//     }
-//     outMsg += "\n";
-//     sendMsg(outMsg);
-//     recieveMsg();
-// }
-
-// void ArmSerialDriver::updateEncoderSteps(std::string msg) {
-//     size_t idx1 = msg.find("A", 2) + 1;
-//     size_t idx2 = msg.find("B", 2) + 1;
-//     size_t idx3 = msg.find("C", 2) + 1;
-//     size_t idx4 = msg.find("D", 2) + 1;
-//     size_t idx5 = msg.find("E", 2) + 1;
-//     size_t idx6 = msg.find("F", 2) + 1;
-//     size_t idx7 = msg.find("Z", 2) + 1;
-//     encPos[0]   = std::stoi(msg.substr(idx1, idx2 - idx1));
-//     encPos[1]   = std::stoi(msg.substr(idx2, idx3 - idx2));
-//     encPos[2]   = std::stoi(msg.substr(idx3, idx4 - idx3));
-//     encPos[3]   = std::stoi(msg.substr(idx4, idx5 - idx4));
-//     encPos[4]   = std::stoi(msg.substr(idx5, idx6 - idx5));
-//     encPos[5]   = std::stoi(msg.substr(idx6, idx7 - idx6));
-// }
-
-// void ArmSerialDriver::encStepsToJointPos(
-// std::vector<int>& enc_steps, std::vector<double>& joint_positions) {
-//     for (int i = 0; i < enc_steps.size(); ++i) {
-//         // convert enc steps to joint deg
-//         joint_positions[i] =
-//         static_cast<double>(enc_steps[i]) / encStepsPerDeg[i];
-//     }
-// }
-
-// void ArmSerialDriver::jointPosToEncSteps(std::vector<double>& joint_positions,
-//                                            std::vector<int>& enc_steps) {
-//     for (int i = 0; i < joint_positions.size(); ++i) {
-//         // convert joint deg to enc steps
-//         enc_steps[i] = static_cast<int>(joint_positions[i] * encStepsPerDeg[i]);
-//     }
-// }
-
-// Libserial Implementation
-
-void ArmSerialDriver::sendMsg(std::string outMsg) {
+void ArmSerialDriver::sendMsg(uint8_t outMsg[TX_UART_BUFF]) {
     // Send everything in outMsg through serial port
     //ROS_INFO("attempting send");
-    teensy.write(outMsg);
-    ROS_INFO("Sent via serial: %s", outMsg.c_str());
+    std::string str_outMsg = std::string(reinterpret_cast<char*>(outMsg), TX_UART_BUFF);
+    teensy.write(str_outMsg);
+    ROS_INFO(")()()())*)*)*)*Sent via serial: %s", reinterpret_cast<char*>(outMsg));
 }
 
-// void ArmSerialDriver::recieveMsg() {
+void ArmSerialDriver::recieveMsg() {
 
-//     std::string next_char = "";
-//     std::string buffer = "";
-//     int timeoutCounter = 0;
-//     do {
-//         timeoutCounter ++;
-//         next_char = teensy.read();
-//         buffer += next_char;
-//     //    if(timeoutCounter > 50){
-//     //     ROS_INFO("timed out");
-//     //     next_char = "Z";
-//     //    }
-//     } while (next_char != "Z");
+    std::string next_char = "";
+    std::string buffer = "";
+    int timeoutCounter = 0;
+    do {
+        timeoutCounter ++;
+        next_char = teensy.read();
+        buffer += next_char;
 
-//      ROS_INFO("buffer: %s", buffer.c_str());
+        if(next_char == "\n" || next_char == "\r" || next_char == "\0"){
+            timeoutCounter = RX_UART_BUFF;
+        }
+      
+    } while (teensy.available() > 0 && timeoutCounter < RX_UART_BUFF);
+
+        ROS_WARN("%s", buffer.c_str());
 
 
-//     // // Update parameters based on feedback
-//     updateEncoderSteps(buffer);
-//     encStepsToJointPos(encPos, armPos);
-//    // updateHWInterface();
 
-// }
+     if(buffer.find("my_angleP") != std::string::npos){
+        parseArmAngleUart(buffer);
+     }
+
+     
+
+
+
+ }
+
+ void ArmSerialDriver::parseArmAngleUart(std::string msg){
+     //ROS_INFO("Parsing Angle buffer: %s", msg.c_str());
+          sb_msgs::ArmPosition angle_echo;
+          angle_echo.positions.resize(NUM_JOINTS);
+    
+	if (sscanf(msg.c_str(), "my_angleP(%f, %f, %f, %f, %f, %f)",  &axes[0].angle_pos, &axes[1].angle_pos, &axes[2].angle_pos, &axes[3].angle_pos, &axes[4].angle_pos, &axes[5].angle_pos) == 6)
+	{
+		// All axes angles are in axes[i].des_angle_pos
+		ROS_INFO("Absolute Angle Position Echo Accepted:");
+        for(int i = 0; i < NUM_JOINTS; i++){
+        angle_echo.positions[i] = axes[i].angle_pos;
+
+        }
+        pubCurrPos.publish(angle_echo);
+        ROS_INFO("Absolute Angle Position Echo Update Successfull");
+
+	}
+	else
+	{
+		// Error handling: could not parse all 6 angles, or message is messed up.
+		ROS_ERROR("Absolute Angle Position Echo Rejected, incorrect syntax");
+
+		return;
+	}
+
+
+ }
+
 

@@ -168,10 +168,12 @@ void testLimits();
 void initilizeAxis(struct InstAxis *instance);
 void stepAxis(int axis);
 void stepAll_timer_callback(struct k_timer *timer_id);
-void pingPosition_timer_callback(struct k_timer *timer_id);
+void pingStepPosition_timer_callback(struct k_timer *timer_id);
+void pingAnglePosition_timer_callback(struct k_timer *timer_id);
 
 long angle_to_steps(float angle, int axis_index);
 
+void updateAngles();
 
 //void stepTo(int pos);
 void homeAllAxes();
