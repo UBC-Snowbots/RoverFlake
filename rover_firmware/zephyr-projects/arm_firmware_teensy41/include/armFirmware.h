@@ -48,7 +48,7 @@ this is not easy
 #define FWD 1
 #define REV 0
 
-#define RING_BUF_SIZE 1024
+#define RING_BUF_SIZE 2048
 #define RX_BUF_SIZE 128
 #define TX_BUF_SIZE 128
 
@@ -63,6 +63,7 @@ this is not easy
 
 #define POSITION_PING_MS_INTERVAL 50 // 50ms is 20 hz
 
+#define ARM_COMM_RATE 20 //Hz, only here for refrence
 
 
 
@@ -125,6 +126,7 @@ const int forcePin = 12;
 
 
 inline bool arm_homing = false;
+inline bool arm_inited = false;
 
 
 // Encoder Variables
@@ -161,6 +163,7 @@ void limit_switch_callback(const struct device *dev, struct gpio_callback *cb, u
 
 void parseCmd(uint8_t cmd[RX_BUF_SIZE]);
 void parseAbsoluteTargetPositionCmd(uint8_t cmd[RX_BUF_SIZE]);
+void parseIncrementalTargetPositionCmd(uint8_t cmd[RX_BUF_SIZE]);
 void parseHomeCmd(uint8_t cmd[RX_BUF_SIZE]);
 void testLimits();
 

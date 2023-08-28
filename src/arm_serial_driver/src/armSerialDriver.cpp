@@ -33,9 +33,11 @@ ArmSerialDriver::ArmSerialDriver(ros::NodeHandle& nh) : nh(nh) {
     vitals.pub(STANDBY);
     teensy.setBaudrate(baud);
     teensy.setPort(port);
+    //teensy.setTimeout(timeout_uart);
+ 
     teensy.open();
     teensy.setDTR(true);
-    teensy.setRTS(true);
+    teensy.setRTS(false);
 
     sleep(1);
 
@@ -73,16 +75,20 @@ ArmSerialDriver::ArmSerialDriver(ros::NodeHandle& nh) : nh(nh) {
 
 
             if(cmd_msg->home_cmd){
-            sendMsg((uint8_t *)"hhh\n\r\0");
-            homed = true;
+            sendMsg((uint8_t *)"$h()\n");
+            ROS_INFO("sent home msg\n");            
             }else if (homed){
-            sprintf(tx_temp_msg, "P(%0.2f, %0.2f, %0.2f, %0.2f, %0.2f, %0.2f)\n\r\0", cmd_msg->positions[0], cmd_msg->positions[1], cmd_msg->positions[2], cmd_msg->positions[3], cmd_msg->positions[4], cmd_msg->positions[5]);
-            std::memcpy(tx_msg, tx_temp_msg, TX_UART_BUFF);  // +1 to copy the null-terminator
+            sprintf(tx_temp_msg, "$i(%0.2f, %0.2f, %0.2f, %0.2f, %0.2f, %0.2f)\n", cmd_msg->positions[0], cmd_msg->positions[1], cmd_msg->positions[2], cmd_msg->positions[3], cmd_msg->positions[4], cmd_msg->positions[5]);
+            std::memcpy(tx_msg, tx_temp_msg, sizeof(tx_temp_msg));  // +1 to copy the null-terminator
             sendMsg(tx_msg);
-            if(teensy.available() > 0){
-            recieveMsg();
-            }
-            }
+            //fresh_rx_angle = false;
+ 
+             } //else if(!arm_inited){
+            //     //init arm
+            //     sendMsg((uint8_t *)"init\n\r\0");
+            //     arm_inited = true;
+            // }
+
             
             
 
@@ -94,9 +100,12 @@ ArmSerialDriver::ArmSerialDriver(ros::NodeHandle& nh) : nh(nh) {
 void ArmSerialDriver::sendMsg(uint8_t outMsg[TX_UART_BUFF]) {
     // Send everything in outMsg through serial port
     //ROS_INFO("attempting send");
-    std::string str_outMsg = std::string(reinterpret_cast<char*>(outMsg), TX_UART_BUFF);
+    std::string str_outMsg(reinterpret_cast<const char*>(outMsg), TX_UART_BUFF);
+    //std::to_string(str_outMsg);  // +1 to copy the null-terminator
+
     teensy.write(str_outMsg);
-    ROS_INFO(")()()())*)*)*)*Sent via serial: %s", reinterpret_cast<char*>(outMsg));
+    ROS_ERROR("Sent via serial: %s", str_outMsg.c_str());
+    teensy.flushOutput();
 }
 
 void ArmSerialDriver::recieveMsg() {
@@ -104,37 +113,41 @@ void ArmSerialDriver::recieveMsg() {
     std::string next_char = "";
     std::string buffer = "";
     int timeoutCounter = 0;
-    do {
-        timeoutCounter ++;
-        next_char = teensy.read();
-        buffer += next_char;
+    if (teensy.available() > 0){
+        //timeoutCounter ++;
+     //   next_char = teensy.read(); 
+        buffer = teensy.readline();
 
-        if(next_char == "\n" || next_char == "\r" || next_char == "\0"){
-            timeoutCounter = RX_UART_BUFF;
-        }
+        // if(next_char == "\n" || next_char == "\r" || next_char == "\0"){
+        //     timeoutCounter = RX_UART_BUFF;
+        // }
+
       
-    } while (teensy.available() > 0 && timeoutCounter < RX_UART_BUFF);
+    }
+   teensy.flushInput();
 
+if (buffer.size() > 0){
         ROS_WARN("%s", buffer.c_str());
-
-
-
      if(buffer.find("my_angleP") != std::string::npos){
         parseArmAngleUart(buffer);
      }
+    if(buffer.find("Arm Ready") != std::string::npos){
+        homed = true;
+       // fresh_rx_angle = true;
+     }
 
-     
 
 
 
- }
+}
+}
 
  void ArmSerialDriver::parseArmAngleUart(std::string msg){
      //ROS_INFO("Parsing Angle buffer: %s", msg.c_str());
           sb_msgs::ArmPosition angle_echo;
           angle_echo.positions.resize(NUM_JOINTS);
     
-	if (sscanf(msg.c_str(), "my_angleP(%f, %f, %f, %f, %f, %f)",  &axes[0].angle_pos, &axes[1].angle_pos, &axes[2].angle_pos, &axes[3].angle_pos, &axes[4].angle_pos, &axes[5].angle_pos) == 6)
+	if (sscanf(msg.c_str(), "$my_angleP(%f, %f, %f, %f, %f, %f)\n",  &axes[0].angle_pos, &axes[1].angle_pos, &axes[2].angle_pos, &axes[3].angle_pos, &axes[4].angle_pos, &axes[5].angle_pos) == 6)
 	{
 		// All axes angles are in axes[i].des_angle_pos
 		ROS_INFO("Absolute Angle Position Echo Accepted:");
@@ -144,12 +157,14 @@ void ArmSerialDriver::recieveMsg() {
         }
         pubCurrPos.publish(angle_echo);
         ROS_INFO("Absolute Angle Position Echo Update Successfull");
+        fresh_rx_angle = true;
 
 	}
 	else
 	{
 		// Error handling: could not parse all 6 angles, or message is messed up.
 		ROS_ERROR("Absolute Angle Position Echo Rejected, incorrect syntax");
+       // fresh_rx_angle = false;
 
 		return;
 	}

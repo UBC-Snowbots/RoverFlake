@@ -1,10 +1,8 @@
-
-
 #include <armFirmware.h>
 
 LOG_MODULE_REGISTER(cdc_acm_echo, LOG_LEVEL_INF);
 
-#define RING_BUF_SIZE 1024
+// #define RING_BUF_SIZE 2048
 uint8_t ring_buffer[RING_BUF_SIZE];
 
 Axis axes[NUM_AXES];
@@ -18,6 +16,7 @@ struct k_timer home_timer;
 struct k_timer pingStepPosition_timer;
 struct k_timer pingAnglePosition_timer;
 struct k_timer stepAll_timer;
+
 
 // struct k_msgq axes_msgqs[NUM_AXES];
 
@@ -112,34 +111,56 @@ static int enable_usb_device_next(void)
 
 static void interrupt_handler(const struct device *dev, void *user_data)
 {
+
 	ARG_UNUSED(user_data);
-	static uint8_t cmd_buffer[RX_BUF_SIZE];
+	static uint8_t cmd_buffer[RX_BUF_SIZE] = "";
 	static size_t cmd_index = 0;
-	uint8_t rx_buffer[RX_BUF_SIZE];
-	int recv_len;
+	uint8_t rx_buffer[RX_BUF_SIZE] = "";
+	int recv_len = 0;
 
 	while (uart_irq_update(dev) && uart_irq_is_pending(dev))
 	{
 		if (uart_irq_rx_ready(dev))
-		{
+		{	
+			//k_timer_stop(&pingAnglePosition_timer); 
+
+			
 			recv_len = uart_fifo_read(dev, rx_buffer, sizeof(rx_buffer));
+			//  if (recv_len > RX_BUF_SIZE) {
+    		// // // Log an error or take corrective action
+			// //sendMsg("Uart Parse Error/Overflow, rejecting message\n");
+			// return;
+			// }
 			for (int i = 0; i < recv_len; i++)
 			{
-				if (rx_buffer[i] == '\r' && cmd_index < RX_BUF_SIZE)
+				if (cmd_index >= RX_BUF_SIZE - 1) {
+                	cmd_index = 0; // Reset for next command
+                //log an error or warning here
+            }
+				if (rx_buffer[i] == '\n' || rx_buffer[i] == '\r' || rx_buffer[i] == '\0' ) //big error, forgot to put back in the '\r' and '\0', using minicom was all messed as I had '\n' as an endchar disabled??
 				{
 					cmd_buffer[cmd_index] = '\0'; // Null-terminate
-					parseCmd(cmd_buffer);
+					//double check it wont break everything
+					if (cmd_index < RX_BUF_SIZE) {
+                        parseCmd(cmd_buffer);
+                    }
 					cmd_index = 0; // Reset for next command
+					i = recv_len;
+
 				}
-				else if (cmd_index < RX_BUF_SIZE)
+				else
 				{
 					cmd_buffer[cmd_index++] = rx_buffer[i];
+					//cmd_index++;
 				}
 			}
-		}
+			
+
+		} 
 
 		if (uart_irq_tx_ready(dev))
 		{
+			  if (uart_irq_tx_complete(dev)) {
 			uint8_t buffer[TX_BUF_SIZE];
 			int rb_len = ring_buf_get(&ringbuf, buffer, sizeof(buffer));
 			if (rb_len > 0)
@@ -150,8 +171,11 @@ static void interrupt_handler(const struct device *dev, void *user_data)
 			{
 				uart_irq_tx_disable(dev);
 			}
+			  }
 		}
+		
 	}
+
 }
 // Planning to sepperate steppers and uart into 2 different threads
 // void uart_thread(void *arg1, void *arg2, void *arg3) {
@@ -174,6 +198,7 @@ void sendMsg(const char tx_msg[TX_BUF_SIZE])
 
 	ring_buf_put(&ringbuf, (uint8_t *)tx_msg, strlen(tx_msg));
 	uart_irq_tx_enable(dev);
+
 }
 
 void tx_enable_callback(struct k_timer *timer_id)
@@ -192,10 +217,11 @@ void pingStepPosition_timer_callback(struct k_timer *timer_id)
 void pingAnglePosition_timer_callback(struct k_timer *timer_id)
 {
 
+
 	updateAngles();
 
 char msg[TX_BUF_SIZE];
-	sprintf(msg, "my_angleP(%0.2f, %0.2f, %0.2f, %0.2f, %0.2f, %0.2f)\n\r\0", axes[0].angle_pos, axes[1].angle_pos, axes[2].angle_pos, axes[3].angle_pos, axes[4].angle_pos, axes[5].angle_pos);
+	sprintf(msg, "$my_angleP(%0.2f, %0.2f, %0.2f, %0.2f, %0.2f, %0.2f)\n\r\0", axes[0].angle_pos, axes[1].angle_pos, axes[2].angle_pos, axes[3].angle_pos, axes[4].angle_pos, axes[5].angle_pos);
 	ring_buf_put(&ringbuf, (uint8_t *)msg, strlen(msg));
 	uart_irq_tx_enable(dev);
 }
@@ -231,17 +257,31 @@ void updateAngles()
 
 void parseCmd(uint8_t cmd[RX_BUF_SIZE])
 {
+		//k_timer_start(&pingAnglePosition_timer, K_NO_WAIT, K_MSEC(50)); 
+
+		//sendMsg("Command Parsing \n");
+
+
+	if (cmd[0] == '$' && cmd[strlen((char*)cmd) - 1] == ')') {
+    // Parse the command
+
 	int cmd_type = 0;
 
-	switch (cmd[0])
+	//if(s)
+
+	switch (cmd[1])
 	{
 	case 'h':
-		cmd_type = HOME;
+		cmd_type = HOME; //example command buffer:   $h()
 		parseHomeCmd(cmd);
 		break;
 	case 'P':
 		cmd_type = ABSOLUTE_TARGET_POSITION;
-		parseAbsoluteTargetPositionCmd(cmd);
+		parseAbsoluteTargetPositionCmd(cmd); //example command buffer:   $P(0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f)
+		break;
+	case 'i':
+		cmd_type = INCREMENTAL_TARGET_POSITION;
+		parseIncrementalTargetPositionCmd(cmd); //example command buffer:   $p(0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f)
 		break;
 	case 't':
 		cmd_type = TEST_LIMITS;
@@ -251,18 +291,27 @@ void parseCmd(uint8_t cmd[RX_BUF_SIZE])
 		// debug cmd
 		// stepAxis(arpo);
 		sendMsg("Up\n");
-		axes[0].step_des_pos = axes[0].step_pos + 5;
+		axes[0].step_des_pos = axes[0].step_pos + 50;
 		break;
 	case 'r':
 		sendMsg("Down\n");
 
 		// stepAxis(arpo);
-		axes[0].step_des_pos = axes[0].step_pos - 5;
+		axes[0].step_des_pos = axes[0].step_pos - 50;
 
 		break;
 	default:
+		sendMsg("Error: Unknown Command, Input Rejected\n");
+
 		break; // Handle unknown command
 	}
+   
+}else{
+	sendMsg("Error: Invalid Command, Input Rejected\n");
+	//char cmdrelay = (char *)cmd;
+	//sendMsg(cmdrelay);
+
+}
 }
 void testLimits()
 {
@@ -271,7 +320,7 @@ void testLimits()
 }
 void comm_timer_callback(struct k_timer *timer_id)
 {
-	k_timer_stop(&pingAnglePosition_timer);
+	//k_timer_stop(&pingAnglePosition_timer);
 	char msg[TX_BUF_SIZE];
 	sprintf(msg, "Limit Switch Testing for Axes begin. Waiting for switch to activate... \n\r\0");
 	ring_buf_put(&ringbuf, (uint8_t *)msg, strlen(msg));
@@ -288,7 +337,8 @@ void comm_timer_callback(struct k_timer *timer_id)
 
 void home_timer_callback(struct k_timer *timer_id)
 {
-	k_timer_stop(&pingAnglePosition_timer);
+	//k_timer_stop(&pingAnglePosition_timer);
+
 
 	homing_complete = true;
 	for (int i = 0; i < NUM_AXES; i++)
@@ -299,6 +349,7 @@ void home_timer_callback(struct k_timer *timer_id)
 			break;
 		}
 	}
+
 
 	if (!homing_complete)
 	{
@@ -311,13 +362,12 @@ void home_timer_callback(struct k_timer *timer_id)
 				axes[i].current_speed = axes[i].home_speed;
 				if (axes[i].home_dir)
 				{
-					axes[i].step_des_pos = axes[i].step_pos + 10;
+					axes[i].step_des_pos = axes[i].step_pos + 20;
 				}
 				else
 				{
-					axes[i].step_des_pos = axes[i].step_pos - 10;
+					axes[i].step_des_pos = axes[i].step_pos - 20;
 				}
-				// k_timer_start(&home_timer, K_NO_WAIT, K_MSEC(20));
 			}
 			else
 			{
@@ -340,20 +390,27 @@ void home_timer_callback(struct k_timer *timer_id)
 	}
 	else
 	{
+		if(arm_inited){
+		sendMsg("Arm Ready\n\r\0");
+		//arm_inited = true;
+
+		}else{
 		// all axes homed, stop timer
 		k_timer_stop(&home_timer);
 		arm_homing = false;
-		char msg[TX_BUF_SIZE];
-		sprintf(msg, "Homing complete, returning to default position\n\r\0");
+		arm_inited = true;
 		goto_preset(DEFAULT_POSITION);
-		ring_buf_put(&ringbuf, (uint8_t *)msg, strlen(msg));
-		uart_irq_tx_enable(dev);
+		//k_sleep(K_MSEC(4000));
+		sendMsg("Homing complete, returning to default position\n\r\0");
+		k_timer_start(&home_timer, K_MSEC(7000), K_NO_WAIT);
+		}
 	}
+
+
 }
 
 void goto_preset(int position)
 {
-	k_timer_start(&pingAnglePosition_timer, K_NO_WAIT, K_MSEC(50*4)); // 20 Hz
 
 	switch (position)
 	{
@@ -367,14 +424,20 @@ void goto_preset(int position)
 	default:
 		break;
 	}
+
+	// for (int i = 0; i < NUM_AXES; i++){
+	// 	while(axes[i].steps_remaining > 0){
+	// 		//k_sleep(K_MSE);
+	// 	}
+	// }
 }
 
 void parseAbsoluteTargetPositionCmd(uint8_t cmd[RX_BUF_SIZE])
 {
-	k_timer_stop(&pingAnglePosition_timer);
+	//k_timer_stop(&pingAnglePosition_timer);
 	// P(11.0, 11.0, 11.0, 11.0, 11.0, 11.0)
 
-	char *start_ptr = (char *)cmd + 2; // Skip 'P('
+	char *start_ptr = (char *)cmd + 3; // Skip '$P('
 	char *end_ptr;
 	int i = 0;
 
@@ -402,7 +465,7 @@ void parseAbsoluteTargetPositionCmd(uint8_t cmd[RX_BUF_SIZE])
 			i++;
 		}
 	}
-	if (i == NUM_AXES)
+	if (i == NUM_AXES && arm_inited)
 	{
 		// All axes angles are in axes[i].des_angle_pos
 		char msg[TX_BUF_SIZE];
@@ -420,22 +483,110 @@ void parseAbsoluteTargetPositionCmd(uint8_t cmd[RX_BUF_SIZE])
 
 		// Error handling: could not parse all 6 angles, or message is messed up.
 		char msg[TX_BUF_SIZE];
-		sprintf(msg, "Absolute Target Position Command Rejected, incorrect syntax: \n");
+		sprintf(msg, "Absolute Target Position Command Rejected, incorrect syntax or arm not homed: \n");
 
 		ring_buf_put(&ringbuf, (uint8_t *)msg, strlen(msg));
 		uart_irq_tx_enable(dev);
 		ring_buf_put(&ringbuf, cmd, RX_BUF_SIZE);
 		uart_irq_tx_enable(dev);
-		k_timer_start(&pingAnglePosition_timer, K_MSEC(POSITION_PING_MS_INTERVAL), K_MSEC(POSITION_PING_MS_INTERVAL));
+		//k_timer_start(&pingAnglePosition_timer, K_MSEC(50), K_NO_WAIT);
 
 		return;
 	}
 
-	for (int i = 0; i < NUM_AXES; i++)
+	// for (int i = 0; i < NUM_AXES; i++)
+	// {
+	// 	axes[i].step_des_pos = axes[i].des_angle_pos * red[i] * ppr[i] / 360.0;
+	// 	//k_timer_start(&pingAnglePosition_timer, K_MSEC(POSITION_PING_MS_INTERVAL), K_NO_WAIT);
+	// }
+}
+void parseIncrementalTargetPositionCmd(uint8_t cmd[RX_BUF_SIZE])
+{
+	//k_timer_stop(&pingAnglePosition_timer);
+	// P(11.0, 11.0, 11.0, 11.0, 11.0, 11.0)
+
+	char *start_ptr = (char *)cmd + 3; // Skip '$P('
+	char *end_ptr;
+	int i = 0;
+
+	while (i < NUM_AXES && (end_ptr = strchr(start_ptr, ',')) != NULL)
 	{
-		axes[i].step_des_pos = axes[i].des_angle_pos * red[i] * ppr[i] / 360.0;
-		k_timer_start(&pingAnglePosition_timer, K_MSEC(POSITION_PING_MS_INTERVAL), K_MSEC(POSITION_PING_MS_INTERVAL));
+		char angle_str[10]; // Assume that the float will not exceed 9 characters
+		strncpy(angle_str, start_ptr, end_ptr - start_ptr);
+		angle_str[end_ptr - start_ptr] = '\0'; // Null-terminate
+			float angle = atof(angle_str);
+			//if(angle > 0){
+			axes[i].step_des_pos = axes[i].step_pos + (int)angle;
+			//} else if(atof(angle_str) < 0){
+			//axes[i].step_des_pos = axes[i].step_pos - (int)angle;
+
+			//} else{
+			//axes[i].step_des_pos = axes[i].step_pos;
+
+			
+			//}
+		start_ptr = end_ptr + 1; // Move to the character after the comma
+		i++;
 	}
+
+	// Last float (after the last comma and before the closing parenthesis)
+	if (i < NUM_AXES)
+	{
+		end_ptr = strchr(start_ptr, ')');
+		if (end_ptr)
+		{
+			char angle_str[10];
+			strncpy(angle_str, start_ptr, end_ptr - start_ptr);
+			angle_str[end_ptr - start_ptr] = '\0';
+			float angle = atof(angle_str);
+			//if(angle > 0){
+			axes[i].step_des_pos = axes[i].step_pos + (int)angle;
+			// } else if(atof(angle_str) < 0){
+			// axes[i].step_des_pos = axes[i].step_pos - (int)angle;
+
+			// } else{
+			// axes[i].step_des_pos = axes[i].step_pos;
+
+			// }
+			
+			
+			i++;
+		}
+	}
+	if (i == NUM_AXES && arm_inited)
+	{
+		// All axes angles are in axes[i].des_angle_pos
+		char msg[TX_BUF_SIZE];
+		sprintf(msg, "Incremental Target Position Command Accepted: \n");
+
+		ring_buf_put(&ringbuf, (uint8_t *)msg, strlen(msg));
+		uart_irq_tx_enable(dev);
+		ring_buf_put(&ringbuf, cmd, RX_BUF_SIZE);
+		uart_irq_tx_enable(dev);
+	}
+	else
+	{
+		// Handle the error if not all six angles are parsed
+		// ...
+
+		// Error handling: could not parse all 6 angles, or message is messed up.
+		char msg[TX_BUF_SIZE];
+		sprintf(msg, "Incremental Target Position Command Rejected, incorrect syntax or arm not homed: \n");
+
+		ring_buf_put(&ringbuf, (uint8_t *)msg, strlen(msg));
+		uart_irq_tx_enable(dev);
+		ring_buf_put(&ringbuf, cmd, RX_BUF_SIZE);
+		uart_irq_tx_enable(dev);
+		//k_timer_start(&pingAnglePosition_timer, K_MSEC(50), K_NO_WAIT);
+
+		return;
+	}
+
+	// for (int i = 0; i < NUM_AXES; i++)
+	// {
+	// 	axes[i].step_des_pos = axes[i].des_angle_pos * red[i] * ppr[i] / 360.0;
+	// 	//k_timer_start(&pingAnglePosition_timer, K_MSEC(POSITION_PING_MS_INTERVAL), K_NO_WAIT);
+	// }
 }
 
 long angle_to_steps(float angle, int axis_index)
@@ -476,10 +627,7 @@ void parseHomeCmd(uint8_t homeCmd[RX_BUF_SIZE])
 		if (switch_health)
 		{
 			char msg[TX_BUF_SIZE];
-			sprintf(msg, "Homing Sequence Start\n");
-			ring_buf_put(&ringbuf, (uint8_t *)msg, strlen(msg));
-
-			uart_irq_tx_enable(dev);
+			sendMsg("Homing Sequence Start\n");
 
 			k_timer_start(&home_timer, K_NO_WAIT, K_MSEC(20));
 		}
@@ -559,10 +707,13 @@ void stepAxis(int axis)
 
 	axes[axis].steps_remaining = abs(axes[axis].step_des_pos - axes[axis].step_pos);
 
+
 	if (!axes[axis].moving)
 	{
 		k_timer_start(&axes[axis].stepper_timer, K_NO_WAIT, K_NO_WAIT);
 	}
+
+	
 
 	// axes[axis].step_des_pos += steps;
 	// axes[axis].steps_remaining = 100;//abs(axes[axis].step_pos - axes[axis].step_des_pos);
@@ -715,17 +866,17 @@ int main(void)
 	// LOG_INF("DTR set");
 
 	/* They are optional, we use them to test the interrupt endpoint */
-	ret = uart_line_ctrl_set(dev, UART_LINE_CTRL_DCD, 1);
+	// ret = uart_line_ctrl_set(dev, UART_LINE_CTRL_DCD, 1);
 	if (ret)
 	{
 		// LOG_WRN("Failed to set DCD, ret code %d", ret);
 	}
 
-	ret = uart_line_ctrl_set(dev, UART_LINE_CTRL_DSR, 1);
-	if (ret)
-	{
-		// LOG_WRN("Failed to set DSR, ret code %d", ret);
-	}
+	// ret = uart_line_ctrl_set(dev, UART_LINE_CTRL_DSR, 1);
+	// if (ret)
+	// {
+	// 	// LOG_WRN("Failed to set DSR, ret code %d", ret);
+	// }
 
 	/* Wait 100ms for the host to do all settings */
 	k_msleep(100);
@@ -788,7 +939,7 @@ int main(void)
 
 		char axmsg[TX_BUF_SIZE];
 
-		sprintf(axmsg, "Axis %d attached at STEP: %d.%d, DIR: %d.%d, \n\r\0", i + 1, axes[i].STEP_PIN[0], axes[i].STEP_PIN[1], axes[i].DIR_PIN[0], axes[i].DIR_PIN[1]);
+		sprintf(axmsg, "Axis %d attached at STEP: %d.%d, DIR: %d.%d, \n", i + 1, axes[i].STEP_PIN[0], axes[i].STEP_PIN[1], axes[i].DIR_PIN[0], axes[i].DIR_PIN[1]);
 
 		// memcpy((uint8_t)axmsg, tx_bufferr, 64);
 
@@ -814,10 +965,10 @@ int main(void)
 	axes[1].home_speed = 800;
 	axes[2].home_speed = 700;
 	axes[3].home_speed = 700;
-	axes[4].home_speed = 1000;
+	axes[4].home_speed = 700;
 	axes[5].home_speed = 7000;
 	// 1 or 0 for dir setting
-	axes[0].home_dir = 1;
+	axes[0].home_dir = 0;
 	axes[1].home_dir = 1;
 	axes[2].home_dir = 1;
 	axes[3].home_dir = 0;
@@ -826,10 +977,10 @@ int main(void)
 
 	axes[0].max_step_pos = 9000 - POSITION_STEP_LIMIT_THRESHOLD;
 	axes[1].max_step_pos = 5000 - POSITION_STEP_LIMIT_THRESHOLD;
-	axes[2].max_step_pos = 3000 - POSITION_STEP_LIMIT_THRESHOLD;
+	axes[2].max_step_pos = 4000 - POSITION_STEP_LIMIT_THRESHOLD;
 	axes[3].max_step_pos = 5000 - POSITION_STEP_LIMIT_THRESHOLD;
-	axes[4].max_step_pos = 5000 - POSITION_STEP_LIMIT_THRESHOLD;
-	axes[5].max_step_pos = 900 - POSITION_STEP_LIMIT_THRESHOLD;
+	axes[4].max_step_pos = 7000 - POSITION_STEP_LIMIT_THRESHOLD;
+	axes[5].max_step_pos = 4000 - POSITION_STEP_LIMIT_THRESHOLD;
 
 	for (int i = 0; i < NUM_AXES; i++)
 	{
@@ -841,9 +992,12 @@ int main(void)
 	axes[2].preset_step_pos[DEFAULT_POSITION] = 1500;
 	axes[3].preset_step_pos[DEFAULT_POSITION] = 5100;
 	axes[4].preset_step_pos[DEFAULT_POSITION] = 5000;
-	axes[5].preset_step_pos[DEFAULT_POSITION] = 500;
+	axes[5].preset_step_pos[DEFAULT_POSITION] = 800;
 
-	k_timer_start(&stepAll_timer, K_MSEC(50), K_MSEC(20)); // should be 5-10 times slower than the slowest stepper
+	k_timer_start(&stepAll_timer, K_NO_WAIT, K_USEC(2000)); // should be 5-10 times slower than the slowest stepper -- nevermind
+	//k_timer_start(&pingAnglePosition_timer, K_NO_WAIT, K_MSEC(25)); 
+
+	//sendMsg("Arm Ready \n");
 
 	// while (true) {
 	// 	//check serial for msgs

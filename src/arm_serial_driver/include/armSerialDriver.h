@@ -53,6 +53,8 @@ class ArmSerialDriver {
     unsigned long baud = 115200;
     string port = "/dev/serial/by-id/usb-ZEPHYR_UBC_ROVER_Arm_500100C6224069D7-if00";
 
+    serial::Serial teensy;
+    serial::Timeout timeout_uart = serial::Timeout::simpleTimeout(1000); // E.g., 1000 ms or 1 second
 
   
     const char jointMode = 'j';
@@ -61,21 +63,26 @@ class ArmSerialDriver {
     double encppr   = 512.0;
 
     bool homeFlag = false;
+    bool fresh_rx_angle = false;
+
     const char mode = jointMode;
 
     // hardware interface communication variables
     std::vector<int> encPos, encCmd;
     std::vector<double> armCmd, armPos, poseCmd, encStepsPerDeg;
-    std::vector<double> reductions{50.0, 160.0, 92.3077, 43.936, 57, 14};
+    std::vector<double> reductions{50.0, 160.0, 92.3077, 43.936, 57.0, 5.18};
+    void recieveMsg();
 
   private:
     ros::NodeHandle nh;
     //void poseSelectCallback(const sb_msgs::ArmPosition::ConstPtr& poseAngles);
     void sendMsg(uint8_t outMsg[TX_UART_BUFF]);
-    void recieveMsg();
-     void parseArmAngleUart(std::string msg);
+    void parseArmAngleUart(std::string msg);
+
 
     bool homed = false;
+    bool arm_inited = false;
+
 
    
     ros::Subscriber subPro;
@@ -83,7 +90,6 @@ class ArmSerialDriver {
     ros::Subscriber subCmdPos;
     ros::Publisher pubCurrPos;
 
-    serial::Serial teensy;
 
     struct Axis{
       float angle_pos;

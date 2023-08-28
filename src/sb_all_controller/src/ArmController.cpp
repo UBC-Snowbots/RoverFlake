@@ -28,7 +28,7 @@ ArmController::ArmController(int argc, char **argv, string node_name)
     ros::NodeHandle private_nh("~");
 
     setup();
-    sleep(1);
+    sleep(0.1);
     pubArmDesPosAngle = private_nh.advertise<sb_msgs::ArmPosition>(armPublisher, PUB_ARM_DES_POS_ANGLE_QUEUE_SIZE);
     //statuspub = private_nh.advertise<std_msgs::Int16>();
     joyinput = private_nh.subscribe(joyTopic, JOY_ARM_QUEUE_SIZE, &ArmController::readJoyInputs, this);
@@ -93,17 +93,17 @@ void ArmController::processInputs()
         // ROS_INFO(
         // "PROCESS INPUT");
     // Assuming joy.axes and current_arm_position are populated
-
+   // if(fresh_rx_angle){
     // Handle the special case for axis 1 with CW and CCW triggers
-    float joy_val_axis_1 = xbox.axes[JOY_AXIS_1_CW_INDEX] - xbox.axes[JOY_AXIS_1_CCW_INDEX];
-    des_arm_position.positions[0] = current_arm_position.positions[0] + joy_val_axis_1 * SPEED_SCALE_JOINT_FACTOR;
+    float joy_val_axis_1 = xbox.axes[JOY_AXIS_1_CCW_INDEX] - xbox.axes[JOY_AXIS_1_CW_INDEX];
+    des_arm_position.positions[0] = joy_val_axis_1 * SPEED_SCALE_JOINT_FACTOR;
 
     // Update desired positions for other axes
     int joy_indices[] = {JOY_AXIS_2_INDEX, JOY_AXIS_3_INDEX, JOY_AXIS_4_INDEX, JOY_AXIS_5_INDEX, JOY_AXIS_6_INDEX};
     
     for (int i = 1; i < NUM_ARM_AXES; i++) {
-        float joy_val = xbox.axes[joy_indices[i]];
-        des_arm_position.positions[i] = current_arm_position.positions[i] + joy_val * SPEED_SCALE_JOINT_FACTOR;
+        float joy_val = xbox.axes[joy_indices[i - 1]];
+        des_arm_position.positions[i] = joy_val * SPEED_SCALE_JOINT_FACTOR;
     }
     if(xbox.buttons[HOME_XBOX_INDEX]){
     des_arm_position.home_cmd = 1;
@@ -113,7 +113,7 @@ void ArmController::processInputs()
     }
 
     publishCmds();
-
+   // }
  
 }
 

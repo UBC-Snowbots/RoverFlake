@@ -3,7 +3,7 @@
 // #define INIT_AXIS(i) Axis(stepPins[i], dirPins[i], encPinA[i], encPinB[i], ppr[i], red[i])
 
 //if an axis is within this many steps to its max/min
-#define POSITION_STEP_LIMIT_THRESHOLD 10
+#define POSITION_STEP_LIMIT_THRESHOLD 50
 
 struct Axis {
    // Axis(int dirPin, int stepPin, int encPinA, int encPinB, long ppr, float reduction);
