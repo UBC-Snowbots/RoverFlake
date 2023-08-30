@@ -209,7 +209,7 @@ void pingStepPosition_timer_callback(struct k_timer *timer_id)
 {
 
 	char msg[TX_BUF_SIZE];
-	sprintf(msg, "my_stepP(%i, %i, %i, %i, %i, %i)\n\r\0", axes[0].step_pos, axes[1].step_pos, axes[2].step_pos, axes[3].step_pos, axes[4].step_pos, axes[5].step_pos);
+	sprintf(msg, "$my_stepP(%i, %i, %i, %i, %i, %i)\n\r\0", axes[0].step_pos, axes[1].step_pos, axes[2].step_pos, axes[3].step_pos, axes[4].step_pos, axes[5].step_pos);
 	ring_buf_put(&ringbuf, (uint8_t *)msg, strlen(msg));
 	uart_irq_tx_enable(dev);
 }
@@ -271,7 +271,7 @@ void parseCmd(uint8_t cmd[RX_BUF_SIZE])
 
 	switch (cmd[1])
 	{
-	case 'h':
+	case HOME_CHAR:
 		cmd_type = HOME; //example command buffer:   $h()
 		parseHomeCmd(cmd);
 		break;
@@ -283,7 +283,15 @@ void parseCmd(uint8_t cmd[RX_BUF_SIZE])
 		cmd_type = INCREMENTAL_TARGET_POSITION;
 		parseIncrementalTargetPositionCmd(cmd); //example command buffer:   $p(0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f)
 		break;
+	case 'S':
+		//cmd_type = INCREMENTAL_TARGET_POSITION;
+		parseSettingCmd(cmd); //example command buffer:   $p(0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f)
+		break;
 	case 't':
+		cmd_type = TEST_LIMITS;
+		testLimits();
+		break;
+	case ANGLE_CALLBACK_CHAR:
 		cmd_type = TEST_LIMITS;
 		testLimits();
 		break;
@@ -313,10 +321,99 @@ void parseCmd(uint8_t cmd[RX_BUF_SIZE])
 
 }
 }
+void parseSettingCmd(uint8_t cmd[RX_BUF_SIZE])
+{
+	//k_timer_stop(&pingAnglePosition_timer);
+	// $Pv(1100, 11990, 110, 1130, 710, 470)
+
+	char *start_ptr = (char *)cmd + 4; // Skip '$Sx('
+	char *end_ptr;
+	int i = 0;
+
+
+	switch (cmd[2])
+	{
+	case 'v': // Set velocity setting
+		sendMsg("Success: Velocity Settings Command, Setting Parsing\n");
+
+		break;
+	
+	default:
+		sendMsg("Error: Unkown Settings Command, Rejected\n");
+
+		break;
+	}
+
+
+if(cmd[2] == 'v'){
+
+
+	while (i < NUM_AXES && (end_ptr = strchr(start_ptr, ',')) != NULL)
+	{
+		char speed_str[10]; // Assume that the float will not exceed 9 characters
+		strncpy(speed_str, start_ptr, end_ptr - start_ptr);
+		speed_str[end_ptr - start_ptr] = '\0'; // Null-terminate
+		axes[i].current_speed = atoi(speed_str);
+
+		start_ptr = end_ptr + 1; // Move to the character after the comma
+		i++;
+	}
+
+	// Last float (after the last comma and before the closing parenthesis)
+	if (i < NUM_AXES)
+	{
+		end_ptr = strchr(start_ptr, ')');
+		if (end_ptr)
+		{
+			char speed_str[10];
+			strncpy(speed_str, start_ptr, end_ptr - start_ptr);
+			speed_str[end_ptr - start_ptr] = '\0';
+			axes[i].current_speed = atoi(speed_str);
+			i++;
+		}
+	}
+	if (i == NUM_AXES && arm_inited)
+	{
+		// All axes angles are in axes[i].des_angle_pos
+		char msg[TX_BUF_SIZE];
+		sprintf(msg, "Speed Setting Update Accepted: \n");
+
+		ring_buf_put(&ringbuf, (uint8_t *)msg, strlen(msg));
+		uart_irq_tx_enable(dev);
+		ring_buf_put(&ringbuf, cmd, RX_BUF_SIZE);
+		uart_irq_tx_enable(dev);
+	}
+	else
+	{
+		// Handle the error if not all six angles are parsed
+		// ...
+
+		// Error handling: could not parse all 6 angles, or message is messed up.
+		char msg[TX_BUF_SIZE];
+		sprintf(msg, "Speed Setting Update Rejected, incorrect syntax  or arm not init: \n");
+
+		ring_buf_put(&ringbuf, (uint8_t *)msg, strlen(msg));
+		uart_irq_tx_enable(dev);
+		ring_buf_put(&ringbuf, cmd, RX_BUF_SIZE);
+		uart_irq_tx_enable(dev);
+		//k_timer_start(&pingAnglePosition_timer, K_MSEC(50), K_NO_WAIT);
+
+		return;
+	}
+
+}
+
+	// for (int i = 0; i < NUM_AXES; i++)
+	// {
+	// 	axes[i].step_des_pos = axes[i].des_angle_pos * red[i] * ppr[i] / 360.0;
+	// 	//k_timer_start(&pingAnglePosition_timer, K_MSEC(POSITION_PING_MS_INTERVAL), K_NO_WAIT);
+	// }
+}
+
 void testLimits()
 {
 
-	k_timer_start(&comm_timer, K_NO_WAIT, K_MSEC(100));
+	k_timer_start(&comm_timer, K_MSEC(100), K_NO_WAIT);
 }
 void comm_timer_callback(struct k_timer *timer_id)
 {
@@ -333,6 +430,7 @@ void comm_timer_callback(struct k_timer *timer_id)
 
 		sendMsg(tmpmsg);
 	}
+
 }
 
 void home_timer_callback(struct k_timer *timer_id)
@@ -380,7 +478,7 @@ void home_timer_callback(struct k_timer *timer_id)
 					axes[i].step_pos = 0;
 					axes[i].step_des_pos = 0;
 					char msg[TX_BUF_SIZE];
-					sprintf(msg, "Axis %d is home. \n\r\0", i + 1);
+					sprintf(msg, "Axis %d is home. \n", i + 1);
 
 					ring_buf_put(&ringbuf, (uint8_t *)msg, strlen(msg));
 					uart_irq_tx_enable(dev);
@@ -391,17 +489,18 @@ void home_timer_callback(struct k_timer *timer_id)
 	else
 	{
 		if(arm_inited){
-		sendMsg("Arm Ready\n\r\0");
-		//arm_inited = true;
+		sendMsg("Arm Ready\n");
+		arm_inited = false;
+		arm_homing = false;
+
 
 		}else{
 		// all axes homed, stop timer
 		k_timer_stop(&home_timer);
-		arm_homing = false;
 		arm_inited = true;
 		goto_preset(DEFAULT_POSITION);
 		//k_sleep(K_MSEC(4000));
-		sendMsg("Homing complete, returning to default position\n\r\0");
+		sendMsg("Homing complete, returning to default position\n");
 		k_timer_start(&home_timer, K_MSEC(7000), K_NO_WAIT);
 		}
 	}
@@ -445,7 +544,7 @@ void parseAbsoluteTargetPositionCmd(uint8_t cmd[RX_BUF_SIZE])
 	{
 		char angle_str[10]; // Assume that the float will not exceed 9 characters
 		strncpy(angle_str, start_ptr, end_ptr - start_ptr);
-		angle_str[end_ptr - start_ptr] = '\0'; // Null-terminate
+		angle_str[end_ptr - start_ptr] = '\n'; // Null-terminate
 		axes[i].des_angle_pos = atof(angle_str);
 
 		start_ptr = end_ptr + 1; // Move to the character after the comma
@@ -460,12 +559,12 @@ void parseAbsoluteTargetPositionCmd(uint8_t cmd[RX_BUF_SIZE])
 		{
 			char angle_str[10];
 			strncpy(angle_str, start_ptr, end_ptr - start_ptr);
-			angle_str[end_ptr - start_ptr] = '\0';
+			angle_str[end_ptr - start_ptr] = '\n';
 			axes[i].des_angle_pos = atof(angle_str);
 			i++;
 		}
 	}
-	if (i == NUM_AXES && arm_inited)
+	if (i == NUM_AXES && !arm_homing)
 	{
 		// All axes angles are in axes[i].des_angle_pos
 		char msg[TX_BUF_SIZE];
@@ -494,11 +593,11 @@ void parseAbsoluteTargetPositionCmd(uint8_t cmd[RX_BUF_SIZE])
 		return;
 	}
 
-	// for (int i = 0; i < NUM_AXES; i++)
-	// {
-	// 	axes[i].step_des_pos = axes[i].des_angle_pos * red[i] * ppr[i] / 360.0;
-	// 	//k_timer_start(&pingAnglePosition_timer, K_MSEC(POSITION_PING_MS_INTERVAL), K_NO_WAIT);
-	// }
+	for (int i = 0; i < NUM_AXES; i++)
+	{
+		axes[i].step_des_pos = axes[i].des_angle_pos * red[i] * ppr[i] / 360.0;
+	}
+
 }
 void parseIncrementalTargetPositionCmd(uint8_t cmd[RX_BUF_SIZE])
 {

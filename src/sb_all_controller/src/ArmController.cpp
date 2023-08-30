@@ -27,16 +27,22 @@ ArmController::ArmController(int argc, char **argv, string node_name)
     ros::init(argc, argv, node_name);
     ros::NodeHandle private_nh("~");
 
-    setup();
-    sleep(0.1);
+    sleep(1);
     pubArmDesPosAngle = private_nh.advertise<sb_msgs::ArmPosition>(armPublisher, PUB_ARM_DES_POS_ANGLE_QUEUE_SIZE);
     //statuspub = private_nh.advertise<std_msgs::Int16>();
     joyinput = private_nh.subscribe(joyTopic, JOY_ARM_QUEUE_SIZE, &ArmController::readJoyInputs, this);
     // pubmovegrp = private_nh.advertise<std_msgs::Bool>(moveGrpPublisher,1);
     subArmPos = private_nh.subscribe(armCurrPosTopic, SUB_ARM_POS_QUEUE_SIZE, &ArmController::readArmPosition, this);
+    setup();
 
+    // if(TEST_DANCE){
+    //     ROS_INFO("testing...\n");
+        
 
-    ROS_INFO("Preparing to drive arm...\n");
+    // }else{
+         ROS_INFO("Ready to drive arm via xbox...\n");
+    // }
+
 
 }
 
@@ -79,7 +85,7 @@ void ArmController::setup()
     xbox.buttons.resize(NUM_JOY_BUTTONS);
 
     for (int i = 0; i < NUM_ARM_AXES; i++){
-        current_arm_position.positions[i] = 000.00;
+        //current_arm_position.positions[i] = 000.00;
         des_arm_position.positions[i] = 000.00;
 
     }

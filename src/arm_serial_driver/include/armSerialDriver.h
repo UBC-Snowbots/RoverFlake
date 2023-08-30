@@ -55,6 +55,7 @@ class ArmSerialDriver {
 
     serial::Serial teensy;
     serial::Timeout timeout_uart = serial::Timeout::simpleTimeout(1000); // E.g., 1000 ms or 1 second
+    bool TEST_DANCE = 0;
 
   
     const char jointMode = 'j';
@@ -76,7 +77,7 @@ class ArmSerialDriver {
   private:
     ros::NodeHandle nh;
     //void poseSelectCallback(const sb_msgs::ArmPosition::ConstPtr& poseAngles);
-    void sendMsg(uint8_t outMsg[TX_UART_BUFF]);
+    void sendMsg(std::string outMsg);
     void parseArmAngleUart(std::string msg);
 
 

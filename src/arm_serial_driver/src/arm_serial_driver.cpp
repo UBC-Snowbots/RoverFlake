@@ -10,15 +10,36 @@
 
 
 void armReceiverThread(ArmSerialDriver& zephyrComm) {
-    ros::Rate rate(100);  // specify the rate in Hz, adjust as needed
+    ros::Rate loop_rate(100);  // specify the rate in Hz, adjust as needed
+     while(!zephyrComm.teensy.isOpen()){
+        //wait to make sure teensy is open
+    }
+    ROS_WARN("Teensy Open");
+
     while (ros::ok()) {
        //if(zephyrComm.teensy.available() > 0){
-        zephyrComm.recieveMsg();
-        //}
-        rate.sleep();
+ 
+      //  ROS_WARN("Check Read");
+
+//    while(!zephyrComm.teensy.available()){
+
+//    }
+
+    zephyrComm.recieveMsg();
+loop_rate.sleep();
+    //zephyrComm.teensy.flushInput();
+
+ 
     }
-    //if ros dies, close serial port
+        //if ros dies, close serial port
+
     zephyrComm.teensy.close();
+
+    ROS_ERROR("Teensy RX Major Error");
+    ROS_ERROR("Teensy RX Major Error");
+    ROS_ERROR("Teensy RX Major Error");
+
+
 }
 
 int main(int argc, char** argv) {
@@ -36,13 +57,14 @@ int main(int argc, char** argv) {
 
    // Create a separate thread for uart recieving loop
     std::thread arm_thread(armReceiverThread, std::ref(zephyrComm));
+    arm_thread.join();
 
     // Start up ros. This will continue to run until the node is killed
     ros::MultiThreadedSpinner spinner(0); //0 means use all threads
+    
 
     spinner.spin(&arm_dedicated_queue);
 
-    arm_thread.join();
 
 
     // Once the node stops, return 0

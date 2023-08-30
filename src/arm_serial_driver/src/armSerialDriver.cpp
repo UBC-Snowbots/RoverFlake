@@ -36,10 +36,11 @@ ArmSerialDriver::ArmSerialDriver(ros::NodeHandle& nh) : nh(nh) {
     //teensy.setTimeout(timeout_uart);
  
     teensy.open();
+
     teensy.setDTR(true);
     teensy.setRTS(false);
 
-    sleep(1);
+    sleep(0.1);
 
     encCmd.resize(NUM_JOINTS);
     armCmd.resize(NUM_JOINTS);
@@ -55,6 +56,7 @@ ArmSerialDriver::ArmSerialDriver(ros::NodeHandle& nh) : nh(nh) {
     
     vitals.pub(ONLINE);
 
+
     //ros::spinOnce;
     // sleep(0.5);
     // ros::Rate loop_rate(50); // 100 Hz
@@ -66,21 +68,48 @@ ArmSerialDriver::ArmSerialDriver(ros::NodeHandle& nh) : nh(nh) {
   
     // }
 
+
 }
 
     void ArmSerialDriver::armPositionCmdCallBack(const sb_msgs::ArmPosition::ConstPtr& cmd_msg){
 
-            uint8_t tx_msg[TX_UART_BUFF];
-            char tx_temp_msg[TX_UART_BUFF];
+    // if(TEST_DANCE){
+        
+    //     system("toilet test dance time!");
+    //     sleep(0.5);
+    //     ROS_INFO("TEST INITIATED");
+    //     sleep(0.5);
+    //     sendMsg("$h()\n");
+    //     ROS_INFO("homing\n");   
+    //     sleep(15.0);
+    //     ROS_INFO("5 sec\n");   
+    //     sleep(7.0);
+    //     sendMsg("$P(10.0, 10.0, 10.0, 10.0, 10.0, 10.0)\n");
+    //     ROS_INFO("10 deg\n");   
+    //     sleep(7.0);
+    //     sendMsg("$P(15.0, 15.0, 15.0, 15.0, 15.0, 15.0)\n");
+    //     ROS_INFO("15 deg\n"); 
+    //     sleep(7.0);
+    //     sendMsg("$P(20.0, 20.0, 20.0, 20.0, 20.0, 20.0)\n");
+    //     ROS_INFO("20 deg\n"); 
+       
+    //     sleep(7.0);
+    //     TEST_DANCE = false;
+
+    // }
+
+
+            char tx_msg[TX_UART_BUFF];
+            //std::string str_tx_msg = "";
 
 
             if(cmd_msg->home_cmd){
-            sendMsg((uint8_t *)"$h()\n");
+            sendMsg("$h()\n");
             ROS_INFO("sent home msg\n");            
             }else if (homed){
-            sprintf(tx_temp_msg, "$i(%0.2f, %0.2f, %0.2f, %0.2f, %0.2f, %0.2f)\n", cmd_msg->positions[0], cmd_msg->positions[1], cmd_msg->positions[2], cmd_msg->positions[3], cmd_msg->positions[4], cmd_msg->positions[5]);
-            std::memcpy(tx_msg, tx_temp_msg, sizeof(tx_temp_msg));  // +1 to copy the null-terminator
-            sendMsg(tx_msg);
+           sprintf(tx_msg, "$i(%0.2f, %0.2f, %0.2f, %0.2f, %0.2f, %0.2f)\n", cmd_msg->positions[0], cmd_msg->positions[1], cmd_msg->positions[2], cmd_msg->positions[3], cmd_msg->positions[4], cmd_msg->positions[5]);
+          //  std::memcpy(tx_msg, tx_temp_msg, sizeof(tx_temp_msg));  // +1 to copy the null-terminator
+            sendMsg(std::string(tx_msg));
             //fresh_rx_angle = false;
  
              } //else if(!arm_inited){
@@ -90,44 +119,42 @@ ArmSerialDriver::ArmSerialDriver(ros::NodeHandle& nh) : nh(nh) {
             // }
 
             
-            
+    
 
             //sendMsg(tx_msg);
 
             
 }
 
-void ArmSerialDriver::sendMsg(uint8_t outMsg[TX_UART_BUFF]) {
+void ArmSerialDriver::sendMsg(std::string outMsg) {
     // Send everything in outMsg through serial port
     //ROS_INFO("attempting send");
-    std::string str_outMsg(reinterpret_cast<const char*>(outMsg), TX_UART_BUFF);
+  //  std::string str_outMsg(reinterpret_cast<const char*>(outMsg), TX_UART_BUFF);
     //std::to_string(str_outMsg);  // +1 to copy the null-terminator
 
-    teensy.write(str_outMsg);
-    ROS_ERROR("Sent via serial: %s", str_outMsg.c_str());
+    teensy.write(outMsg);
+    ROS_ERROR("Sent via serial: %s", outMsg.c_str());
     teensy.flushOutput();
 }
 
 void ArmSerialDriver::recieveMsg() {
-
-    std::string next_char = "";
+   std::string next_char = "";
     std::string buffer = "";
     int timeoutCounter = 0;
-    if (teensy.available() > 0){
-        //timeoutCounter ++;
-     //   next_char = teensy.read(); 
-        buffer = teensy.readline();
+    //zephyrComm.teensy.flushInput();
+   if (teensy.available() > 0){
+        ROS_WARN("Reading");
 
+        //timeoutCounter ++;
+       // next_char = teensy.read(); 
+        buffer = teensy.read(RX_UART_BUFF);
+        ROS_WARN("%s", buffer.c_str());
         // if(next_char == "\n" || next_char == "\r" || next_char == "\0"){
         //     timeoutCounter = RX_UART_BUFF;
         // }
-
-      
-    }
-   teensy.flushInput();
+     
 
 if (buffer.size() > 0){
-        ROS_WARN("%s", buffer.c_str());
      if(buffer.find("my_angleP") != std::string::npos){
         parseArmAngleUart(buffer);
      }
@@ -136,11 +163,13 @@ if (buffer.size() > 0){
        // fresh_rx_angle = true;
      }
 
-
+   }
+        //sleep(1);
+    }
 
 
 }
-}
+
 
  void ArmSerialDriver::parseArmAngleUart(std::string msg){
      //ROS_INFO("Parsing Angle buffer: %s", msg.c_str());

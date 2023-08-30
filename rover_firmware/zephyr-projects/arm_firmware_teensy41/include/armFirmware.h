@@ -65,6 +65,11 @@ this is not easy
 
 #define ARM_COMM_RATE 20 //Hz, only here for refrence
 
+//comm characters
+#define HOME_CHAR 'h'
+#define ANGLE_CALLBACK_CHAR 'A'
+
+
 
 
 
@@ -165,6 +170,8 @@ void parseCmd(uint8_t cmd[RX_BUF_SIZE]);
 void parseAbsoluteTargetPositionCmd(uint8_t cmd[RX_BUF_SIZE]);
 void parseIncrementalTargetPositionCmd(uint8_t cmd[RX_BUF_SIZE]);
 void parseHomeCmd(uint8_t cmd[RX_BUF_SIZE]);
+void parseSettingCmd(uint8_t cmd[RX_BUF_SIZE]);
+
 void testLimits();
 
 
