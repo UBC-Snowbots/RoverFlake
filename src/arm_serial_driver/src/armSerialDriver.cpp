@@ -10,25 +10,24 @@
 ArmSerialDriver::ArmSerialDriver(ros::NodeHandle& nh) : nh(nh) {
     // Setup NodeHandles
 
-    ros::NodeHandle private_nh("~");
+    //ros::NodeHandle private_nh("~");
 
     // Setup Subscribers
     int queue_size = 10;
 
     vital vitals;
 
-    vitals.pubber = private_nh.advertise<std_msgs::Int16>("/status/arm_mcu", 5);
+    vitals.pubber = nh.advertise<std_msgs::Int16>("/status/arm_mcu", 5, true);
     vitals.pub(OFFLINE);
 
     sleep(1);
     vitals.pub(INIT_STATUS);
 
-    subCmdPos = nh.subscribe(
-        "/arm/cmd_pos_angle", queue_size, &ArmSerialDriver::armPositionCmdCallBack, this);
+    subCmdPos = nh.subscribe( "/arm/cmd_pos_angle", 10, &ArmSerialDriver::armPositionCmdCallBack, this);
 
    // subPose = private_nh.subscribe("/cmd_pose", 1, &ArmSerialDriver::poseSelectCallback, this);
 
-    pubCurrPos = private_nh.advertise<sb_msgs::ArmPosition>("/arm/curr_pos_angle", 10);
+    pubCurrPos = nh.advertise<sb_msgs::ArmPosition>("/arm/curr_pos_angle", 10);
     sleep(1);
     vitals.pub(STANDBY);
     teensy.setBaudrate(baud);
@@ -68,10 +67,12 @@ ArmSerialDriver::ArmSerialDriver(ros::NodeHandle& nh) : nh(nh) {
   
     // }
 
+            ROS_INFO("ready\n");            
 
 }
 
     void ArmSerialDriver::armPositionCmdCallBack(const sb_msgs::ArmPosition::ConstPtr& cmd_msg){
+          //  ROS_INFO("cmd callback\n");            
 
     // if(TEST_DANCE){
         
@@ -104,24 +105,22 @@ ArmSerialDriver::ArmSerialDriver(ros::NodeHandle& nh) : nh(nh) {
 
 
             if(cmd_msg->home_cmd){
-            sendMsg("$h()\n");
+            sendMsg(std::string("$h()\n"));
             ROS_INFO("sent home msg\n");            
             }else if (homed){
-           sprintf(tx_msg, "$i(%0.2f, %0.2f, %0.2f, %0.2f, %0.2f, %0.2f)\n", cmd_msg->positions[0], cmd_msg->positions[1], cmd_msg->positions[2], cmd_msg->positions[3], cmd_msg->positions[4], cmd_msg->positions[5]);
-          //  std::memcpy(tx_msg, tx_temp_msg, sizeof(tx_temp_msg));  // +1 to copy the null-terminator
+            //  sprintf(tx_msg, "$i(%0.2f, %0.2f, %0.2f, %0.2f, %0.2f, %0.2f)\n", cmd_msg->positions[0], cmd_msg->positions[1], cmd_msg->positions[2], cmd_msg->positions[3], cmd_msg->positions[4], cmd_msg->positions[5]);
+            // sendMsg(std::string(tx_msg));
+
+          //  ros::Rate(20).sleep();
+            sprintf(tx_msg, "$SV(%0.2f, %0.2f, %0.2f, %0.2f, %0.2f, %0.2f)\n", cmd_msg->velocities[0], cmd_msg->velocities[1], cmd_msg->velocities[2], cmd_msg->velocities[3], cmd_msg->velocities[4], cmd_msg->velocities[5]);
             sendMsg(std::string(tx_msg));
-            //fresh_rx_angle = false;
+
+
  
-             } //else if(!arm_inited){
-            //     //init arm
-            //     sendMsg((uint8_t *)"init\n\r\0");
-            //     arm_inited = true;
-            // }
+             } 
 
-            
-    
+        
 
-            //sendMsg(tx_msg);
 
             
 }
@@ -131,10 +130,10 @@ void ArmSerialDriver::sendMsg(std::string outMsg) {
     //ROS_INFO("attempting send");
   //  std::string str_outMsg(reinterpret_cast<const char*>(outMsg), TX_UART_BUFF);
     //std::to_string(str_outMsg);  // +1 to copy the null-terminator
-
+    
     teensy.write(outMsg);
-    ROS_ERROR("Sent via serial: %s", outMsg.c_str());
-    teensy.flushOutput();
+   // ROS_ERROR("Sent via serial: %s", outMsg.c_str());
+   teensy.flushOutput();
 }
 
 void ArmSerialDriver::recieveMsg() {
@@ -143,7 +142,7 @@ void ArmSerialDriver::recieveMsg() {
     int timeoutCounter = 0;
     //zephyrComm.teensy.flushInput();
    if (teensy.available() > 0){
-        ROS_WARN("Reading");
+       // ROS_WARN("Reading");
 
         //timeoutCounter ++;
        // next_char = teensy.read(); 
@@ -155,13 +154,13 @@ void ArmSerialDriver::recieveMsg() {
      
 
 if (buffer.size() > 0){
-     if(buffer.find("my_angleP") != std::string::npos){
-        parseArmAngleUart(buffer);
-     }
-    if(buffer.find("Arm Ready") != std::string::npos){
+        if(buffer.find("Arm Ready") != std::string::npos){
         homed = true;
        // fresh_rx_angle = true;
+     }else if(buffer.find("my_angleP") != std::string::npos){
+        parseArmAngleUart(buffer);
      }
+
 
    }
         //sleep(1);

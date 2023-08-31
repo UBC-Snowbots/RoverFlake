@@ -5,10 +5,13 @@ Updated On:
 Description: Header file for firmware for driving a 6 axis arm via ROS on a teensy 4.1 MCU
 */
 
-//TODO
-/*
+//TODO, 
+/* more tags throughout code in this zephyr project
+
 crashes with more than 3 axis -- wrong gpio, pin 11 was messed
 weird shit in the buffer, but will just sanitize -- not processing tx buffer data properly
+
+
 
 this is not easy
 
@@ -61,7 +64,7 @@ this is not easy
 #define NUM_PRESET_POSITIONS 1
 #define DEFAULT_POSITION 0
 
-#define POSITION_PING_MS_INTERVAL 50 // 50ms is 20 hz
+#define POSITION_PING_MS_INTERVAL 75 // 50ms is 20 hz
 
 #define ARM_COMM_RATE 20 //Hz, only here for refrence
 
@@ -181,7 +184,9 @@ void stepAll_timer_callback(struct k_timer *timer_id);
 void pingStepPosition_timer_callback(struct k_timer *timer_id);
 void pingAnglePosition_timer_callback(struct k_timer *timer_id);
 
-long angle_to_steps(float angle, int axis_index);
+long angleToSteps(float angle, int i);
+float stepsToAngle(int steps, int i);
+int degPerSecToUsecPerStep(float angle, int i);
 
 void updateAngles();
 

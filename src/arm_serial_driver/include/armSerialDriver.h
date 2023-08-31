@@ -34,6 +34,13 @@ static_assert(sizeof(float) == 4, "float is not 32-bit on this platform");
 #define TX_UART_BUFF 128
 #define RX_UART_BUFF 128
 
+#define AXIS_1_DIR 1
+#define AXIS_2_DIR 1
+#define AXIS_3_DIR 1
+#define AXIS_4_DIR 1
+#define AXIS_5_DIR 1
+#define AXIS_6_DIR 1
+
 
 using std::string;
 using std::exception;

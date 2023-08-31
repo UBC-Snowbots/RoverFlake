@@ -94,16 +94,20 @@ class ArmController {
     ros::Subscriber subArmPos;
 
 
-    sb_msgs::ArmPosition current_arm_position;
-    sb_msgs::ArmPosition des_arm_position;
+    sb_msgs::ArmPosition current_arm;
+    sb_msgs::ArmPosition des_arm;
 
-    int speed = 50;
-    float max_speed = 0.5; //1 = max
-    float max_speed_ang = max_speed / 2;
-  
-    int increment = 10;
+  //int speed[NUM_ARM_AXES] = {50, 50, 50, 50, 50, 50}; // Initialize all elements to 50
+  float max_speed[NUM_ARM_AXES] = {70.0, 6.0, 60.0, 100.0, 40.0, 60.0}; // Initialize all elements to 0.5
+ // float max_speed_ang[NUM_ARM_AXES] = {0.25, 0.25, 0.25, 0.25, 0.25, 0.25}; // Initialize all elements to 0.25
+  // Initialize current_speed array, assuming you want to initialize all to 0.0 for starters
+  float current_speed[NUM_ARM_AXES] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-  
+  //float max_increment_angle[NUM_ARM_AXES] = {2.0, 2.0, 2.0, 2.0, 2.0, 2.0};
+  int max_increment_steps[NUM_ARM_AXES] = {80, 80, 80, 60, 60, 15};
+
+  bool triggers_init = false; //xbox triggers from ros_joy start at 0.0, when they are spring loaded to 1.0
+  int axis_dirs[NUM_ARM_AXES] = {1, 1, 1, -1, 1, 1};
   sensor_msgs::Joy xbox;
 
 
