@@ -72,6 +72,7 @@ this is not easy
 #define HOME_CHAR 'h'
 #define ANGLE_CALLBACK_CHAR 'A'
 
+#define ACCEL_CURVE 1
 
 
 
@@ -99,7 +100,7 @@ inline int limPins[6] = {18, 19, 20, 21, 23, 22};
 inline int limGPIO_PIN[6][6] = {{1,17}, {1,16}, {1,26}, {1,27}, {1,25}, {1,24}};
 
 // pulses per revolution for motors
-inline long ppr[6] = {400, 400, 400, 400, 400, 400};
+inline int ppr[6] = {400, 400, 400, 400, 400, 400};
 
 // Gear Reductions
 inline float red[6] = {50.0, 160.0, 92.3077, 43.936, 57.0, 5.18};
@@ -164,10 +165,10 @@ void sendMsg(const char tx_msg[TX_BUF_SIZE]);
 void stepper_timer_callback(struct k_timer *timer_id);
 
 void home_timer_callback(struct k_timer *timer_id);
+void accelTimer_callback(struct k_timer *timer_id);
 
 
 void limit_switch_callback(const struct device *dev, struct gpio_callback *cb, uint32_t pins);
-
 
 void parseCmd(uint8_t cmd[RX_BUF_SIZE]);
 void parseAbsoluteTargetPositionCmd(uint8_t cmd[RX_BUF_SIZE]);
@@ -187,6 +188,7 @@ void pingAnglePosition_timer_callback(struct k_timer *timer_id);
 long angleToSteps(float angle, int i);
 float stepsToAngle(int steps, int i);
 int degPerSecToUsecPerStep(float angle, int i);
+int degPerSecToMsecPerStep(float angle, int i);
 
 void updateAngles();
 

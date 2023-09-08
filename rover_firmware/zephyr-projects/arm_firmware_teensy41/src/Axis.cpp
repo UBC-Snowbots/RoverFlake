@@ -39,7 +39,6 @@ void Axis::attach() {
 	
 	case 2:
 		dirdev = gpio2_dev;
-
 		break;
 	case 4:
 		dirdev = gpio2_dev;

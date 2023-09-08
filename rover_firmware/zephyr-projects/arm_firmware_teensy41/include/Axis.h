@@ -20,13 +20,24 @@ struct Axis {
     bool pulse_state;
     bool moving;
     
+    //units here are usec per step
     int max_speed;
     int home_speed;
-    int current_speed;
+    int current_speed = 10000;
+    int target_speed = 10000;
+    int max_start_speed = 20000;
+    int zero_speed = 10000; //limits minimum speed to a feasible start speed
+
+
+    int home_accel = 0;
+    int start_accel = 250; 
+    int accel_intervals = 1; //should stay at 1 for maximum smoothness
+    int current_accel = 20000;
 
     int macrostep;
 
     bool dir;
+    bool last_dir = 0;
     //bool dir_signal;
     int home_dir;
     bool homing;
@@ -45,6 +56,7 @@ struct Axis {
     //float max_angle_
     
     struct k_timer stepper_timer;
+    struct k_timer accel_timer;
     struct gpio_callback limit_switch_cb_data;
 
 //   // Code to configure pins
