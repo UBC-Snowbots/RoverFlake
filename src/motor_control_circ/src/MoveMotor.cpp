@@ -86,8 +86,8 @@ void MoveMotor::callback(const geometry_msgs::Twist::ConstPtr& msg) {
    // desired_motors.push_back(0);
     //desired_motors.push_back(1);
 
-    float linear = msg->linear.x / 128;
-    float angular = msg->angular.z / 128;
+    float linear = msg->linear.x;
+    float angular = msg->angular.z;
     float velocity_left = linear - angular;
     float velocity_right = linear + angular;
 
@@ -105,7 +105,7 @@ void MoveMotor::run_motors(std::vector<int> selected_motors, float velocity) {
     } else if (velocity < -1) {
         velocity = -1.0;
     }
-    for (int i = 0; i < NUM_MOTORS; i++) {
+    for (int i = 0; i < NUM_MOTORS/2; i++) {
         int motor_index = selected_motors[i];
         PhidgetBLDCMotor_setTargetVelocity(motors[motor_index], velocity);
         if (PhidgetBLDCMotor_setTargetVelocity(motors[motor_index], velocity) != EPHIDGET_OK) {
