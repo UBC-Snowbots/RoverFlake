@@ -32,7 +32,7 @@ check_lolcat() {
         return 0
     else
         sudo apt-get update
-        sudo apt-get install toilet
+        sudo apt-get install lolcat
         return 1
     fi
 }
