@@ -80,6 +80,12 @@ sudo apt-get update | lolcat
 check_ros
 check_serial
 check_ros_geodesy
+sudo apt-get install ros-noetic-controller-manager | lolcat
+sudo apt-get install ros-noetic-cv-bridge | lolcat
+git submodule update --init --recursive
+rm -r ~/Roverflake/src/external_pkgs/qt_ros/qt_tutorials/
+
+
 
 toilet -f future -F crop "You're good to go!" | lolcat
 
