@@ -20,7 +20,7 @@ check_toilet() {
         return 0
     else
         sudo apt-get update
-        sudo apt-get install toilet
+        sudo apt-get install -y toilet
         return 1
     fi
 }
@@ -32,7 +32,7 @@ check_lolcat() {
         return 0
     else
         sudo apt-get update
-        sudo apt-get install lolcat
+        sudo apt-get install -y lolcat
         return 1
     fi
 }
@@ -44,7 +44,7 @@ check_serial() {
         return 0
     else
         #sudo apt-get update
-        sudo apt-get install ros-noetic-serial
+        sudo apt-get install -y ros-noetic-serial
         toilet -f future "wjwwood's serial package installed." | lolcat
 
         return 1
@@ -58,7 +58,7 @@ check_ros_geodesy() {
         return 0
     else
         #sudo apt-get update
-        sudo apt-get install ros-noetic-geodesy
+        sudo apt-get install -y ros-noetic-geodesy
         toilet -f future "ros-noetic-geodesy package installed." | lolcat
 
         return 1
