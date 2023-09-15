@@ -1,4 +1,10 @@
+clear
+sleep 0.5
 echo ROVERFLAKE QUICKSTART INITIATE
+sleep 0.8
+echo WILL BE RUNNING APT UPGRADE, AND USING -y FOR ALL COMMANDS
+echo THIS SCRIPT IS INTENDED TO RUN ON A NEW INSTALL OF UBUNTU 20.04
+sleep 4
 #!/bin/bash
 
 
@@ -9,6 +15,7 @@ check_ros() {
         toilet -f future "ROS Noetic is already installed."
         return 0
     else
+        install_ros
         return 1
     fi
 }
@@ -67,16 +74,25 @@ check_ros_geodesy() {
 
 # Function to install ROS
 install_ros() {
+    sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+    sudo apt-get install curl
+    curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
     sudo apt-get update
     sudo apt-get install -y ros-noetic-desktop-full
     echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
     source ~/.bashrc
+    sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
+    sudo apt install python3-rosdep
+    sudo rosdep init
+    rosdep update
 }
 
 # Main execution
+sudo apt-get update
+sudo apt-get upgrade
 check_toilet
 check_lolcat
-sudo apt-get update | lolcat
+
 check_ros
 check_serial
 check_ros_geodesy
