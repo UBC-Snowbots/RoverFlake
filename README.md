@@ -2,7 +2,7 @@
 Our new, ROS 1 Noetic repository. <br>
 Make sure to clone reccursively
 ```git clone https://github.com/UBC-Snowbots/RoverFlake.git --recursive ```
-  We are using branches only, you are free to make a fork if you are experienced with git, but using git with 1 remote is going to be easier. We reccommend using GIT CLI if you have experience with it. We reccomend the git GUI from VS code if you havent used git before.
+  We are using branches only, you are free to make a fork if you are experienced with git, but using git with 1 remote is going to be easier. We reccommend using gitt CLI if you have experience with it. We reccomend the git GUI from VS code if you havent used git before.
   
 ```git remote -v``` should return:
 
