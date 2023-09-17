@@ -1,4 +1,4 @@
-# RoverFlake - ROS 1 (Noetic)
+# RoverFlake - ROS 1 (Noetic) / Ubuntu 20.04
 Our new, ROS 1 Noetic repository. <br>
 Make sure to clone reccursively
 ```git clone https://github.com/UBC-Snowbots/RoverFlake.git --recursive ```
