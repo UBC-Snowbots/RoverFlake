@@ -12,9 +12,9 @@
     type="spawn_model"
     args="-file $(find snowbots_arm_urdf_simplified_v5_12)/urdf/snowbots_arm_urdf_simplified_v5_12.urdf -urdf -model snowbots_arm_urdf_simplified_v5_12"
     output="screen" />
-  <node
+  <!-- <node
     name="fake_joint_calibration"
     pkg="rostopic"
     type="rostopic"
-    args="pub /calibrated std_msgs/Bool true" />
+    args="pub /calibrated std_msgs/Bool true" /> -->
 </launch>
