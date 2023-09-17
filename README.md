@@ -55,7 +55,7 @@ Remember it is much better to get help when you're stuck than to waste time tryi
 ## Conventions
 
 ### Github Conventions
-- We follow the Forking Workflow:
+- We follow the Centrilized Workflow:
     - [what it is](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow)
     - [how to use it](https://gist.github.com/Chaser324/ce0505fbed06b947d962)
 - Only commit files that are essential for the system to run; do not put any photos or videos in here
