@@ -1,0 +1,2 @@
+setxkbmap us -variant colemak
+
