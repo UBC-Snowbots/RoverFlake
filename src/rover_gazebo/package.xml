@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>rover_gazebo</name>
+  <version>0.0.1</version>
+  <description>Package for spawning rover in Gazebo</description>
+
+  <maintainer email="youremail@domain.com">Your Name</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>rospy</depend>
+  <depend>gazebo_ros</depend>
+  <depend>xacro</depend>
+</package>
