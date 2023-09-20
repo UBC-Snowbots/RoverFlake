@@ -11,4 +11,6 @@
   <depend>rospy</depend>
   <depend>gazebo_ros</depend>
   <depend>xacro</depend>
+    <depend>snowbots_arm_urdf_simplified_v5_12</depend>
+
 </package>

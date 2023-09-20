@@ -3,6 +3,20 @@
      Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
 <robot name="snowbots_arm_urdf_simplified_v5_12">
+<!-- <joint name="j1" type="continuous">
+        <origin xyz="-0.16681 -0.11566 0.018262" rpy="0 0 0" />
+        <parent link="world" />
+        <child link="l2" />
+        <axis xyz="0 0 1" />
+    </joint> -->
+<link name="world">
+</link>
+<joint name="world_joint" type="fixed">
+        <origin xyz="-0.16681 -0.11566 0.018262" rpy="0 0 0" />
+        <parent link="world" />
+        <child link="l1" />
+        <axis xyz="0 0 1" />
+    </joint>
     <link name="l1">
         <inertial>
             <origin xyz="-0.168479827162396 -0.115656336839165 0.00578093326197773" rpy="0 0 0" />
@@ -282,9 +296,8 @@
         </actuator>
     </transmission>
     <gazebo>
-        <plugin name="gazebo_ros_control">
-            <robotNamespace>/</robotNamespace>
-        </plugin>
+  <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+  </plugin>
     </gazebo>
 </robot>
 
