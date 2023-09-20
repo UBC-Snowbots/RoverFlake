@@ -5,7 +5,7 @@
   <rosparam file="$(find test_old_urdf_moveit_config)/config/ros_controllers.yaml" command="load"/>
 
   <!-- Load the controllers -->
-  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-    output="screen" args="effort_controller velocity_controller position_controller "/>
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="true"
+    output="screen" args="effort_controller"/>
 
 </launch>
