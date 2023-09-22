@@ -30,9 +30,9 @@
         <joint name="j6" value="0"/>
     </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
-    <end_effector name="end_effector" parent_link="ef" group="Arm" parent_group="Arm"/>
-    <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
-    <virtual_joint name="base_joint" type="fixed" parent_frame="world" child_link="l1"/>
+    <!-- <end_effector name="end_effector" parent_link="ef" group="Arm" parent_group="Arm"/> -->
+    <!-- VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot) -->
+    <!-- <virtual_joint name="base_joint" type="fixed" parent_frame="world" child_link="l1"/> -->
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
     <disable_collisions link1="ef" link2="l4" reason="Never"/>
     <disable_collisions link1="ef" link2="l6" reason="Never"/>

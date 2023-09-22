@@ -9,35 +9,35 @@
       - j6
     gains:
       j1:
-        p: 100
+        p: 10000
         d: 1
         i: 1
-        i_clamp: 1
+        i_clamp: 10
       j2:
-        p: 100
+        p: 10000
         d: 1
-        i: 1
-        i_clamp: 1
+        i: 10
+        i_clamp: 1000
       j3:
-        p: 100
+        p: 10000
         d: 1
         i: 1
-        i_clamp: 1
+        i_clamp: 100
       j4:
         p: 100
         d: 1
         i: 1
-        i_clamp: 1
+        i_clamp: 100
       j5:
         p: 100
         d: 1
         i: 1
-        i_clamp: 1
+        i_clamp: 100
       j6:
         p: 100
         d: 1
         i: 1
-        i_clamp: 1
+        i_clamp: 100
   velocity_controller:
     type: velocity_controllers/JointTrajectoryController
     joints:
@@ -49,32 +49,32 @@
       - j6
     gains:
       j1:
-        p: 100
+        p: 1000
         d: 1
         i: 1
         i_clamp: 1
       j2:
-        p: 100
+        p: 1000
         d: 1
         i: 1
         i_clamp: 1
       j3:
-        p: 100
+        p: 1000
         d: 1
         i: 1
         i_clamp: 1
       j4:
-        p: 100
+        p: 1000
         d: 1
         i: 1
         i_clamp: 1
       j5:
-        p: 100
+        p: 1000
         d: 1
         i: 1
         i_clamp: 1
       j6:
-        p: 100
+        p: 1000
         d: 1
         i: 1
         i_clamp: 1
@@ -89,32 +89,32 @@
       - j6
     gains:
       j1:
-        p: 100
+        p: 1000
         d: 1
         i: 1
         i_clamp: 1
       j2:
-        p: 100
+        p: 1000
         d: 1
         i: 1
         i_clamp: 1
       j3:
-        p: 100
+        p: 1000
         d: 1
         i: 1
         i_clamp: 1
       j4:
-        p: 100
+        p: 1000
         d: 1
         i: 1
         i_clamp: 1
       j5:
-        p: 100
+        p: 1000
         d: 1
         i: 1
         i_clamp: 1
       j6:
-        p: 100
+        p: 1000
         d: 1
         i: 1
         i_clamp: 1
