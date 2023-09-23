@@ -16,10 +16,6 @@ To run or build any of the ROS code, you will need to set up an ubuntu enviromen
 
 CIRC Competition Rules: https://circ.cstag.ca/2023/tasks/
 
-
-### Nodelets Quick Guide
-See [here](nodelets.md)
-
 ## Tips for New Members
 
 Tutorials and advice for new members.
