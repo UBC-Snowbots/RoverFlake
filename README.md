@@ -59,9 +59,10 @@ Remember it is much better to get help when you're stuck than to waste time tryi
     - [what it is](https://www.atlassian.com/git/tutorials/comparing-workflows#forking-workflow)
     - [how to use it](https://gist.github.com/Chaser324/ce0505fbed06b947d962)
 - Only commit files that are essential for the system to run; do not put any photos or videos in here
-- All files **must** be formatted properly. Formatting will be enforced with the `clang-format` tool. 
-    - To check and fix formatting, from the `Snowflake` folder run `./clang_format/fix_formatting.sh BRANCH_NAME`, where `BRANCH_NAME` is the name of the branch you intend to merge your code into (ex. `iarrc` or `core`). This script will fix any improperly formatted code, but will refuse to change any files with uncommited changes (to prevent you losing work)
+- All files should be formatted properly. Formatting will... not be enforced with the `clang-format` tool. 
+    - To check and fix formatting, from the `Snowflake` repo run `./clang_format/fix_formatting.sh BRANCH_NAME`, where `BRANCH_NAME` is the name of the branch you intend to merge your code into (ex. `iarrc` or `core`). This script will fix any improperly formatted code, but will refuse to change any files with uncommited changes (to prevent you losing work)
 - Once your pull request has been reviewed and revised until it looks good from both your and the reviewers' sides, go ahead and Squash and Merge it, which will squash all the commits on your pull request into one and merge it to the target branch.
+- Once you know you don't need your branch anymore, and all code is merged to another branch, then make sure to delete it.
 
 ### Pull Requests
 Below are some notes we would like to highlight about pull requests: 
