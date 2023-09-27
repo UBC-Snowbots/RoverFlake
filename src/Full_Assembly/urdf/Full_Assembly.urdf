@@ -86,7 +86,7 @@
   </link>
   <joint
     name="Left_Connect"
-    type="fixed">
+    type="continuous">
     <origin
       xyz="-0.248729166875268 0.369784478188223 -0.345807860434498"
       rpy="0.51304684994759 0 3.14159265358979" />
@@ -95,7 +95,7 @@
     <child
       link="Left_Bogie" />
     <axis
-      xyz="0 0 0.999995325686932" />
+      xyz="0 0 1" />
     <limit
       lower="0"
       upper="0"
@@ -260,7 +260,7 @@
   </link>
   <joint
     name="Right_Connect"
-    type="fixed">
+    type="continuous">
     <origin
       xyz="0.365966373124733 0.366267486623604 -0.182466340171182"
       rpy="1.5707963267949 0 1.5707963267949" />
@@ -434,7 +434,7 @@
   </link>
   <joint
     name="Back_Connect"
-    type="fixed">
+    type="continuous">
     <origin
       xyz="0.055470277282733 -0.512439057564754 -0.421614058115213"
       rpy="1.5602438137183 -0.0105513381921141 -1.57068498159409" />
@@ -614,216 +614,5 @@
     <axis
       xyz="0 0 0" />
   </joint>
-  <link
-    name="Axis_1">
-    <inertial>
-      <origin
-        xyz="0.134248295686674 -0.553037496938444 -0.238224576973824"
-        rpy="0 0 0" />
-      <mass
-        value="0.81786771052049" />
-      <inertia
-        ixx="0.000893192189106475"
-        ixy="-0.000131553977160576"
-        ixz="1.35516237779562E-05"
-        iyy="0.000906560350906043"
-        iyz="-3.27360180369472E-06"
-        izz="0.0010445731022166" />
-    </inertial>
-    <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://Full_Assembly/meshes/Axis_1.STL" />
-      </geometry>
-      <material
-        name="">
-        <color
-          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://Full_Assembly/meshes/Axis_1.STL" />
-      </geometry>
-    </collision>
-  </link>
-  <joint
-    name="J1"
-    type="continuous">
-    <origin
-      xyz="0.414827702718078 0.456964033568699 -0.174125226221685"
-      rpy="-0.577361508804227 -0.0919314877859293 -0.927540423551142" />
-    <parent
-      link="Arm" />
-    <child
-      link="Axis_1" />
-    <axis
-      xyz="0 0 0" />
-  </joint>
-  <link
-    name="Axis_2">
-    <inertial>
-      <origin
-        xyz="-0.0732110133685279 -0.0167830116009002 0.149230653314851"
-        rpy="0 0 0" />
-      <mass
-        value="0.2404230761299" />
-      <inertia
-        ixx="0.00319340251498069"
-        ixy="-5.27621649126873E-07"
-        ixz="7.7377149618105E-07"
-        iyy="0.00292575082471902"
-        iyz="0.000400748139546237"
-        izz="0.000304582219218908" />
-    </inertial>
-    <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://Full_Assembly/meshes/Axis_2.STL" />
-      </geometry>
-      <material
-        name="">
-        <color
-          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://Full_Assembly/meshes/Axis_2.STL" />
-      </geometry>
-    </collision>
-  </link>
-  <joint
-    name="J2"
-    type="continuous">
-    <origin
-      xyz="0.195325660091703 -0.578995012618406 -0.306844147771886"
-      rpy="-2.83566285494556 0.505369095958377 -0.825410998814657" />
-    <parent
-      link="Axis_1" />
-    <child
-      link="Axis_2" />
-    <axis
-      xyz="0 0 0" />
-  </joint>
-  <link
-    name="Axis_3">
-    <inertial>
-      <origin
-        xyz="-0.0116195005837259 -0.297812414693222 -0.244557056519289"
-        rpy="0 0 0" />
-      <mass
-        value="0.310417797821433" />
-      <inertia
-        ixx="0.000205636365794706"
-        ixy="2.3887477537068E-05"
-        ixz="4.18215227555799E-05"
-        iyy="0.000298887143687147"
-        iyz="7.76728248385818E-06"
-        izz="0.000251643089833438" />
-    </inertial>
-    <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://Full_Assembly/meshes/Axis_3.STL" />
-      </geometry>
-      <material
-        name="">
-        <color
-          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://Full_Assembly/meshes/Axis_3.STL" />
-      </geometry>
-    </collision>
-  </link>
-  <joint
-    name="J3"
-    type="fixed">
-    <origin
-      xyz="-0.22723 0.14584 0.083227"
-      rpy="-1.5708 0.13943 0.49635" />
-    <parent
-      link="Axis_2" />
-    <child
-      link="Axis_3" />
-    <axis
-      xyz="0 0 0" />
-  </joint>
-  <link
-    name="Axis_4">
-    <inertial>
-      <origin
-        xyz="0.0285964513401345 -0.0832967816533951 -0.204454386895438"
-        rpy="0 0 0" />
-      <mass
-        value="0.135410062287196" />
-      <inertia
-        ixx="8.95626812601844E-05"
-        ixy="-9.38649000207083E-06"
-        ixz="9.5175376289745E-06"
-        iyy="8.96432017854978E-05"
-        iyz="-9.48319687860513E-06"
-        izz="8.99982098384798E-05" />
-    </inertial>
-    <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://Full_Assembly/meshes/Axis_4.STL" />
-      </geometry>
-      <material
-        name="">
-        <color
-          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
-      </material>
-    </visual>
-    <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://Full_Assembly/meshes/Axis_4.STL" />
-      </geometry>
-    </collision>
-  </link>
-  <joint
-    name="J4"
-    type="fixed">
-    <origin
-      xyz="-0.19367 -0.18832 -0.1742"
-      rpy="1.5708 0.94291 -2.2385" />
-    <parent
-      link="Axis_3" />
-    <child
-      link="Axis_4" />
-    <axis
-      xyz="0 0 0" />
-  </joint>
+
 </robot>
