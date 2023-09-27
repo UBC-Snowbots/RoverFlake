@@ -12,7 +12,7 @@
 <link name="world">
 </link>
 <joint name="world_joint" type="fixed">
-        <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+        <origin xyz="0.0 0.0 1.09" rpy="0 0 0" />
         <parent link="world" />
         <child link="l1" />
          <axis xyz="0 0 1" /> 
@@ -239,6 +239,19 @@
         <child link="ef" />
         <!-- <axis xyz="0 0 0" /> -->
     </joint>
+    <joint name="camera_joint" type="fixed">
+  <origin xyz="0 0 0.2" rpy="0 0 1"/>
+  <parent link="ef"/>
+  <child link="camera_link"/>
+</joint>
+
+<link name="camera_link">
+  <inertial>
+    <mass value="0.1"/>
+    <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+  </inertial>
+</link>
+
     <transmission name="trans_j1">
         <type>transmission_interface/SimpleTransmission</type>
         <joint name="j1">
@@ -303,5 +316,31 @@
   <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
   </plugin>
     </gazebo>
+    <gazebo reference="camera_link">
+  <sensor type="camera" name="camera_sensor">
+    <update_rate>30.0</update_rate>
+    <camera name="head">
+      <horizontal_fov>1.3962634</horizontal_fov>
+      <image>
+        <width>800</width>
+        <height>800</height>
+        <format>R8G8B8</format>
+      </image>
+      <clip>
+        <near>0.02</near>
+        <far>300</far>
+      </clip>
+    </camera>
+    <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+      <alwaysOn>true</alwaysOn>
+      <updateRate>0.0</updateRate>
+      <cameraName>robot/camera</cameraName>
+      <imageTopicName>image_raw</imageTopicName>
+      <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+      <frameName>camera_link</frameName>
+    </plugin>
+  </sensor>
+</gazebo>
+
 </robot>
 
