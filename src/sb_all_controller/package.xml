@@ -16,6 +16,7 @@
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>roscpp</exec_depend>
+  <depend>sb_msgs</depend>
   <export>
   </export>
 </package>

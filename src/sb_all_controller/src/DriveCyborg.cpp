@@ -21,7 +21,7 @@ bool switchMode;
 // Read the master documentation if there's any issues with this package
 DriveController::DriveController(int argc, char **argv, string node_name)
 {
-    string joyTopic = "/joy";
+    string joyTopic = "/joy_drive";
     //string state_topic = "/"
     // string moveGrpPublisher = "/move_group_trigger";
     ros::init(argc, argv, node_name);
