@@ -578,8 +578,7 @@ void goto_preset(int position)
 
 void parseAbsoluteTargetPositionCmd(uint8_t cmd[RX_BUF_SIZE])
 {
-	// k_timer_stop(&pingAnglePosition_timer);
-	//  P(11.0, 11.0, 11.0, 11.0, 11.0, 11.0)
+	// example input: $P(11.0, 11.0, 11.0, 11.0, 11.0, 11.0)
 
 	char *start_ptr = (char *)cmd + 3; // Skip '$P('
 	char *end_ptr;
