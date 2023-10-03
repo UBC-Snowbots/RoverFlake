@@ -1,6 +1,7 @@
 echo Make sure to source this script, or your env variables wont update
 echo THIS SCRIPT WILL ONLY EFFECT THE CURRENT TERMINAL
 echo 
+source /opt/ros/noetic/setup.bash
 echo ROS_HOSTNAME was $ROS_HOSTNAME
 echo ROS_IP was $ROS_IP
 echo ROS_MASTER_URI was at $ROS_MASTER_URI
