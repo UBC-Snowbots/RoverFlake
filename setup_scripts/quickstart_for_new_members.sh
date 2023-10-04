@@ -101,7 +101,7 @@ sudo apt-get install ros-noetic-cv-bridge | lolcat
 git submodule update --init --recursive
 rm -r ~/Roverflake/src/external_pkgs/qt_ros/qt_tutorials/
 
-
+git submodule update
 
 toilet -f future -F crop "You're good to go!" | lolcat
 
