@@ -10,7 +10,7 @@
     gains:
       j1:
         p: 1000
-        d: 1
+        d: 10
         i: 1
         i_clamp: 1
       j2:
@@ -20,7 +20,7 @@
         i_clamp: 1
       j3:
         p: 1000
-        d: 1
+        d: 10
         i: 1
         i_clamp: 1
       j4:
