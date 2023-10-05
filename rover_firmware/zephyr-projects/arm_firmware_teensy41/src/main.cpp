@@ -1,3 +1,28 @@
+/*
+2023/2024 Arm firmware.
+August 18 - Sep 4 2023, Firmware started, got to velocity based control
+
+Oct 4 --> Ongoing, adding more features and testing more for robustness
+We are done with the old firmware
+This is the new arm firmware re-designed with inverse kinematics and sophisticated control in mind
++ more safety features and robust checks
+
+
+TODO: 
+Make firmware completley resetable, should be able to detect when serial port closes. This needs more testing
+Add in 
+
+2,3,5 - > Hold, Lift testing
+
+|\-  
+
+
+
+
+*/
+
+
+
 #include <armFirmware.h>
 
 LOG_MODULE_REGISTER(cdc_acm_echo, LOG_LEVEL_INF);
@@ -21,6 +46,7 @@ struct k_timer stepAll_timer;
 
 bool homing_complete = false;
 
+//msg ques if we need to use them
 // K_MSGQ_DEFINE(axes_data_queue[0], sizeof(struct AxisData), 2, 4);
 // K_MSGQ_DEFINE(axes_data_queue[1], sizeof(struct AxisData), 2, 4);
 // K_MSGQ_DEFINE(axes_data_queue[2], sizeof(struct AxisData), 2, 4);
@@ -480,6 +506,7 @@ void comm_timer_callback(struct k_timer *timer_id)
 
 void home_timer_callback(struct k_timer *timer_id)
 {
+	//timer callback for the homing sequence. still uses axes.step to move the motors.
 	// k_timer_stop(&pingAnglePosition_timer);
 
 	homing_complete = true;
@@ -491,7 +518,7 @@ void home_timer_callback(struct k_timer *timer_id)
 			break;
 		}
 	}
-
+//add in a bybass that sets axes[i].homing false and homed true based on special home requests
 	if (!homing_complete)
 	{
 		arm_homing = true;
@@ -543,10 +570,11 @@ void home_timer_callback(struct k_timer *timer_id)
 			// all axes homed, stop timer
 			k_timer_stop(&home_timer);
 			arm_inited = true;
+			//needs testing, not sure if specific home will work here
 			goto_preset(DEFAULT_POSITION);
 			// k_sleep(K_MSEC(4000));
 			sendMsg("Homing complete, returning to default position\n");
-			k_timer_start(&home_timer, K_MSEC(7000), K_NO_WAIT);
+			k_timer_start(&home_timer, K_MSEC(5000), K_NO_WAIT);
 		}
 	}
 
@@ -758,16 +786,25 @@ void parseIncrementalTargetPositionCmd(uint8_t cmd[RX_BUF_SIZE])
 
 void parseHomeCmd(uint8_t homeCmd[RX_BUF_SIZE])
 {
+	//$h(A) -> home all axes
+	//$h(i) -> home specific axes
 	bool switch_health = true;
-	// switch (homeCmd[1])
-	// {
-	// case 'A':
-	// 	break;
+	int requested_axis = 0;
+	switch (homeCmd[3])
+	{
+	case 'A':
+		break;
 
-	// default:
+	default:
+		//requested_axis = std::atoi((char*)homeCmd[3]); one way of parsing
+		requested_axis = homeCmd[3] - '0'; //bit manipulation. ascii is awesome
+		break;
+	}
 
-	// 	break;
-	// }
+	 if(requested_axis < 0 || requested_axis > 6){
+				sendMsg("Error parsing requested_axis. Ignoring homing request\n");
+				return;
+			}
 	if (!arm_homing)
 	{
 
@@ -775,7 +812,7 @@ void parseHomeCmd(uint8_t homeCmd[RX_BUF_SIZE])
 		{
 			if (get_gpio(axes[i].LIMIT_PIN[0], axes[i].LIMIT_PIN[1]))
 			{
-
+				//TODO add specific diagnostics for each axis. I'm thinking an axis.switch_health instead of switch_health
 				switch_health = false;
 			}
 			else
@@ -790,13 +827,26 @@ void parseHomeCmd(uint8_t homeCmd[RX_BUF_SIZE])
 		{
 			char msg[TX_BUF_SIZE];
 			sendMsg("Homing Sequence Start\n");
-
+			//if specific axis is requested, set all other axes to properly homed
+			//
+			if(requested_axis > 0 && requested_axis <= NUM_AXES){
+				sendMsg("Specific Axis Requested, be careful as I am bypassing other axes\n");
+				sendMsg("I reccomend a full homing sequence first\n");
+				for(int i = 0; i < NUM_AXES; i++){
+					if(i != requested_axis - 1){
+						axes[i].homed = 1;
+						//axes[i].homing
+					}
+				}
+			}else if(requested_axis == 0){
+				sendMsg("Homing All axes\n");
+			}
 			k_timer_start(&home_timer, K_NO_WAIT, K_MSEC(20));
 		}
 		else
 		{
 			char msg[TX_BUF_SIZE];
-			sprintf(msg, "Homing Request Denied, Limit switch %d is pressed or broken\n");
+			sprintf(msg, "Homing Request Denied, Limit switch is pressed or broken\n");
 			ring_buf_put(&ringbuf, (uint8_t *)msg, strlen(msg));
 
 			uart_irq_tx_enable(dev);

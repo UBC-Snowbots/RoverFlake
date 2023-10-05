@@ -80,7 +80,7 @@ ArmSerialDriver::ArmSerialDriver(ros::NodeHandle& nh) : nh(nh) {
         sleep(0.5);
         ROS_INFO("TEST INITIATED");
         sleep(0.5);
-        sendMsg("$h()\n");
+        sendMsg("$h(A)\n");
         ROS_INFO("homing\n");   
         sleep(15.0);
         ROS_INFO("5 sec\n");   
@@ -105,7 +105,7 @@ ArmSerialDriver::ArmSerialDriver(ros::NodeHandle& nh) : nh(nh) {
 
 
             if(cmd_msg->home_cmd){
-            sendMsg(std::string("$h()\n"));
+            sendMsg(std::string("$h(A)\n"));
             //sleep(1);
             ROS_INFO("sent home msg\n");            
             }else if (homed){
@@ -133,7 +133,7 @@ void ArmSerialDriver::sendMsg(std::string outMsg) {
     //std::to_string(str_outMsg);  // +1 to copy the null-terminator
     
     teensy.write(outMsg);
-   // ROS_ERROR("Sent via serial: %s", outMsg.c_str());
+   ROS_ERROR("Sent via serial: %s", outMsg.c_str());
    teensy.flushOutput();
 }
 

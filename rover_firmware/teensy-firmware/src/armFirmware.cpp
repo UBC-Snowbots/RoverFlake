@@ -1,4 +1,10 @@
 /*
+OLD, RETIRED FIRMWARE AS OF OCT 4th, 2023 - Rowan
+See zephyr-projects/arm_firmware_teensy41 for new firmware
+ArmSerialDriver is the new driver - will be making a hardware interface, possibly in ros2
+ArmHardwareDriver is the old
+
+
 Created By: Tate Kolton, Graeme Dockrill
 Created On: December 21, 2021
 Updated On: January 10, 2023
