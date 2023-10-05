@@ -1209,12 +1209,12 @@ int main(void)
 
 	}
 
-	axes[0].preset_step_pos[DEFAULT_POSITION] = angleToSteps(120.0, 0);
-	axes[1].preset_step_pos[DEFAULT_POSITION] = angleToSteps(25.0, 1);
-	axes[2].preset_step_pos[DEFAULT_POSITION] = angleToSteps(40.0, 2);
-	axes[3].preset_step_pos[DEFAULT_POSITION] = angleToSteps(90.0, 3);
-	axes[4].preset_step_pos[DEFAULT_POSITION] = angleToSteps(90.0, 4);
-	axes[5].preset_step_pos[DEFAULT_POSITION] = angleToSteps(40.0, 5);
+	axes[0].preset_step_pos[DEFAULT_POSITION] = angleToSteps(60.0, 0);
+	axes[1].preset_step_pos[DEFAULT_POSITION] = angleToSteps(45.0, 1);
+	axes[2].preset_step_pos[DEFAULT_POSITION] = angleToSteps(0.0, 2);
+	axes[3].preset_step_pos[DEFAULT_POSITION] = angleToSteps(110.0, 3);
+	axes[4].preset_step_pos[DEFAULT_POSITION] = angleToSteps(127.5, 4);
+	axes[5].preset_step_pos[DEFAULT_POSITION] = angleToSteps(15.0, 5);
 
 	k_timer_init(&comm_timer, comm_timer_callback, NULL);							// pass user data to callback
 	k_timer_init(&home_timer, home_timer_callback, NULL);							// pass user data to callback

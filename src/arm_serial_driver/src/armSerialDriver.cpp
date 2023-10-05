@@ -74,30 +74,30 @@ ArmSerialDriver::ArmSerialDriver(ros::NodeHandle& nh) : nh(nh) {
     void ArmSerialDriver::armPositionCmdCallBack(const sb_msgs::ArmPosition::ConstPtr& cmd_msg){
           //  ROS_INFO("cmd callback\n");            
 
-    // if(TEST_DANCE){
+    if(TEST_DANCE){
         
-    //     system("toilet test dance time!");
-    //     sleep(0.5);
-    //     ROS_INFO("TEST INITIATED");
-    //     sleep(0.5);
-    //     sendMsg("$h()\n");
-    //     ROS_INFO("homing\n");   
-    //     sleep(15.0);
-    //     ROS_INFO("5 sec\n");   
-    //     sleep(7.0);
-    //     sendMsg("$P(10.0, 10.0, 10.0, 10.0, 10.0, 10.0)\n");
-    //     ROS_INFO("10 deg\n");   
-    //     sleep(7.0);
-    //     sendMsg("$P(15.0, 15.0, 15.0, 15.0, 15.0, 15.0)\n");
-    //     ROS_INFO("15 deg\n"); 
-    //     sleep(7.0);
-    //     sendMsg("$P(20.0, 20.0, 20.0, 20.0, 20.0, 20.0)\n");
-    //     ROS_INFO("20 deg\n"); 
+        system("toilet test dance time!");
+        sleep(0.5);
+        ROS_INFO("TEST INITIATED");
+        sleep(0.5);
+        sendMsg("$h()\n");
+        ROS_INFO("homing\n");   
+        sleep(15.0);
+        ROS_INFO("5 sec\n");   
+        sleep(7.0);
+        sendMsg("$P(10.0, 10.0, 10.0, 10.0, 10.0, 10.0)\n");
+        ROS_INFO("10 deg\n");   
+        sleep(7.0);
+        sendMsg("$P(15.0, 15.0, 15.0, 15.0, 15.0, 15.0)\n");
+        ROS_INFO("15 deg\n"); 
+        sleep(7.0);
+        sendMsg("$P(20.0, 20.0, 20.0, 20.0, 20.0, 20.0)\n");
+        ROS_INFO("20 deg\n"); 
        
-    //     sleep(7.0);
-    //     TEST_DANCE = false;
+        sleep(7.0);
+        TEST_DANCE = false;
 
-    // }
+    }
 
 
             char tx_msg[TX_UART_BUFF];
@@ -106,6 +106,7 @@ ArmSerialDriver::ArmSerialDriver(ros::NodeHandle& nh) : nh(nh) {
 
             if(cmd_msg->home_cmd){
             sendMsg(std::string("$h()\n"));
+            //sleep(1);
             ROS_INFO("sent home msg\n");            
             }else if (homed){
             //  sprintf(tx_msg, "$i(%0.2f, %0.2f, %0.2f, %0.2f, %0.2f, %0.2f)\n", cmd_msg->positions[0], cmd_msg->positions[1], cmd_msg->positions[2], cmd_msg->positions[3], cmd_msg->positions[4], cmd_msg->positions[5]);

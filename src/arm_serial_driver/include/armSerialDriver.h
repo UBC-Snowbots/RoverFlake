@@ -58,12 +58,12 @@ class ArmSerialDriver {
 
 
     //new serial
-    unsigned long baud = 115200;
+    unsigned long baud = 19200;
     string port = "/dev/serial/by-id/usb-ZEPHYR_UBC_ROVER_Arm_500100C6224069D7-if00";
 
     serial::Serial teensy;
     serial::Timeout timeout_uart = serial::Timeout::simpleTimeout(1000); // E.g., 1000 ms or 1 second
-    bool TEST_DANCE = 0;
+    bool TEST_DANCE = 1;
 
   
     const char jointMode = 'j';
@@ -119,3 +119,8 @@ class ArmSerialDriver {
 
 };
 #endif // ARM_HARDWARE_SERIAL_MYNODE_H
+
+
+
+
+//$P(90.0, 25.0, 40.0, 80.0, 0.0)
