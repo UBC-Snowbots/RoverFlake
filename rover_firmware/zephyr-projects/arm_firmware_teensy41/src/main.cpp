@@ -1206,28 +1206,28 @@ int main(void)
 
 	// degPerSec converter functions use axes data, so need to be called after initiation//nvm
 	axes[0].max_speed = degPerSecToUsecPerStep(100.0, 0);  // 500;
-	axes[1].max_speed = degPerSecToUsecPerStep(7.0, 1);	  // 800;
+	axes[1].max_speed = degPerSecToUsecPerStep(10.0, 1);	  // 800;
 	axes[2].max_speed = degPerSecToUsecPerStep(80.0, 2);  // 700;
 	axes[3].max_speed = degPerSecToUsecPerStep(130.0, 3); // 700;
 	axes[4].max_speed = degPerSecToUsecPerStep(100.0, 4);  // 600;
 	axes[5].max_speed = degPerSecToUsecPerStep(100.0, 5);  // 5800;
 														  // can be cleaned up, but for now I'm leaving it like this
-	axes[0].home_speed = degPerSecToUsecPerStep(30.0, 0);
-	axes[1].home_speed = degPerSecToUsecPerStep(1.0, 1);
+	axes[0].home_speed = degPerSecToUsecPerStep(40.0, 0);
+	axes[1].home_speed = degPerSecToUsecPerStep(8.0, 1);
 	axes[2].home_speed = degPerSecToUsecPerStep(30.0, 2);
 	axes[3].home_speed = degPerSecToUsecPerStep(40.0, 3);
 	axes[4].home_speed = degPerSecToUsecPerStep(30.0, 4);
 	axes[5].home_speed = degPerSecToUsecPerStep(20.0, 5);
 
 	axes[0].current_accel = degPerSecToUsecPerStep(10.0, 0);
-	axes[1].current_accel = degPerSecToUsecPerStep(1.0, 1);
+	axes[1].current_accel = degPerSecToUsecPerStep(3.0, 1);
 	axes[2].current_accel = degPerSecToUsecPerStep(10.0, 2);
 	axes[3].current_accel = degPerSecToUsecPerStep(10.0, 3);
 	axes[4].current_accel = degPerSecToUsecPerStep(10.0, 4);
 	axes[5].current_accel = degPerSecToUsecPerStep(10.0, 5);
 
 	axes[0].max_start_speed = degPerSecToUsecPerStep(5.0, 0);
-	axes[1].max_start_speed = degPerSecToUsecPerStep(0.5, 1);
+	axes[1].max_start_speed = degPerSecToUsecPerStep(1.0, 1);
 	axes[2].max_start_speed = degPerSecToUsecPerStep(3.0, 2);
 	axes[3].max_start_speed = degPerSecToUsecPerStep(5.0, 3);
 	axes[4].max_start_speed = degPerSecToUsecPerStep(5.0, 4);
@@ -1242,7 +1242,7 @@ int main(void)
 	axes[5].home_dir = 1;
 
 	axes[0].max_step_pos = angleToSteps(180.0, 0) - POSITION_STEP_LIMIT_THRESHOLD;
-	axes[1].max_step_pos = angleToSteps(50.0, 1) - POSITION_STEP_LIMIT_THRESHOLD;
+	axes[1].max_step_pos = angleToSteps(180.0, 1) - POSITION_STEP_LIMIT_THRESHOLD; //TODO: WARN DANGER 
 	axes[2].max_step_pos = angleToSteps(140.0, 2) - POSITION_STEP_LIMIT_THRESHOLD;
 	axes[3].max_step_pos = angleToSteps(180.0, 3) - POSITION_STEP_LIMIT_THRESHOLD;
 	axes[4].max_step_pos = angleToSteps(180.0, 4) - POSITION_STEP_LIMIT_THRESHOLD;
