@@ -104,6 +104,7 @@ rm -r ~/Roverflake/src/external_pkgs/qt_ros/qt_tutorials/
 
 chmod +x setup_scripts/install_phidgets.sh
 ./setup_scripts/install_phidgets.sh
+git submodule update
 
 toilet -f future -F crop "You're good to go!" | lolcat
 
