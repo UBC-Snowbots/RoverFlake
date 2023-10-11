@@ -6,6 +6,6 @@
 
   <!-- Load the controllers -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="true"
-    output="screen" args="position_controller"/>
+    output="screen" args="effort_controller"/>
 
 </launch>
