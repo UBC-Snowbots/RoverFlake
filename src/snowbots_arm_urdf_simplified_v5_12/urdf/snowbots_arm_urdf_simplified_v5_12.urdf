@@ -315,6 +315,7 @@
     </transmission>
     <gazebo>
   <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+    <!-- <robotNamespace>/snowbots_arm_urdf_simplified_v5_12</robotNamespace> -->
   </plugin>
     </gazebo>
     <gazebo reference="camera_link">
