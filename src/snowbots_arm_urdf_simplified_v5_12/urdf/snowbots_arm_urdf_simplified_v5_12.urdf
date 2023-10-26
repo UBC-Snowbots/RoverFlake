@@ -259,7 +259,7 @@
             <!-- only one hardware interface is currently supported, the easiest way to change is just ctrl F. Effort works the best, position kind of works but gives errors, velocity is untested -->
         </joint>
         <actuator name="j1_motor">
-            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <!-- <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface> -->
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
     </transmission>
@@ -269,7 +269,7 @@
             <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
         </joint>
         <actuator name="j2_motor">
-            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <!-- <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface> -->
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
     </transmission>
@@ -279,7 +279,7 @@
             <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
         </joint>
         <actuator name="j3_motor">
-            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <!-- <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface> -->
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
     </transmission>
@@ -289,7 +289,7 @@
             <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
         </joint>
         <actuator name="j4_motor">
-            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <!-- <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface> -->
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
     </transmission>
@@ -299,7 +299,7 @@
             <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
         </joint>
         <actuator name="j5_motor">
-            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <!-- <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface> -->
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
     </transmission>
@@ -309,7 +309,7 @@
             <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
         </joint>
         <actuator name="j6_motor">
-            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            <!-- <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface> -->
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
     </transmission>
