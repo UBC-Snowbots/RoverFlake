@@ -1,8 +1,11 @@
+<?xml version="1.0"?>
 <launch>
+  <!-- Launch the empty Gazebo world -->
+  <include file="$(find rover_gazebo)/launch/playpen.launch" />
+
   <!-- Load the URDF into the ROS Parameter Server -->
   <param name="robot_description" textfile="$(find snowbots_arm_urdf_simplified_v5_12)/urdf/snowbots_arm_urdf_simplified_v5_12.urdf" />
 
   <!-- Spawn the robot into Gazebo -->
-  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
-        args="-param robot_description -urdf -model robot_model" />
+  <node name="spawn_urdf1" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model robot_model" />
 </launch>
