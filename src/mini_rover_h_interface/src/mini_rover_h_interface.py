@@ -1,33 +1,35 @@
 #!/usr/bin/env python3
 
 import rospy
-import serial
 from std_msgs.msg import String
+import serial
 
-received_data = "" #String to store recieved data
+#Function to subscribe to topic and send data over serial
+def serial_node():
+    rospy.init_node('mini_rover_h_interface', anonymous=True)
 
-#callback function to store recieved data to variable
-def callback(data):
-    global received_data
-    received_data = data.data
-    rospy.loginfo("Received data = %s", received_data)
+    serial_port = '/dev/ttyUSB0'
+    baud_rate = 115200 
 
-#send data over serial to arduino
-def send_serial_data(data_to_send):
-    arduino = serial.Serial(port="/dev/ttyACM0") 
-    arduino.write(bytes(data_to_send, 'utf-8'))
-    arduino.close()
+    try:
+        ser = serial.Serial(serial_port, baud_rate)
 
-#initiliaze node and run functions
-def mini_rover_interface():
-    rospy.init_node('mini_rover_interface', anonymous=True)
-    rospy.Subscriber('mini_rover_data', String, callback)
-    rospy.spin()
+        #define a callback function to handle incoming string data
+        def string_callback(data):
+            #this just logs the data
+            rospy.loginfo("Received data: %s", data.data)
+            #encode using unicode and send over serial
+            ser.write(data.data.encode('utf-8'))
 
-    while not rospy.is_shutdown(): #while ROS is running, send data over serial
-        send_serial_data(received_data)
-        rospy.sleep(1)
+        #initialize subscriber to 'mini_rover_data' topic
+        rospy.Subscriber('mini_rover_data', String, string_callback)
+        rospy.spin()
+
+    except serial.SerialException as e:
+        rospy.logerr("Error opening the serial port: %s", str(e))
+    finally:
+        # Close the serial port when done
+        ser.close()
 
 if __name__ == '__main__':
-    mini_rover_interface()
-    
+    serial_node()
