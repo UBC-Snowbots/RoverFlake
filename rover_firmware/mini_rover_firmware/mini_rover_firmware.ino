@@ -1,70 +1,42 @@
+#if CONFIG_FREERTOS_UNICORE
+static const BaseType_t app_cpu = 0;
+#else
+static const BaseType_t app_cpu = 1;
+#endif
+
 //GLOBAL DATA
-char dataBuf[64] = {0};
-char data[64] = {0};
-float motors[6] = {0.0f};
-#define ENA 9
-#define IN1 6
-#define IN2 7
+static char dataBuffer[64] = {0};
+static char dataMotors[64] = {0};
+static float motors[6] = {0.0f};
+//MOTOR1
+#define EN1 15
+#define IN11 2
+#define IN12 0
+//MOTOR2
+#define EN2 17
+#define IN21 16
+#define IN22 4
+//MOTOR3
+#define EN3 5
+#define IN31 18
+#define IN32 19
+//MOTOR4
+#define EN4 23
+#define IN41 21
+#define IN42 22
+//MOTOR5
+#define EN5 12
+#define IN51 14
+#define IN52 27
+//MOTOR6
+#define EN6 33
+#define IN61 25
+#define IN62 26
 #define LOWRANGE -250
 #define UPRANGE 250
 
-//edge cases
-
-//FUNCTION: Take serial input and store a specified section to a character array
-void storeSerialData(char *dataBuffer, int bufferSize){
-  
-  //charCount = indices, readingData returns if the data is valid and being stored
-  int charCount = 0;
-  bool readingData = false;
-  unsigned long previousTime = millis();
-  long timeInterval = 1000;
-
-  //runs if serial is available and sending data
-  while (Serial.available() > 0){
-    //reads serial and stores character to temporary variable
-    char tempChar = Serial.read();
-    Serial.println(tempChar);
-    unsigned long currentTime = millis();
-
-    //if start character is located, start storing data
-    if (tempChar == '$'){
-      readingData = true;
-      charCount = 0;
-      Serial.println("Starting Character Located");
-    }
-
-    //if data is being read, append character to string and index up
-    if (readingData){
-      dataBuffer[charCount] = tempChar;
-      //counts for each character after '$' including '$'
-      charCount++;
-      Serial.println("Reading Data...");
-
-      //if the temp character is ')', stop reading data and null-terminate
-      if (tempChar == ')'){
-        readingData = false;
-        dataBuffer[charCount] = '\0';
-        Serial.println("Not Reading Data...");
-      }
-    }
-
-    //Serial receiving taking too long
-    if (currentTime - previousTime > timeInterval){
-      readingData = false;
-      charCount = 0;
-      Serial.println("Error: Serial taking too long");
-      break;
-    }
-
-    //Buffer overflow protection
-    if (charCount >= bufferSize - 1){
-      readingData = false;
-      charCount = 0;
-      Serial.println("Error: Buffer exceeded limit");
-    }
-  } 
-
-}
+//*********************************************************
+//FUNCTIONS
 
 //ERROR CHECKING: Size of Data
 bool checkSize(char *dataBuffer, int actualSize){
@@ -212,7 +184,7 @@ void outputInfo(char *dataBuffer, char *dataStored, float *motorValues){
   Serial.print("STORED DATA: ");
   Serial.println(dataStored);
 
-  Serial.println("Motors 1 through 6: ");
+  Serial.println("MOTOR STORED: ");
   for (int count = 0; count < 6; count++){
     Serial.print(motorValues[count], 2);
     Serial.print("   ");
@@ -220,51 +192,296 @@ void outputInfo(char *dataBuffer, char *dataStored, float *motorValues){
   Serial.println();
 }
 
+void powerWheels(float *motorValues){
 
+  Serial.println("WHEEL SPEEDS: ");
+  /*
+   * ##### STRUCTURE #####
+   * WHEEL1
+   * IN11 (Wheel Input #1)
+   * IN12 (Wheel Input #2)
+   * EN1  (Enable Pin #1)
+   * 
+   * 
+   * if (negative) { //reverse direction
+   *  digitalWrite(PIN1, HIGH);
+   *  digitalWrite(PIN2, LOW);
+   *  analogWrite(EN1, map(motors[0], 0, LOWRANGE, 0, 255)); //map value from lower range - 0 to 0 - 255
+   *  Serial.print(map(motors[0], 0, LOWRANGE, 0, 255));
+   *  } else if (positive){ //forward direction
+   *  digitalWrite(PIN1, LOW);
+   *  digitalWrite(PIN2, HIGH);
+   *  analogWrite(EN1, map(motors[0], 0, UPRANGE, 0, 255)); //map value from 0 - upper range to 0 - 255
+   *  Serial.print(map(motors[0], 0, UPRANGE, 0, 255));
+   *  }
+   */
+        
+  //WHEEL 1
+  if (motors[0] < 0){ 
+      digitalWrite(IN11, HIGH); digitalWrite(IN12, LOW);
+      analogWrite(EN1, map(motors[0], 0, LOWRANGE, 0, 255));
+      Serial.print(map(motors[0], 0, LOWRANGE, 0, 255));
+      Serial.print(" ");     
+    } else if (motors[0] >=0){
+      digitalWrite(IN11, LOW); digitalWrite(IN12, HIGH);
+      analogWrite(EN1, map(motors[0], 0, UPRANGE, 0, 255));
+      Serial.print(map(motors[0], 0, UPRANGE, 0, 255));   
+      Serial.print(" "); 
+    }
 
-void setup() {
-  pinMode(ENA, OUTPUT);
-  pinMode(IN1, OUTPUT);
-  pinMode(IN2, OUTPUT);
-  // Set initial rotation direction
-  digitalWrite(IN1, LOW);
-  digitalWrite(IN2, HIGH);
-  
-  Serial.begin(9600);
-  delay(100);
+   
+  //WHEEL 2  
+  if (motors[1] < 0){ 
+      digitalWrite(IN21, HIGH); digitalWrite(IN22, LOW);
+      analogWrite(EN2, map(motors[1], 0, LOWRANGE, 0, 255));
+      Serial.print(map(motors[1], 0, LOWRANGE, 0, 255));  
+      Serial.print(" ");  
+    } else if (motors[1] >=0){
+      digitalWrite(IN21, LOW); digitalWrite(IN22, HIGH);
+      analogWrite(EN2, map(motors[1], 0, UPRANGE, 0, 255));
+      Serial.print(map(motors[1], 0, UPRANGE, 0, 255));   
+      Serial.print(" "); 
+    }
+ 
+  //WHEEL 3
+  if (motors[2] < 0){ 
+      digitalWrite(IN31, HIGH); digitalWrite(IN32, LOW);
+      analogWrite(EN3, map(motors[0], 0, LOWRANGE, 0, 255));
+      Serial.print(map(motors[2], 0, LOWRANGE, 0, 255));  
+      Serial.print(" ");   
+    } else if (motors[2] >=0){
+      digitalWrite(IN31, LOW); digitalWrite(IN32, HIGH);
+      analogWrite(EN3, map(motors[0], 0, UPRANGE, 0, 255));
+      Serial.print(map(motors[2], 0, UPRANGE, 0, 255));   
+      Serial.print(" ");    
+    }
+    
+  //WHEEL 4
+  if (motors[3] < 0){ 
+      digitalWrite(IN41, HIGH); digitalWrite(IN42, LOW);
+      analogWrite(EN4, map(motors[0], 0, LOWRANGE, 0, 255));
+      Serial.print(map(motors[3], 0, LOWRANGE, 0, 255));  
+      Serial.print(" ");   
+    } else if (motors[0] >=0){
+      digitalWrite(IN41, LOW); digitalWrite(IN42, HIGH);
+      analogWrite(EN4, map(motors[0], 0, UPRANGE, 0, 255));
+      Serial.print(map(motors[3], 0, UPRANGE, 0, 255));   
+      Serial.print(" ");    
+    }
+
+  //WHEEL 5
+  if (motors[4] < 0){ 
+      digitalWrite(IN51, HIGH); digitalWrite(IN52, LOW);
+      analogWrite(EN5, map(motors[0], 0, LOWRANGE, 0, 255));
+      Serial.print(map(motors[4], 0, LOWRANGE, 0, 255));  
+      Serial.print(" ");      
+    } else if (motors[0] >=0){
+      digitalWrite(IN51, LOW); digitalWrite(IN52, HIGH);
+      analogWrite(EN5, map(motors[0], 0, UPRANGE, 0, 255));
+      Serial.print(map(motors[4], 0, UPRANGE, 0, 255));   
+      Serial.print(" ");       
+    }
+
+  //WHEEL 6
+  if (motors[5] < 0){ 
+      digitalWrite(IN61, HIGH); digitalWrite(IN62, LOW);
+      analogWrite(EN6, map(motors[0], 0, LOWRANGE, 0, 255));
+      Serial.print(map(motors[5], 0, LOWRANGE, 0, 255));  
+      Serial.print(" ");     
+    } else if (motors[0] >=0){
+      digitalWrite(IN61, LOW); digitalWrite(IN62, HIGH);
+      analogWrite(EN6, map(motors[0], 0, UPRANGE, 0, 255));
+      Serial.print(map(motors[5], 0, UPRANGE, 0, 255));   
+      Serial.print(" ");    
+    }
+
+    Serial.println(); 
 }
 
-void loop() {
 
-  //STORE SERIAL INPUT TO BUFFER
-  storeSerialData(dataBuf, sizeof(dataBuf));
-  //variable to determine buffer size
-  int actualSize = strlen(dataBuf);
-  
-  //PERFORM ERROR-CHECKING FOR VALIDITY
-  if (checkSize(dataBuf, actualSize) && checkSequence(dataBuf, actualSize) && checkValid(dataBuf, actualSize)) {
+//*********************************************************
+//TASKS
+
+TaskHandle_t task1Handle, task2Handle, task3Handle;
+
+//MOTOR TASK
+void motorTask(void *parameters){
+  while(1){
+    if (Serial.available() > 0){
+      xTaskResumeFromISR(task2Handle);
+      vTaskSuspend(task1Handle);
+    }
     
-    //if valid, stores buffer to data and parses to respective motors  
-    memcpy(data, dataBuf, 64); 
-    Serial.println("Valid data. Stored in memory.");
-    parseData(data, motors);
-  } 
-
-  //OUTPUT SYSTEM INFORMATION FOR DEBUGGING
-  outputInfo(dataBuf, data, motors);
-
-  //TESTING MOTOR 1
-  if (motors[0] < 0){
-    digitalWrite(IN1, HIGH);
-    digitalWrite(IN2, LOW);
-    analogWrite(ENA, map(abs(motors[0]), 0, 250, 1, 255));
-    Serial.println(map(motors[0], 0, 250, 1, 255));
-  } else if (motors[0] >=0){
-    digitalWrite(IN1, LOW);
-    digitalWrite(IN2, HIGH);
-    analogWrite(ENA, map(motors[0], 0, 250, 1, 255));
-    Serial.println(map(motors[0], 0, 250, 1, 255));
+    outputInfo(dataBuffer, dataMotors, motors);
+          
+    //debugging first motor
+    powerWheels(motors);
+    vTaskDelay(100 / portTICK_PERIOD_MS);
+    
   }
- 
+}
+
+//SERIAL TASK
+void storeSerialTask (void *parameters){
+  while(1){
+    
+    //charCount = indices, readingData returns if the data is valid and being stored
+    int charCount = 0;
+    bool readingData = false;
+    unsigned long previousTime = millis();
+    long timeInterval = 1000;
+    //digitalWrite(LED_BUILTIN, LOW);
   
+    //runs if serial is available and sending data
+    while (Serial.available() > 0){
+      //reads serial and stores character to temporary variable
+      char tempChar = Serial.read();
+      Serial.println(tempChar);
+      //digitalWrite(LED_BUILTIN, HIGH);
+      unsigned long currentTime = millis();
+  
+      //if start character is located, start storing data
+      if (tempChar == '$'){
+        readingData = true;
+        charCount = 0;
+        Serial.println("Starting Character Located");
+      }
+  
+      //if data is being read, append character to string and index up
+      if (readingData){
+        dataBuffer[charCount] = tempChar;
+        //counts for each character after '$' including '$'
+        charCount++;
+        Serial.println("Reading Data...");
+  
+        //if the temp character is ')', stop reading data and null-terminate
+        if (tempChar == ')'){
+          readingData = false;
+          //digitalWrite(LED_BUILTIN, LOW);
+          dataBuffer[charCount] = '\0';
+          Serial.println("Not Reading Data...");
+          xTaskResumeFromISR(task3Handle);
+          vTaskSuspend(task2Handle);
+        }
+      }
+  
+      //Serial receiving taking too long
+      if (currentTime - previousTime > timeInterval){
+        readingData = false;
+        charCount = 0;
+        Serial.println("Error: Serial taking too long");
+        xTaskResumeFromISR(task3Handle);
+        vTaskSuspend(task2Handle);
+        break;
+      }
+  
+      //Buffer overflow protection
+      if (charCount >= sizeof(dataBuffer)- 1){
+        readingData = false;
+        charCount = 0;
+        Serial.println("Error: Buffer exceeded limit");
+        xTaskResumeFromISR(task3Handle);
+        vTaskSuspend(task2Handle);
+      }
+    } 
+  }
+}
+
+//UPDATE MOTOR TASK
+void updateMotorsTask (void *parameters){
+  while (1){
+    int actualSize = strlen(dataBuffer);
+    //PERFORM ERROR-CHECKING FOR VALIDITY
+    if (checkSize(dataBuffer, actualSize) && checkSequence(dataBuffer, actualSize) && checkValid(dataBuffer, actualSize)) {
+    
+      //if valid, stores buffer to data and parses to respective motors  
+      memcpy(dataMotors, dataBuffer, 64); 
+      Serial.println("Valid data. Stored in memory.");
+      parseData(dataMotors, motors);
+    } 
+    
+    xTaskResumeFromISR(task1Handle); 
+    vTaskSuspend(task3Handle);
+  }
+}
+
+
+void setup(){
+  //MOTORS
+  pinMode(EN1, OUTPUT);
+  pinMode(EN2, OUTPUT);
+  pinMode(EN3, OUTPUT);
+  pinMode(EN4, OUTPUT);
+  pinMode(EN5, OUTPUT);
+  pinMode(EN6, OUTPUT);
+  pinMode(IN11, OUTPUT);
+  pinMode(IN12, OUTPUT);
+  pinMode(IN21, OUTPUT);
+  pinMode(IN22, OUTPUT);
+  pinMode(IN31, OUTPUT);
+  pinMode(IN32, OUTPUT);
+  pinMode(IN41, OUTPUT);
+  pinMode(IN42, OUTPUT);
+  pinMode(IN51, OUTPUT);
+  pinMode(IN52, OUTPUT);
+  pinMode(IN61, OUTPUT);
+  pinMode(IN62, OUTPUT);
+  // Set initial rotation direction
+  digitalWrite(IN11, LOW);
+  digitalWrite(IN12, HIGH);
+  digitalWrite(IN21, LOW);
+  digitalWrite(IN22, HIGH);
+  digitalWrite(IN31, LOW);
+  digitalWrite(IN32, HIGH);
+  digitalWrite(IN41, LOW);
+  digitalWrite(IN42, HIGH);
+  digitalWrite(IN51, LOW);
+  digitalWrite(IN52, HIGH);
+  digitalWrite(IN61, LOW);
+  digitalWrite(IN62, HIGH);
+  //pinMode(LED_BUILTIN, OUTPUT);
+  Serial.begin(115200);
+  vTaskDelay(1000 / portTICK_PERIOD_MS);
+
+  Serial.println("------MINI ROVER FIRMWARE TEST------");
+
+  //Create Motor Control Task
+  xTaskCreatePinnedToCore(  // Use xTaskCreate() in vanilla FreeRTOS
+            motorTask,      // Function to be called
+            "Control Motors",   // Name of task
+            2048,           // Stack size (bytes in ESP32, words in FreeRTOS)
+            NULL,           // Parameter to pass
+            1,              // Task priority
+            &task1Handle,   // Task handle
+            app_cpu);       // Run on one core for demo purposes (ESP32 only)
+            
+  //Create Serial Read Task
+  xTaskCreatePinnedToCore(  // Use xTaskCreate() in vanilla FreeRTOS
+            storeSerialTask,     // Function to be called
+            "Read Serial",  // Name of task
+            2048,           // Stack size (bytes in ESP32, words in FreeRTOS)
+            NULL,           // Parameter to pass
+            1,              // Task priority
+            &task2Handle,   // Task handle
+            app_cpu);       // Run on one core for demo purposes (ESP32 only)
+  //Suspends task on startup
+  vTaskSuspend(task2Handle); 
+  //Create Update Motors Task
+  xTaskCreatePinnedToCore(  // Use xTaskCreate() in vanilla FreeRTOS
+            updateMotorsTask,     // Function to be called
+            "Update Motors",  // Name of task
+            2048,           // Stack size (bytes in ESP32, words in FreeRTOS)
+            NULL,           // Parameter to pass
+            1,              // Task priority
+            &task3Handle,   // Task handle
+            app_cpu);       // Run on one core for demo purposes (ESP32 only)
+  //Suspends task on startup
+  vTaskSuspend(task3Handle); 
+  
+  //Delete "setup and loop" task
+  vTaskDelete(NULL);
+}
+
+void loop(){
+  //execution never gets here
 }
