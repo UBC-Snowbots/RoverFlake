@@ -216,7 +216,7 @@ void powerWheels(float *motorValues){
    *  }
    */
         
-  //WHEEL 1
+  //WHEEL 1 L
   if (motors[0] < 0){ 
       digitalWrite(IN11, HIGH); digitalWrite(IN12, LOW);
       analogWrite(EN1, map(motors[0], 0, LOWRANGE, 0, 255));
@@ -230,7 +230,7 @@ void powerWheels(float *motorValues){
     }
 
    
-  //WHEEL 2  
+  //WHEEL 2 L
   if (motors[1] < 0){ 
       digitalWrite(IN21, HIGH); digitalWrite(IN22, LOW);
       analogWrite(EN2, map(motors[1], 0, LOWRANGE, 0, 255));
@@ -243,7 +243,7 @@ void powerWheels(float *motorValues){
       Serial.print(" "); 
     }
  
-  //WHEEL 3
+  //WHEEL 3 L
   if (motors[2] < 0){ 
       digitalWrite(IN31, HIGH); digitalWrite(IN32, LOW);
       analogWrite(EN3, map(motors[0], 0, LOWRANGE, 0, 255));
@@ -256,41 +256,41 @@ void powerWheels(float *motorValues){
       Serial.print(" ");    
     }
     
-  //WHEEL 4
+  //WHEEL 4 R
   if (motors[3] < 0){ 
       digitalWrite(IN41, HIGH); digitalWrite(IN42, LOW);
-      analogWrite(EN4, map(motors[0], 0, LOWRANGE, 0, 255));
+      analogWrite(EN4, map(motors[3], 0, LOWRANGE, 0, 255));
       Serial.print(map(motors[3], 0, LOWRANGE, 0, 255));  
       Serial.print(" ");   
-    } else if (motors[0] >=0){
+    } else if (motors[3] >=0){
       digitalWrite(IN41, LOW); digitalWrite(IN42, HIGH);
-      analogWrite(EN4, map(motors[0], 0, UPRANGE, 0, 255));
+      analogWrite(EN4, map(motors[3], 0, UPRANGE, 0, 255));
       Serial.print(map(motors[3], 0, UPRANGE, 0, 255));   
       Serial.print(" ");    
     }
 
-  //WHEEL 5
+  //WHEEL 5 R
   if (motors[4] < 0){ 
       digitalWrite(IN51, HIGH); digitalWrite(IN52, LOW);
-      analogWrite(EN5, map(motors[0], 0, LOWRANGE, 0, 255));
+      analogWrite(EN5, map(motors[4], 0, LOWRANGE, 0, 255));
       Serial.print(map(motors[4], 0, LOWRANGE, 0, 255));  
       Serial.print(" ");      
-    } else if (motors[0] >=0){
+    } else if (motors[4] >=0){
       digitalWrite(IN51, LOW); digitalWrite(IN52, HIGH);
-      analogWrite(EN5, map(motors[0], 0, UPRANGE, 0, 255));
+      analogWrite(EN5, map(motors[4], 0, UPRANGE, 0, 255));
       Serial.print(map(motors[4], 0, UPRANGE, 0, 255));   
       Serial.print(" ");       
     }
 
-  //WHEEL 6
+  //WHEEL 6 R
   if (motors[5] < 0){ 
       digitalWrite(IN61, HIGH); digitalWrite(IN62, LOW);
-      analogWrite(EN6, map(motors[0], 0, LOWRANGE, 0, 255));
+      analogWrite(EN6, map(motors[5], 0, LOWRANGE, 0, 255));
       Serial.print(map(motors[5], 0, LOWRANGE, 0, 255));  
       Serial.print(" ");     
-    } else if (motors[0] >=0){
+    } else if (motors[5] >=0){
       digitalWrite(IN61, LOW); digitalWrite(IN62, HIGH);
-      analogWrite(EN6, map(motors[0], 0, UPRANGE, 0, 255));
+      analogWrite(EN6, map(motors[5], 0, UPRANGE, 0, 255));
       Serial.print(map(motors[5], 0, UPRANGE, 0, 255));   
       Serial.print(" ");    
     }
