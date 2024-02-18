@@ -1,5 +1,7 @@
-# RoverFlake - ROS 1 (Noetic) / Ubuntu 20.04 / testing testing testing
+# RoverFlake - ROS 1 (Noetic) / Ubuntu 20.04
 Our new, ROS 1 Noetic repository. <br>
+Our ROS2 Humble/Foxy repository is RoverFlake2
+Our Firmware repository is FirmFlake
 Make sure to clone reccursively
 ```git clone https://github.com/UBC-Snowbots/RoverFlake.git --recursive ```
   We are using branches only, you are free to make a fork if you are experienced with git, but using git with 1 remote is going to be easier. We reccommend using gitt CLI if you have experience with it. We reccomend the git GUI from VS code if you havent used git before to pull/push code and manage commits (easiest  to use git CLI to set up repo)
