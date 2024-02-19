@@ -1,0 +1,30 @@
+# Publish joint_states
+minirover4:
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+  # Position Controllers ---------------------------------------
+  backleft_wheel_effort_controller:
+    type: effort_controllers/JointVelocityController
+    joint: joint_backleft
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  backright_wheel_effort_controller:
+    type: effort_controllers/JointEffortController
+    joint: joint_backright
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  frontright_wheel_effort_controller:
+    type: effort_controllers/JointEffortController
+    joint: joint_frontright
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  frontleft_wheel_effort_controller:
+    type: effort_controllers/JointEffortController
+    joint: joint_frontleft
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  midright_wheel_effort_controller:
+    type: effort_controllers/JointEffortController
+    joint: joint_midright
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  midleft_wheel_effort_controller:
+    type: effort_controllers/JointEffortController
+    joint: joint_midleft
+    pid: {p: 100.0, i: 0.01, d: 10.0}

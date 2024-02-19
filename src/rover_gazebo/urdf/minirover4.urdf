@@ -2,8 +2,12 @@
 <!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
      Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
-<robot
-  name="minirover4">
+<robot name="minirover4">
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+       <robotNamespace>/minirover4</robotNamespace>
+    </plugin>
+  </gazebo>
   <link
     name="base_link">
     <inertial>
@@ -363,7 +367,7 @@
       xyz="0 0 1" />
   </joint>
   <link
-    name="linkt_right">
+    name="link_right">
     <inertial>
       <origin
         xyz="0.024776 -0.097046 -0.0075217"
@@ -384,7 +388,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://minirover4/meshes/linkt_right.STL" />
+          filename="package://minirover4/meshes/link_right.STL" />
       </geometry>
       <material
         name="">
@@ -398,7 +402,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://minirover4/meshes/linkt_right.STL" />
+          filename="package://minirover4/meshes/link_right.STL" />
       </geometry>
     </collision>
   </link>
@@ -411,7 +415,7 @@
     <parent
       link="base_link" />
     <child
-      link="linkt_right" />
+      link="link_right" />
     <axis
       xyz="0 0 -1" />
   </joint>
@@ -462,7 +466,7 @@
       xyz="-0.10964 -0.18128 0.0538"
       rpy="0 0 0" />
     <parent
-      link="linkt_right" />
+      link="link_right" />
     <child
       link="link_midright" />
     <axis
@@ -515,42 +519,78 @@
       xyz="0.18312 -0.10654 0.0535"
       rpy="0 0 0" />
     <parent
-      link="linkt_right" />
+      link="link_right" />
     <child
       link="link_frontright" />
     <axis
       xyz="0 0 -1" />
   </joint>
+
+  
   <transmission name="trans_back_right">
   	<type>transmission_interface/SimpleTransmission</type>
-  	<actuator name="motor_back_right">
-    		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-    		<mechanicalReduction>1.0</mechanicalReduction> 
-  	</actuator>
   	<joint name="joint_backright">
-    		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    	   <hardwareInterface>EffortJointInterface</hardwareInterface>
   	</joint>
+  	<actuator name="motor_back_right">
+    	   <hardwareInterface>EffortJointInterface</hardwareInterface>
+    	   <mechanicalReduction>1</mechanicalReduction> 
+  	</actuator>
   </transmission>
   
   <transmission name="trans_back_left">
   	<type>transmission_interface/SimpleTransmission</type>
-  	<actuator name="motor_back_left">
-    		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-    		<mechanicalReduction>1.0</mechanicalReduction> 
-  	</actuator>
   	<joint name="joint_backleft">
-    		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    	   <hardwareInterface>EffortJointInterface</hardwareInterface>
   	</joint>
+  	<actuator name="motor_back_left">
+    	   <hardwareInterface>EffortJointInterface</hardwareInterface>
+    	   <mechanicalReduction>1</mechanicalReduction> 
+  	</actuator>
   </transmission> 
   
   <transmission name="trans_front_right">
   	<type>transmission_interface/SimpleTransmission</type>
-  	<actuator name="motor_front_right">
-    		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-    		<mechanicalReduction>1.0</mechanicalReduction> 
-  	</actuator>
   	<joint name="joint_frontright">
-    		<hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    	   <hardwareInterface>EffortJointInterface</hardwareInterface>
+  	</joint>
+  	<actuator name="motor_front_right">
+    	   <hardwareInterface>EffortJointInterface</hardwareInterface>
+    	   <mechanicalReduction>1</mechanicalReduction> 
+  	</actuator>
+  </transmission>
+
+  <transmission name="trans_front_left">
+  	<type>transmission_interface/SimpleTransmission</type>
+  	<joint name="joint_frontleft">
+    	   <hardwareInterface>EffortJointInterface</hardwareInterface>
   	</joint> 
-</transmission>
+  	<actuator name="motor_front_left">
+    	   <hardwareInterface>EffortJointInterface</hardwareInterface>
+    	   <mechanicalReduction>1</mechanicalReduction> 
+  	</actuator>
+  </transmission>
+  
+  <transmission name="trans_mid_left">
+  	<type>transmission_interface/SimpleTransmission</type>
+  	<joint name="joint_midleft">
+    	   <hardwareInterface>EffortJointInterface</hardwareInterface>
+  	</joint> 
+  	<actuator name="motor_mid_left">
+    	   <hardwareInterface>EffortJointInterface</hardwareInterface>
+    	   <mechanicalReduction>1</mechanicalReduction> 
+  	</actuator>
+  </transmission>
+  
+   <transmission name="trans_mid_right">
+  	<type>transmission_interface/SimpleTransmission</type>
+  	<joint name="joint_midright">
+    	   <hardwareInterface>EffortJointInterface</hardwareInterface>
+  	</joint> 
+  	<actuator name="motor_mid_right">
+    	   <hardwareInterface>EffortJointInterface</hardwareInterface>
+    	   <mechanicalReduction>1</mechanicalReduction> 
+  	</actuator>
+  </transmission>
+
 </robot>
