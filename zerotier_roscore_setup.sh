@@ -1,0 +1,4 @@
+export ROS_IP=172.30.0.5
+export ROS_MASTER_URI=http://172.30.0.5:11311
+echo $ROS_IP
+echo $ROS_MASTER_URI

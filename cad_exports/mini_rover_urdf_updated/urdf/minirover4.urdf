@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="minirover4">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.00084738 0.0035771 0.024466"
+        rpy="0 0 0" />
+      <mass
+        value="1.5716" />
+      <inertia
+        ixx="0.0025334"
+        ixy="-8.5846E-06"
+        ixz="-2.9536E-08"
+        iyy="0.0042751"
+        iyz="8.8486E-09"
+        izz="0.0064502" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 0.35" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="link_back">
+    <inertial>
+      <origin
+        xyz="0.02894 -0.091123 -0.00025681"
+        rpy="0 0 0" />
+      <mass
+        value="1.361" />
+      <inertia
+        ixx="0.0030588"
+        ixy="0.00020256"
+        ixz="-7.6473E-07"
+        iyy="0.0022846"
+        iyz="3.1108E-06"
+        izz="0.0010448" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/link_back.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.62745 0.65882 0.67843 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/link_back.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_back"
+    type="continuous">
+    <origin
+      xyz="-0.238496874999979 0 0.0611875"
+      rpy="1.5707963267949 0.24105063490677 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="link_back" />
+    <axis
+      xyz="0.971087700123489 0.238723016629884 0" />
+  </joint>
+  <link
+    name="link_backleft">
+    <inertial>
+      <origin
+        xyz="-1.7787E-05 7.2354E-05 0.02"
+        rpy="0 0 0" />
+      <mass
+        value="0.3916" />
+      <inertia
+        ixx="0.00029696"
+        ixy="-6.1946E-10"
+        ixz="-1.7123E-07"
+        iyy="0.00029697"
+        iyz="6.9653E-07"
+        izz="0.0004895" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/link_backleft.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/link_backleft.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_backleft"
+    type="continuous">
+    <origin
+      xyz="0.046323 -0.16246 -0.2501"
+      rpy="0 0 0" />
+    <parent
+      link="link_back" />
+    <child
+      link="link_backleft" />
+    <axis
+      xyz="-0.00088934 0.0036177 0.99999" />
+  </joint>
+  <link
+    name="link_backright">
+    <inertial>
+      <origin
+        xyz="-4.3492E-05 0.00017692 -0.019999"
+        rpy="0 0 0" />
+      <mass
+        value="0.3916" />
+      <inertia
+        ixx="0.00029696"
+        ixy="-3.7036E-09"
+        ixz="4.1867E-07"
+        iyy="0.00029698"
+        iyz="-1.7031E-06"
+        izz="0.00048948" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/link_backright.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/link_backright.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_backright"
+    type="continuous">
+    <origin
+      xyz="0.046935 -0.1637 0.24919"
+      rpy="0 0 0" />
+    <parent
+      link="link_back" />
+    <child
+      link="link_backright" />
+    <axis
+      xyz="-0.0021746 0.0088458 -0.99996" />
+  </joint>
+  <link
+    name="link_left">
+    <inertial>
+      <origin
+        xyz="0.02478 -0.09704 0.0075217"
+        rpy="0 0 0" />
+      <mass
+        value="1.7536" />
+      <inertia
+        ixx="0.0012948"
+        ixy="-0.0002942"
+        ixz="-2.3672E-17"
+        iyy="0.0023718"
+        iyz="-2.1429E-17"
+        izz="0.0033124" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/link_left.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.89804 0.91765 0.92941 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/link_left.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_left"
+    type="continuous">
+    <origin
+      xyz="0.069128445932063 0.213496875001751 0.0611875000006888"
+      rpy="1.5707963267949 0.24105063490677 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="link_left" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="link_midleft">
+    <inertial>
+      <origin
+        xyz="2.3926E-12 5.8825E-13 0.02"
+        rpy="0 0 0" />
+      <mass
+        value="0.3916" />
+      <inertia
+        ixx="0.00029696"
+        ixy="-1.267E-20"
+        ixz="-1.3042E-18"
+        iyy="0.00029696"
+        iyz="-3.7332E-19"
+        izz="0.0004895" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/link_midleft.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/link_midleft.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_midleft"
+    type="continuous">
+    <origin
+      xyz="-0.10964 -0.18128 -0.0555"
+      rpy="0 0 0" />
+    <parent
+      link="link_left" />
+    <child
+      link="link_midleft" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="link_frontleft">
+    <inertial>
+      <origin
+        xyz="5.1322E-12 1.2614E-12 0.02"
+        rpy="0 0 0" />
+      <mass
+        value="0.3916" />
+      <inertia
+        ixx="0.00029696"
+        ixy="1.5178E-21"
+        ixz="-1.4836E-18"
+        iyy="0.00029696"
+        iyz="-5.1404E-19"
+        izz="0.0004895" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/link_frontleft.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/link_frontleft.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_frontleft"
+    type="continuous">
+    <origin
+      xyz="0.18312 -0.10654 -0.0558"
+      rpy="0 0 0" />
+    <parent
+      link="link_left" />
+    <child
+      link="link_frontleft" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="linkt_right">
+    <inertial>
+      <origin
+        xyz="0.024776 -0.097046 -0.0075217"
+        rpy="0 0 0" />
+      <mass
+        value="1.7536" />
+      <inertia
+        ixx="0.0012946"
+        ixy="-0.00029425"
+        ixz="-2.3638E-17"
+        iyy="0.002372"
+        iyz="-3.0259E-18"
+        izz="0.0033124" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/linkt_right.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.89804 0.91765 0.92941 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/linkt_right.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_right"
+    type="continuous">
+    <origin
+      xyz="0.0691284459335321 -0.21349687499936 0.0611875000016033"
+      rpy="1.5707963267949 0.24105063490677 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="linkt_right" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="link_midright">
+    <inertial>
+      <origin
+        xyz="2.3929E-12 5.8838E-13 -0.02"
+        rpy="0 0 0" />
+      <mass
+        value="0.3916" />
+      <inertia
+        ixx="0.00029696"
+        ixy="-3.0355E-21"
+        ixz="-1.3043E-18"
+        iyy="0.00029696"
+        iyz="-3.6081E-19"
+        izz="0.0004895" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/link_midright.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/link_midright.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_midright"
+    type="continuous">
+    <origin
+      xyz="-0.10964 -0.18128 0.0538"
+      rpy="0 0 0" />
+    <parent
+      link="linkt_right" />
+    <child
+      link="link_midright" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="link_frontright">
+    <inertial>
+      <origin
+        xyz="4.6254E-12 1.1376E-12 -0.02"
+        rpy="0 0 0" />
+      <mass
+        value="0.3916" />
+      <inertia
+        ixx="0.00029696"
+        ixy="1.0558E-21"
+        ixz="-1.3013E-18"
+        iyy="0.00029696"
+        iyz="-3.7229E-19"
+        izz="0.0004895" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/link_frontright.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://minirover4/meshes/link_frontright.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_frontright"
+    type="continuous">
+    <origin
+      xyz="0.18312 -0.10654 0.0535"
+      rpy="0 0 0" />
+    <parent
+      link="linkt_right" />
+    <child
+      link="link_frontright" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+</robot>

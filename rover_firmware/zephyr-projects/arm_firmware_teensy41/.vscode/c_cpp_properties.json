@@ -1,0 +1,29 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/rowan/RoverFlake/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/rowan/RoverFlake/src/arm_hardware_driver/include/**",
+        "/home/rowan/RoverFlake/src/arm_hardware_interface/include/**",
+        "/home/rowan/RoverFlake/src/marker_qr_detection/include/**",
+        "/home/rowan/RoverFlake/src/mcu_serial_comm_drivers/include/**",
+        "/home/rowan/RoverFlake/src/motor_control_circ/include/**",
+        "/home/rowan/RoverFlake/src/sb_all_controller/include/**",
+        "/home/rowan/RoverFlake/src/sb_utils/include/**",
+        "/home/rowan/RoverFlake/src/snowbots_ui/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

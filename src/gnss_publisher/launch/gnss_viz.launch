@@ -1,0 +1,7 @@
+<launch>
+  <node name="rviz_publisher" pkg="gnss_publisher" type="rviz_publisher" output="screen"/>
+  <node name="rviz" pkg="rviz" type="rviz" required="true"/>
+  <node pkg="tf" type="static_transform_publisher" name="my_frame_broadcaster"
+      args="0.0 0.0 0.0 0.0 0.0 0.0 /map /my_frame 100" />
+  
+</launch>
