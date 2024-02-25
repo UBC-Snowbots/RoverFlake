@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/sb/RoverFlake/src/gnss_publisher/build/devel/setup.sh
