@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="mini rover 1">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.0025604 0.0019108 -0.025249"
+        rpy="0 0 0" />
+      <mass
+        value="4.0983" />
+      <inertia
+        ixx="0.0040275"
+        ixy="-8.5938E-06"
+        ixz="-3.7431E-06"
+        iyy="0.0061191"
+        iyz="-4.3191E-07"
+        izz="0.0081254" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini rover 1/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 0.94902 0.89804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini rover 1/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="link_frontleft">
+    <inertial>
+      <origin
+        xyz="2.7395E-12 6.731E-13 0.02"
+        rpy="0 0 0" />
+      <mass
+        value="0.31416" />
+      <inertia
+        ixx="0.00023824"
+        ixy="8.8233E-23"
+        ixz="-1.1902E-18"
+        iyy="0.00023824"
+        iyz="-4.1239E-19"
+        izz="0.0003927" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini rover 1/meshes/link_frontleft.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini rover 1/meshes/link_frontleft.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_frontleft"
+    type="continuous">
+    <origin
+      xyz="0.22152 0.2693 -0.08599"
+      rpy="1.5708 0.24105 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="link_frontleft" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      effort="2"
+      velocity="1" />
+  </joint>
+  <link
+    name="link_frontright">
+    <inertial>
+      <origin
+        xyz="2.2328E-12 5.4903E-13 -0.02"
+        rpy="0 0 0" />
+      <mass
+        value="0.31416" />
+      <inertia
+        ixx="0.00023824"
+        ixy="8.4703E-22"
+        ixz="-1.0439E-18"
+        iyy="0.00023824"
+        iyz="-2.9866E-19"
+        izz="0.0003927" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini rover 1/meshes/link_frontright.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini rover 1/meshes/link_frontright.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_frontright"
+    type="continuous">
+    <origin
+      xyz="0.22152 -0.267 -0.08599"
+      rpy="1.5708 0.24105 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="link_frontright" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      effort="2"
+      velocity="1" />
+  </joint>
+  <link
+    name="link_midleft">
+    <inertial>
+      <origin
+        xyz="-1.3878E-16 -4.1633E-17 0.02"
+        rpy="0 0 0" />
+      <mass
+        value="0.31416" />
+      <inertia
+        ixx="0.00023824"
+        ixy="-1.0164E-20"
+        ixz="-1.0468E-18"
+        iyy="0.00023824"
+        iyz="-2.9498E-19"
+        izz="0.0003927" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini rover 1/meshes/link_midleft.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini rover 1/meshes/link_midleft.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_midleft"
+    type="continuous">
+    <origin
+      xyz="-0.080618 0.269 -0.08868"
+      rpy="1.5708 0.24105 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="link_midleft" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      effort="2"
+      velocity="1" />
+  </joint>
+  <link
+    name="link_midright">
+    <inertial>
+      <origin
+        xyz="8.0415E-12 1.9768E-12 -0.02"
+        rpy="0 0 0" />
+      <mass
+        value="0.31416" />
+      <inertia
+        ixx="0.00023824"
+        ixy="-2.4352E-21"
+        ixz="-1.0464E-18"
+        iyy="0.00023824"
+        iyz="-2.8946E-19"
+        izz="0.0003927" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini rover 1/meshes/link_midright.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini rover 1/meshes/link_midright.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_midright"
+    type="continuous">
+    <origin
+      xyz="-0.080618 -0.2673 -0.08868"
+      rpy="1.5708 0.24105 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="link_midright" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="2"
+      velocity="1" />
+  </joint>
+  <link
+    name="link_backright">
+    <inertial>
+      <origin
+        xyz="-4.3492E-05 0.00017692 -0.019999"
+        rpy="0 0 0" />
+      <mass
+        value="0.31416" />
+      <inertia
+        ixx="0.00023824"
+        ixy="-2.9712E-09"
+        ixz="3.3588E-07"
+        iyy="0.00023825"
+        iyz="-1.3663E-06"
+        izz="0.00039269" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini rover 1/meshes/link_backright.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini rover 1/meshes/link_backright.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_backright"
+    type="continuous">
+    <origin
+      xyz="-0.232 -0.24919 -0.10898"
+      rpy="1.5708 0.24105 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="link_backright" />
+    <axis
+      xyz="-0.0021746 0.0088458 -0.99996" />
+    <limit
+      effort="2"
+      velocity="1" />
+  </joint>
+  <link
+    name="link_backleft">
+    <inertial>
+      <origin
+        xyz="-1.7787E-05 7.2354E-05 0.02"
+        rpy="0 0 0" />
+      <mass
+        value="0.31416" />
+      <inertia
+        ixx="0.00023824"
+        ixy="-4.9696E-10"
+        ixz="-1.3737E-07"
+        iyy="0.00023824"
+        iyz="5.5879E-07"
+        izz="0.0003927" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini rover 1/meshes/link_backleft.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mini rover 1/meshes/link_backleft.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_backleft"
+    type="continuous">
+    <origin
+      xyz="-0.2323 0.2501 -0.10764"
+      rpy="1.5708 0.24105 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="link_backleft" />
+    <axis
+      xyz="-0.00088934 0.0036177 0.99999" />
+    <limit
+      effort="2"
+      velocity="1" />
+  </joint>
+</robot>
