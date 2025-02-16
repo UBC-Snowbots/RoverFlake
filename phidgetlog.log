@@ -1,0 +1,58 @@
+2023-07-25T18:06:21  <Info> phidget22 : 
+	******************************  Logging Enabled  ******************************
+	* Phidget22 - Version 1.12 - Built Nov 26 2022 15:13:59                       *
+	* Release 1.12.20220912 - Linux (64-bit)                                      *
+	*******************************************************************************
+2023-07-25T18:07:24  <Info> phidget22[processPacketReturnCodes()] : Got a NOTATTACHED response from a VINT device, Port 0
+2023-07-25T18:07:24  <Info> phidget22[processPacketReturnCodes()] : Got a NOTATTACHED response from a VINT device, Port 0
+2023-07-25T18:07:24  <Info> phidget22[deviceDetach()] : (Detach) DCC1100 (Brushless DC Motor Phidget) v130 -> HUB0000 Port:0 S/N:561491
+2023-07-25T18:07:30  <Warn> phidget22[waitForPendingPacket()] : Packet tracker waitForPendingPacket timeout (1000ms), Port 1
+2023-07-25T18:07:30 <ERROR> phidget22[PhidgetVINTDevice_bridgeInput()] : Failed to send VINT_PACKET_TYPE_PHIDGET_RESET message: 0x03 - Timed Out
+2023-07-25T18:07:30 <ERROR> phidget22[Phidget_close()] : Failed to send BP_CLOSERESET to device: 0x03 - Timed Out
+2023-07-25T18:07:30  <Info> phidget22[PhidgetUSBReadThreadFunction()] : HUB0000 (6-Port USB VINT Hub Phidget) v307 S/N:561491: ReadThread exiting normally (signaled by Phidget_close)
+2023-07-25T18:09:29  <Info> phidget22 : 
+	******************************  Logging Enabled  ******************************
+	* Phidget22 - Version 1.12 - Built Nov 26 2022 15:13:59                       *
+	* Release 1.12.20220912 - Linux (64-bit)                                      *
+	*******************************************************************************
+2023-07-25T18:10:06  <Info> phidget22[PhidgetHubDevice_setPortMode()] : Setting Port: 0 mode to VINT on HUB0000 (6-Port USB VINT Hub Phidget) v307 S/N:561491
+2023-07-25T18:10:06  <Info> phidget22[PhidgetHubDevice_setPortMode()] : Setting Port: 1 mode to VINT on HUB0000 (6-Port USB VINT Hub Phidget) v307 S/N:561491
+2023-07-25T18:10:06  <Info> phidget22[PhidgetUSBReadThreadFunction()] : HUB0000 (6-Port USB VINT Hub Phidget) v307 S/N:561491: ReadThread exiting normally (signaled by Phidget_close)
+2023-07-25T18:10:16  <Info> phidget22 : 
+	******************************  Logging Enabled  ******************************
+	* Phidget22 - Version 1.12 - Built Nov 26 2022 15:13:59                       *
+	* Release 1.12.20220912 - Linux (64-bit)                                      *
+	*******************************************************************************
+2023-07-25T18:20:17  <Info> phidget22[deviceDetach()] : (Detach) DCC1100 (Brushless DC Motor Phidget) v130 -> HUB0000 Port:0 S/N:561491
+2023-07-25T18:20:18  <Warn> phidget22[waitForPendingPacket()] : Packet tracker waitForPendingPacket timeout (1000ms), Port 1
+2023-07-25T18:21:16  <Warn> phidget22[waitForPendingPacket()] : Packet tracker waitForPendingPacket timeout (1000ms), Port 1
+2023-07-25T18:21:16 <ERROR> phidget22[PhidgetVINTDevice_bridgeInput()] : Failed to send VINT_PACKET_TYPE_PHIDGET_RESET message: 0x03 - Timed Out
+2023-07-25T18:21:16 <ERROR> phidget22[Phidget_close()] : Failed to send BP_CLOSERESET to device: 0x03 - Timed Out
+2023-07-25T18:21:16  <Info> phidget22[PhidgetUSBReadThreadFunction()] : HUB0000 (6-Port USB VINT Hub Phidget) v307 S/N:561491: ReadThread exiting normally (signaled by Phidget_close)
+2023-08-13T07:41:24  <Info> phidget22 : 
+	******************************  Logging Enabled  ******************************
+	* Phidget22 - Version 1.13 - Built Mar  6 2023 09:35:26                       *
+	* Release 1.13.20230224 - Linux (64-bit)                                      *
+	*******************************************************************************
+2023-08-13T07:42:10  <Info> phidget22 : 
+	******************************  Logging Enabled  ******************************
+	* Phidget22 - Version 1.13 - Built Mar  6 2023 09:35:26                       *
+	* Release 1.13.20230224 - Linux (64-bit)                                      *
+	*******************************************************************************
+2023-08-13T07:44:05  <Info> phidget22 : 
+	******************************  Logging Enabled  ******************************
+	* Phidget22 - Version 1.13 - Built Mar  6 2023 09:35:26                       *
+	* Release 1.13.20230224 - Linux (64-bit)                                      *
+	*******************************************************************************
+2023-08-14T02:18:55  <Info> phidget22 : 
+	******************************  Logging Enabled  ******************************
+	* Phidget22 - Version 1.13 - Built Mar  6 2023 09:35:26                       *
+	* Release 1.13.20230224 - Linux (64-bit)                                      *
+	*******************************************************************************
+2023-08-14T02:42:48  <Info> phidget22vint[PhidgetHubDevice_setPortMode()] : Setting Port: 0 mode to VINT on HUB0000 (6-Port USB VINT Hub Phidget) v127 S/N:561576
+2023-08-14T02:42:48  <Info> phidget22vint[PhidgetHubDevice_setPortMode()] : Setting Port: 1 mode to VINT on HUB0000 (6-Port USB VINT Hub Phidget) v127 S/N:561576
+2023-08-14T02:42:48  <Info> phidget22vint[PhidgetHubDevice_setPortMode()] : Setting Port: 2 mode to VINT on HUB0000 (6-Port USB VINT Hub Phidget) v127 S/N:561576
+2023-08-14T02:42:48  <Info> phidget22vint[PhidgetHubDevice_setPortMode()] : Setting Port: 3 mode to VINT on HUB0000 (6-Port USB VINT Hub Phidget) v127 S/N:561576
+2023-08-14T02:42:48  <Info> phidget22vint[PhidgetHubDevice_setPortMode()] : Setting Port: 4 mode to VINT on HUB0000 (6-Port USB VINT Hub Phidget) v127 S/N:561576
+2023-08-14T02:42:48  <Info> phidget22vint[PhidgetHubDevice_setPortMode()] : Setting Port: 5 mode to VINT on HUB0000 (6-Port USB VINT Hub Phidget) v127 S/N:561576
+2023-08-14T02:42:49  <Info> phidget22[PhidgetUSBReadThreadFunction()] : HUB0000 (6-Port USB VINT Hub Phidget) v127 S/N:561576: ReadThread exiting normally (signaled by Phidget_close)
